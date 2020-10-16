@@ -39,4 +39,10 @@ public class RequestsPerMillisChecker extends RequestsWindowChecker {
     public long getCurrentWindow() {
         return System.currentTimeMillis();
     }
+
+    @Override
+    protected boolean isOkayToClear() {
+        int cardinality = cardinality();
+        return (cardinality / getThreshold()) * 100 >= 40;
+    }
 }

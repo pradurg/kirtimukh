@@ -18,6 +18,7 @@ package io.kalp.athang.durg.kirtimukh.throttling.strategies.checker;
 
 import io.kalp.athang.durg.kirtimukh.throttling.enums.ThrottlingWindowUnit;
 import io.kalp.athang.durg.kirtimukh.throttling.exception.ThrottlingException;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.security.SecureRandom;
@@ -31,6 +32,7 @@ public abstract class RequestsWindowChecker {
     private static final int MIN_BIT_SET_SIZE = 128;
     private final ThrottlingWindowUnit unit;
     private final int maxTicksPerWindow;
+    @Getter
     private final int threshold;
     private final SecureRandom random;
     private final BitSet bitSet;
@@ -62,11 +64,15 @@ public abstract class RequestsWindowChecker {
 
     public abstract long getCurrentWindow();
 
+    protected abstract boolean isOkayToClear();
+
     private boolean locate(final int location) {
         long window = getCurrentWindow();
         if (currentWindow != window) {
             currentWindow = window;
-            bitSet.clear();
+            if (isOkayToClear()) {
+                bitSet.clear();
+            }
         }
 
         if (bitSet.get(location)) {

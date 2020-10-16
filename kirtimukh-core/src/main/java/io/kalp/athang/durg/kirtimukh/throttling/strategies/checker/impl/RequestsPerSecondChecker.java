@@ -40,4 +40,10 @@ public class RequestsPerSecondChecker extends RequestsWindowChecker {
         long mills = System.currentTimeMillis();
         return (mills - (mills % 1000)) / 1000;
     }
+
+    @Override
+    protected boolean isOkayToClear() {
+        int cardinality = cardinality();
+        return (cardinality / getThreshold()) * 100 >= 10;
+    }
 }
