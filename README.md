@@ -1,32 +1,34 @@
 # Athang | Durg | Kirtimukh
-## Requests Throttling/Rate-Limiter
-
+## The Guardian of Thresholds
+### Introduction
 As a part of constant efforts towards Stability & Reliability, what every Software Engineer look for is High Precisions & Predictability. Especially when margin for errors & recovery gets tinier.
 
-#### Why Resiliency matters?
-##### Imagine...
+### Why Resiliency matters?
+#### Imagine...
 * Everytime you turned on Air Conditioner & Television, it results in power-cut in your entire area
 * You are in an overloaded elevator, which keeps returning to the ground floor in an honest attempt to lift entire load
-* A Civil Engineer receiving a call in the middle of night that flood gates have opened unexpectedly
+* A Civil Engineer receiving a call in the middle of the night that flood gates have opened unexpectedly
 * You are mid-air and flight's landing gears appear to have jammed during landing because all passengers are watching movies
 
 ###### As an engineer, we all do understand that systems can give-up or fail anytime and they might need regular servicing/tuning.
 ##### However _the experience_ is frustrating as well as scary at the same time, isn't it?
 
-#### Resiliency & Microservices Architecture
+### Resiliency & Microservices Architecture
 Resiliency is the key thing to look after in Microservices Architecture.
 While most of the Architectures rely completely on Circuit Breaker Pattern & Retries, which gives the complete control of _The Stability_ to the client side.
 They do perform well initially in the small setup or closely working small number of microservices.
 As organisations grow bigger & bigger, clients may not have fine-tuned parameters, resulting in creating back-pressures.
-######And then comes those _completely eventful_ moments when, in the event of outages due to _Back Pressure_, we end up searching for _which client_ caused this.
+######And then comes those _completely eventful_ moments when in the event of _Outages due to Back Pressure_, we end up searching for _which client_ caused this.
 
-#### About Athang | Durg
-######_Durg_ means something difficult to defeat
+### About
+#### Athang | Durg
+######_Durg_ means _Fortress_ or something difficult to conquer.
 
 #### About Kirtimukh
 ######_Kirtimukh_ is the guardian of the thresholds.
 
-#### License - ASF v2.0
+### Licenses
+#### ASF v2.0
 ```
  Copyright (c) 2020 Pradeep A. Dalvi <prad@apache.org>
 
@@ -43,12 +45,12 @@ As organisations grow bigger & bigger, clients may not have fine-tuned parameter
  limitations under the License.
 ```
 
-#### Kirtimukh Components
+### Kirtimukh Components
 ##### Core [![Clojars Project](https://img.shields.io/clojars/v/io.kalp.athang.durg/kirtimukh-core.svg)](https://clojars.org/io.kalp.athang.durg/kirtimukh-core)
 ##### Throttling Bundle [![Clojars Project](https://img.shields.io/clojars/v/io.kalp.athang.durg/kirtimukh-dw-throttling-bundle.svg)](https://clojars.org/io.kalp.athang.durg/kirtimukh-dw-throttling-bundle)
 
-#### How to use?
-###### Maven Pom Dependency
+### How to use?
+#### Maven Pom Dependency
 ```
     <dependency>
         <groupId>io.kalp.athang.durg</groupId>
@@ -57,7 +59,7 @@ As organisations grow bigger & bigger, clients may not have fine-tuned parameter
     </dependency>
 ```
 
-###### Sample bundle initialisation
+#### Sample bundle initialisation
 ```
     bootstrap.addBundle(new ThrottlingBundle<ApplicationConfiguration>() {
         @Override
