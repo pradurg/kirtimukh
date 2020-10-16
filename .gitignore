@@ -1,0 +1,8 @@
+.idea/**
+*.ipr
+*.iws
+*.iml
+target/*
+kirtimukh-core/target/
+kirtimukh-dw-throttling-bundle/target/
+.DS_Store
