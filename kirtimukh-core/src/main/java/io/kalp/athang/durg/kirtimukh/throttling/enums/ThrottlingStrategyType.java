@@ -20,7 +20,32 @@ package io.kalp.athang.durg.kirtimukh.throttling.enums;
  * Created by pradeep.dalvi on 15/10/20
  */
 public enum ThrottlingStrategyType {
-    QUOTA,
-    LEAKY_BUCKET,
-    SMART
+    QUOTA() {
+        @Override
+        public <T> T accept(ThrottlingStrategyTypeVisitor<T> visitor) {
+            return visitor.visitQuota();
+        }
+    },
+    LEAKY_BUCKET {
+        @Override
+        public <T> T accept(ThrottlingStrategyTypeVisitor<T> visitor) {
+            return visitor.visitLeakyBucket();
+        }
+    },
+    NG {
+        @Override
+        public <T> T accept(ThrottlingStrategyTypeVisitor<T> visitor) {
+            return visitor.visitNg();
+        }
+    };
+
+    public abstract <T> T accept(ThrottlingStrategyType.ThrottlingStrategyTypeVisitor<T> visitor);
+
+    public interface ThrottlingStrategyTypeVisitor<T> {
+        public T visitQuota();
+
+        public T visitLeakyBucket();
+
+        public T visitNg();
+    }
 }

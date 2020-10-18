@@ -16,7 +16,7 @@
 
 package io.kalp.athang.dw.bundle;
 
-import io.kalp.athang.durg.kirtimukh.throttling.ThrottlingController;
+import io.kalp.athang.durg.kirtimukh.throttling.ThrottlingManager;
 import io.kalp.athang.durg.kirtimukh.throttling.annotation.Throttle;
 
 import javax.ws.rs.GET;
@@ -31,16 +31,10 @@ import javax.ws.rs.core.Response;
 @Produces(MediaType.APPLICATION_JSON)
 @Path("/throttle")
 public class InfoResource {
-    private final ThrottlingController controller;
-
-    public InfoResource(ThrottlingController throttlingController) {
-        this.controller = throttlingController;
-    }
-
     @GET
     @Path("/list")
     public Response list() {
-        return Response.ok(controller.getInfo())
+        return Response.ok(ThrottlingManager.getInfo())
                 .build();
     }
 
@@ -48,7 +42,7 @@ public class InfoResource {
     @Path("/test")
     @Throttle
     public Response test() {
-        return Response.ok(controller.getInfo())
+        return Response.ok(ThrottlingManager.getInfo())
                 .build();
     }
 }

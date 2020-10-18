@@ -14,30 +14,20 @@
  * limitations under the License.
  */
 
-package io.kalp.athang.durg.kirtimukh.throttling.config;
+package io.kalp.athang.durg.kirtimukh.throttling.annotation;
 
-import io.kalp.athang.durg.kirtimukh.throttling.enums.ThrottlingStrategyType;
-import io.kalp.athang.durg.kirtimukh.throttling.enums.ThrottlingWindowUnit;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Created by pradeep.dalvi on 15/10/20
+ * Created by pradeep.dalvi on 18/10/20
  */
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class ThrottlingStrategyConfig {
-    private String name;
+@Target({ElementType.METHOD})
+@Retention(value = RetentionPolicy.RUNTIME)
+public @interface Throttleable {
+    String name() default "";
 
-    private ThrottlingStrategyType type;
-
-    private ThrottlingWindowUnit unit;
-
-    private int threshold;
-
-    private long clearAfterWindows;
+    int priority() default Integer.MAX_VALUE;
 }

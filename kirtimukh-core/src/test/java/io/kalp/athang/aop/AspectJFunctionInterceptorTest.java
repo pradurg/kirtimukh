@@ -45,7 +45,7 @@ public class AspectJFunctionInterceptorTest {
             System.out.println(String.format("Intercepted Function %d", count));
             try {
                 System.out.println(String.format("Before Sleep for Intercepted Function %d", count));
-                Thread.sleep(count * 100);
+                Thread.sleep(count * 10);
                 System.out.println(String.format("After Sleep for Intercepted Function %d", count));
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -55,7 +55,7 @@ public class AspectJFunctionInterceptorTest {
                 throw new RuntimeException("Checking throwable & exceptions");
             }
 
-            return Response.ok()
+            return Response.ok(count)
                     .build();
         }
 
@@ -69,8 +69,12 @@ public class AspectJFunctionInterceptorTest {
             int count = random.nextInt(100);
             System.out.println("Calling " + count);
             if ((count % 2) != 1) {
-                Response response = rateLimitedFunction(count);
-                System.out.println(response);
+                try {
+                    Response response = rateLimitedFunction(count);
+                    System.out.println(response);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             } else {
                 normalFunction(count);
             }
@@ -87,9 +91,10 @@ public class AspectJFunctionInterceptorTest {
                         .threshold(1)
                         .build(),
                 new ArrayList<>(),
-                new ThrottlingExceptionTranslator() {
+                new ThrottlingExceptionTranslator<RuntimeException>() {
                     @Override
                     public RuntimeException throwable(ThrottlingException e) {
+                        System.out.println("Throttling request at " + e.getCardinality());
                         return new RuntimeException("Throttling request at " + e.getCardinality());
                     }
                 });
@@ -114,6 +119,6 @@ public class AspectJFunctionInterceptorTest {
         pool.execute(someFunctionsClass);
         pool.execute(someFunctionsClass);
 
-        pool.awaitTermination(1, TimeUnit.SECONDS);
+        pool.awaitTermination(10, TimeUnit.SECONDS);
     }
 }

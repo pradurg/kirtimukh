@@ -40,11 +40,11 @@ public abstract class ThrottlingBundle<T extends Configuration> implements Confi
         ThrottlingBundleConfiguration throttlingBundleConfiguration = getThrottlingConfiguration(configuration);
         ThrottlingExceptionTranslator translator = getExceptionTranslator();
 
-        controller = ThrottlingManager.initialise(throttlingBundleConfiguration.getDefaultConfig(),
+        ThrottlingManager.initialise(throttlingBundleConfiguration.getDefaultConfig(),
                 throttlingBundleConfiguration.getCommandConfigs(), translator);
 
         environment.jersey()
-                .register(new InfoResource(controller));
+                .register(new InfoResource());
     }
 
     protected abstract ThrottlingBundleConfiguration getThrottlingConfiguration(T configuration);

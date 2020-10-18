@@ -22,19 +22,19 @@
     <parent>
         <artifactId>kirtimukh</artifactId>
         <groupId>io.kalp.athang.durg</groupId>
-        <version>1.0.0.1</version>
+        <version>1.0.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>kirtimukh-dw-throttling-bundle</artifactId>
     <name>Kirtimukh | Dropwizard Bundle</name>
-    <version>1.0.0.1</version>
+    <version>1.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
             <groupId>io.kalp.athang.durg</groupId>
             <artifactId>kirtimukh-core</artifactId>
-            <version>${project.version}</version>
+            <version>1.0.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

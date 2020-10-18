@@ -16,12 +16,9 @@
 
 package io.kalp.athang.durg.kirtimukh.throttling.strategies.checker;
 
-import io.kalp.athang.durg.kirtimukh.throttling.enums.ThrottlingWindowUnit;
 import io.kalp.athang.durg.kirtimukh.throttling.exception.ThrottlingException;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.security.SecureRandom;
 import java.util.BitSet;
 
 /**
@@ -29,24 +26,19 @@ import java.util.BitSet;
  */
 @Slf4j
 public abstract class RequestsWindowChecker {
-    private static final int MIN_BIT_SET_SIZE = 128;
-    private final ThrottlingWindowUnit unit;
-    private final int maxTicksPerWindow;
-    @Getter
-    private final int threshold;
-    private final SecureRandom random;
+    private static final int MIN_BIT_SET_SIZE = 64; // A word
+    private final String commandName;
     private final BitSet bitSet;
-    private long currentWindow;
+    private final int threshold;
+    private int currentLocation;
 
-    protected RequestsWindowChecker(final ThrottlingWindowUnit unit,
+    protected RequestsWindowChecker(final String commandName,
                                     final int threshold) {
-        this.unit = unit;
-        this.currentWindow = 0;
-        this.maxTicksPerWindow = nPower(threshold);
+        this.commandName = commandName;
         this.threshold = threshold;
 
+        int maxTicksPerWindow = nPower(threshold);
         this.bitSet = new BitSet(maxTicksPerWindow);
-        this.random = new SecureRandom(Long.toBinaryString(System.currentTimeMillis()).getBytes());
     }
 
     private static int nPower(int number) {
@@ -62,15 +54,15 @@ public abstract class RequestsWindowChecker {
         return Math.max(n, MIN_BIT_SET_SIZE);
     }
 
-    public abstract long getCurrentWindow();
+    protected abstract boolean isChangeInWindow();
 
     protected abstract boolean isOkayToClear();
 
     private boolean locate(final int location) {
-        long window = getCurrentWindow();
-        if (currentWindow != window) {
-            currentWindow = window;
+        if (isChangeInWindow()) {
+            currentLocation = 0;
             if (isOkayToClear()) {
+                log.debug("[{}] Clearing bitset", commandName);
                 bitSet.clear();
             }
         }
@@ -80,7 +72,7 @@ public abstract class RequestsWindowChecker {
         }
 
         bitSet.set(location);
-        log.debug("Set at location: " + location + " cardinality: " + cardinality());
+        log.debug("[{}] Set at location: {} cardinality: {}", commandName, location, bitSet.cardinality());
         return true;
     }
 
@@ -89,26 +81,21 @@ public abstract class RequestsWindowChecker {
         return true;
     }
 
-    public synchronized int cardinality() {
-        return bitSet.cardinality();
-    }
-
     public synchronized int acquire() {
-        if (bitSet.cardinality() >= threshold) {
-            log.warn("Cardinality " + cardinality() + " is about to exceed allowed limit " + threshold);
+        int cardinality = bitSet.cardinality();
+        if (cardinality >= threshold) {
+            log.warn("[{}] Cardinality {} exceeding allowed limit {}", commandName, cardinality, threshold);
             throw ThrottlingException.builder()
-                    .unit(unit)
-                    .window(getCurrentWindow())
-                    .cardinality(bitSet.cardinality())
+                    .cardinality(cardinality)
                     .threshold(threshold)
                     .message("Thank you contacting us! :-)")
                     .build();
         }
-        log.info("Cardinality " + cardinality() + " allowed limit " + threshold);
+        log.debug("[{}] Cardinality {} allowed limit {}", commandName, cardinality, threshold);
 
         int marker;
         do {
-            marker = random.nextInt(maxTicksPerWindow);
+            marker = bitSet.nextClearBit(currentLocation);
         } while (!locate(marker));
         return marker;
     }

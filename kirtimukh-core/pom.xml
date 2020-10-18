@@ -22,12 +22,12 @@
     <parent>
         <artifactId>kirtimukh</artifactId>
         <groupId>io.kalp.athang.durg</groupId>
-        <version>1.0.0.1</version>
+        <version>1.0.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>kirtimukh-core</artifactId>
     <name>Kirtimukh | Core</name>
-    <version>1.0.0.1</version>
+    <version>1.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <dependencies>

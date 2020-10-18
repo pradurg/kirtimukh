@@ -17,7 +17,6 @@
 package io.kalp.athang.durg.kirtimukh.throttling;
 
 import com.google.inject.Singleton;
-import io.kalp.athang.durg.kirtimukh.throttling.annotation.Throttle;
 import io.kalp.athang.durg.kirtimukh.throttling.config.ThrottlingStrategyConfig;
 import io.kalp.athang.durg.kirtimukh.throttling.enums.ThrottlingStrategyType;
 import io.kalp.athang.durg.kirtimukh.throttling.enums.ThrottlingWindowUnit;
@@ -25,8 +24,7 @@ import io.kalp.athang.durg.kirtimukh.throttling.strategies.LeakyBucketTicker;
 import io.kalp.athang.durg.kirtimukh.throttling.strategies.QuotaStrategyTicker;
 import io.kalp.athang.durg.kirtimukh.throttling.strategies.StrategyChecker;
 import io.kalp.athang.durg.kirtimukh.throttling.strategies.checker.RequestsWindowChecker;
-import io.kalp.athang.durg.kirtimukh.throttling.strategies.checker.impl.RequestsPerMillisChecker;
-import io.kalp.athang.durg.kirtimukh.throttling.strategies.checker.impl.RequestsPerSecondChecker;
+import io.kalp.athang.durg.kirtimukh.throttling.strategies.checker.impl.TimedWindowChecker;
 
 import java.util.HashMap;
 import java.util.List;
@@ -53,21 +51,44 @@ public class ThrottlingController {
         }
     }
 
-    private RequestsWindowChecker getWindowChecker(final ThrottlingStrategyConfig strategyConfig) {
-        if (strategyConfig.getUnit() == ThrottlingWindowUnit.MILLISECOND) {
-            return RequestsPerMillisChecker.builder()
-                    .threshold(strategyConfig.getThreshold())
-                    .build();
-        }
-
-        return RequestsPerSecondChecker.builder()
+    private TimedWindowChecker getTimedWindowChecker(final String commandName,
+                                                     final ThrottlingStrategyConfig strategyConfig) {
+        return TimedWindowChecker.builder()
+                .commandName(commandName)
+                .unit(strategyConfig.getUnit())
                 .threshold(strategyConfig.getThreshold())
+                .clearAfterInactiveWindows(strategyConfig.getClearAfterWindows())
                 .build();
+    }
+
+    private RequestsWindowChecker getWindowChecker(final String commandName,
+                                                   final ThrottlingStrategyConfig strategyConfig) {
+        return strategyConfig.getUnit()
+                .accept(new ThrottlingWindowUnit.ThrottlingWindowVisitor<RequestsWindowChecker>() {
+                    @Override
+                    public RequestsWindowChecker visitMillisecond() {
+                        return getTimedWindowChecker(commandName, strategyConfig);
+                    }
+
+                    @Override
+                    public RequestsWindowChecker visitSecond() {
+                        return getTimedWindowChecker(commandName, strategyConfig);
+                    }
+
+                    @Override
+                    public RequestsWindowChecker visitMinute() {
+                        return getTimedWindowChecker(commandName, strategyConfig);
+                    }
+                });
+    }
+
+    private RequestsWindowChecker getWindowChecker(final ThrottlingStrategyConfig strategyConfig) {
+        return getWindowChecker(strategyConfig.getName(), strategyConfig);
     }
 
     private synchronized RequestsWindowChecker getWindowChecker(final String commandName) {
         if (!windowCheckerMap.containsKey(commandName)) {
-            windowCheckerMap.put(commandName, getWindowChecker(defaultStrategyConfig));
+            windowCheckerMap.put(commandName, getWindowChecker(commandName, defaultStrategyConfig));
         }
 
         return windowCheckerMap.get(commandName);
@@ -78,19 +99,28 @@ public class ThrottlingController {
 
         ThrottlingStrategyType strategyType = strategyTypeMap.getOrDefault(commandName,
                 defaultStrategyConfig.getType());
-        if (strategyType == ThrottlingStrategyType.QUOTA) {
-            return new QuotaStrategyTicker(windowChecker);
-        }
 
-        return new LeakyBucketTicker(windowChecker);
+        return strategyType
+                .accept(new ThrottlingStrategyType.ThrottlingStrategyTypeVisitor<StrategyChecker>() {
+                    @Override
+                    public StrategyChecker visitQuota() {
+                        return new QuotaStrategyTicker(windowChecker);
+                    }
+
+                    @Override
+                    public StrategyChecker visitLeakyBucket() {
+                        return new LeakyBucketTicker(windowChecker);
+                    }
+
+                    @Override
+                    public StrategyChecker visitNg() {
+                        throw new UnsupportedOperationException("Ng strategy unsupported");
+                    }
+                });
     }
 
     public Map<String, RequestsWindowChecker> getInfo() {
         return windowCheckerMap;
-    }
-
-    public StrategyChecker register(final Throttle throttle) {
-        return getStrategyChecker(throttle.name());
     }
 
     public StrategyChecker register(final String rateLimitedFunctionName) {

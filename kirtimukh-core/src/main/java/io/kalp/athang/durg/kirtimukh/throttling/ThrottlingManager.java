@@ -16,29 +16,43 @@
 
 package io.kalp.athang.durg.kirtimukh.throttling;
 
+import io.kalp.athang.durg.kirtimukh.throttling.annotation.Throttle;
 import io.kalp.athang.durg.kirtimukh.throttling.config.ThrottlingStrategyConfig;
 import io.kalp.athang.durg.kirtimukh.throttling.exception.ThrottlingExceptionTranslator;
+import io.kalp.athang.durg.kirtimukh.throttling.strategies.StrategyChecker;
+import io.kalp.athang.durg.kirtimukh.throttling.strategies.checker.RequestsWindowChecker;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by pradeep.dalvi on 15/10/20
  */
 @UtilityClass
 public class ThrottlingManager {
-    @Getter
     private ThrottlingController controller;
 
     @Getter
     private ThrottlingExceptionTranslator translator;
 
-    public ThrottlingController initialise(final ThrottlingStrategyConfig defaultConfig,
-                                           final List<ThrottlingStrategyConfig> configs,
-                                           final ThrottlingExceptionTranslator exceptionTranslator) {
+    public void initialise(final ThrottlingStrategyConfig defaultConfig,
+                           final List<ThrottlingStrategyConfig> configs,
+                           final ThrottlingExceptionTranslator exceptionTranslator) {
         controller = new ThrottlingController(defaultConfig, configs);
         translator = exceptionTranslator;
-        return controller;
+    }
+
+    public Map<String, RequestsWindowChecker> getInfo() {
+        return controller.getInfo();
+    }
+
+    public StrategyChecker register(final Throttle throttle) {
+        return controller.register(throttle.name());
+    }
+
+    public StrategyChecker register(final String rateLimitedFunctionName) {
+        return controller.register(rateLimitedFunctionName);
     }
 }

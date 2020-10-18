@@ -17,7 +17,6 @@
 package io.kalp.athang.aop;
 
 import com.google.common.base.Strings;
-import io.kalp.athang.durg.kirtimukh.throttling.ThrottlingController;
 import io.kalp.athang.durg.kirtimukh.throttling.ThrottlingManager;
 import io.kalp.athang.durg.kirtimukh.throttling.annotation.Throttle;
 import io.kalp.athang.durg.kirtimukh.throttling.exception.ThrottlingException;
@@ -38,7 +37,12 @@ import org.aspectj.lang.reflect.MethodSignature;
 @Aspect
 public class ThrottlingFunctionWrapper {
     @Pointcut("@annotation(io.kalp.athang.durg.kirtimukh.throttling.annotation.Throttle)")
-    public void pointCutFunction() {
+    public void throttlePointcutFunction() {
+        // To be empty
+    }
+
+    @Pointcut("@annotation(io.kalp.athang.durg.kirtimukh.throttling.annotation.Throttleable)")
+    public void throttleablePointcutFunction() {
         // To be empty
     }
 
@@ -56,19 +60,18 @@ public class ThrottlingFunctionWrapper {
             throw new UnsupportedOperationException("Not an interceptedFunction");
         }
 
-        final ThrottlingController controller = ThrottlingManager.getController();
         StrategyChecker checker = null;
         if (Strings.isNullOrEmpty(rateLimited.name())) {
-            checker = controller.register(methodSignature.getDeclaringType().getSimpleName()
+            checker = ThrottlingManager.register(methodSignature.getDeclaringType().getSimpleName()
                     + '.' + methodSignature.getMethod().getName());
         } else {
-            checker = controller.register(rateLimited);
+            checker = ThrottlingManager.register(rateLimited);
         }
         return checker;
     }
 
 
-    @Around("pointCutFunction() && pointCutExecution()")
+    @Around("throttlePointcutFunction() && pointCutExecution()")
     public Object process(final ProceedingJoinPoint joinPoint) throws Throwable {
         StrategyChecker checker = getStrategyChecker(joinPoint);
 

@@ -30,8 +30,6 @@ import lombok.EqualsAndHashCode;
 public class ThrottlingException extends RuntimeException {
     private final ThrottlingWindowUnit unit;
 
-    private final long window;
-
     private final int cardinality;
 
     private final int threshold;

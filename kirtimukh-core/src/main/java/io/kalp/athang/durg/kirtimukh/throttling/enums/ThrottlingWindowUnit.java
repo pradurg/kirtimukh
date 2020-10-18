@@ -20,6 +20,32 @@ package io.kalp.athang.durg.kirtimukh.throttling.enums;
  * Created by pradeep.dalvi on 15/10/20
  */
 public enum ThrottlingWindowUnit {
-    MILLISECOND,
-    SECOND
+    MILLISECOND() {
+        @Override
+        public <T> T accept(ThrottlingWindowVisitor<T> visitor) {
+            return visitor.visitMillisecond();
+        }
+    },
+    SECOND {
+        @Override
+        public <T> T accept(ThrottlingWindowVisitor<T> visitor) {
+            return visitor.visitSecond();
+        }
+    },
+    MINUTE {
+        @Override
+        public <T> T accept(ThrottlingWindowVisitor<T> visitor) {
+            return visitor.visitMinute();
+        }
+    };
+
+    public abstract <T> T accept(ThrottlingWindowVisitor<T> visitor);
+
+    public interface ThrottlingWindowVisitor<T> {
+        public T visitMillisecond();
+
+        public T visitSecond();
+
+        public T visitMinute();
+    }
 }
