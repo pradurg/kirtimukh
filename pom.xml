@@ -22,7 +22,7 @@
 
     <groupId>io.kalp.athang.durg</groupId>
     <artifactId>kirtimukh</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.0.2</version>
     <packaging>pom</packaging>
     <name>Kirtimukh</name>
 
@@ -41,7 +41,7 @@
 
     <developers>
         <developer>
-            <id>tadkaguru</id>
+            <id>pradeepdalvi</id>
             <name>Pradeep A. Dalvi</name>
             <email>prad@apache.org</email>
         </developer>
@@ -64,7 +64,7 @@
     </distributionManagement>
 
     <properties>
-        <project.version>1.0.1-SNAPSHOT</project.version>
+        <project.version>1.0.0.2</project.version>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <sl4j.version>1.7.26</sl4j.version>
