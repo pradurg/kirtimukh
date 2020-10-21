@@ -14,28 +14,24 @@
  * limitations under the License.
  */
 
-package io.kalp.athang.dw.bundle;
+package io.kalp.athang.durg.kirtimukh.throttling.config.impl;
 
 import io.kalp.athang.durg.kirtimukh.throttling.config.ThrottlingStrategyConfig;
+import io.kalp.athang.durg.kirtimukh.throttling.enums.ThrottlingStrategyType;
+import io.kalp.athang.durg.kirtimukh.throttling.enums.ThrottlingWindowUnit;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-
-import javax.validation.constraints.NotNull;
-import java.util.Map;
 
 /**
- * Created by pradeep.dalvi on 15/10/20
+ * Created by pradeep.dalvi on 21/10/20
  */
 @Data
-@EqualsAndHashCode
-@ToString
-@NoArgsConstructor
-public class ThrottlingBundleConfiguration {
-    @NotNull
-    private ThrottlingStrategyConfig defaultStrategyConfig;
-
-    @NotNull
-    private Map<String, ThrottlingStrategyConfig> commandStrategyConfigs;
+@EqualsAndHashCode(callSuper = true)
+public class PriorityBucketThrottlingStrategyConfig extends ThrottlingStrategyConfig {
+    @Builder
+    public PriorityBucketThrottlingStrategyConfig(final ThrottlingWindowUnit unit,
+                                                  final int threshold) {
+        super(ThrottlingStrategyType.LEAKY_BUCKET, unit, threshold);
+    }
 }

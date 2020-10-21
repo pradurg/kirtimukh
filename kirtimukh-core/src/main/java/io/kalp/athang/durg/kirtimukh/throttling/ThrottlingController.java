@@ -20,14 +20,14 @@ import com.google.inject.Singleton;
 import io.kalp.athang.durg.kirtimukh.throttling.config.ThrottlingStrategyConfig;
 import io.kalp.athang.durg.kirtimukh.throttling.enums.ThrottlingStrategyType;
 import io.kalp.athang.durg.kirtimukh.throttling.enums.ThrottlingWindowUnit;
-import io.kalp.athang.durg.kirtimukh.throttling.strategies.LeakyBucketTicker;
-import io.kalp.athang.durg.kirtimukh.throttling.strategies.QuotaStrategyTicker;
-import io.kalp.athang.durg.kirtimukh.throttling.strategies.StrategyChecker;
-import io.kalp.athang.durg.kirtimukh.throttling.strategies.checker.RequestsWindowChecker;
-import io.kalp.athang.durg.kirtimukh.throttling.strategies.checker.impl.TimedWindowChecker;
+import io.kalp.athang.durg.kirtimukh.throttling.strategies.ticker.StrategyChecker;
+import io.kalp.athang.durg.kirtimukh.throttling.strategies.ticker.impl.LeakyBucketTicker;
+import io.kalp.athang.durg.kirtimukh.throttling.strategies.ticker.impl.PriorityBucketTicker;
+import io.kalp.athang.durg.kirtimukh.throttling.strategies.ticker.impl.QuotaStrategyTicker;
+import io.kalp.athang.durg.kirtimukh.throttling.strategies.window.PriorityWindowChecker;
+import io.kalp.athang.durg.kirtimukh.throttling.strategies.window.TimedWindowChecker;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -35,19 +35,19 @@ import java.util.Map;
  */
 @Singleton
 public class ThrottlingController {
-    private final Map<String, RequestsWindowChecker> windowCheckerMap;
+    private final Map<String, TimedWindowChecker> windowCheckerMap;
     private final Map<String, ThrottlingStrategyType> strategyTypeMap;
     private final ThrottlingStrategyConfig defaultStrategyConfig;
 
     public ThrottlingController(final ThrottlingStrategyConfig defaultConfig,
-                                final List<ThrottlingStrategyConfig> configs) {
+                                final Map<String, ThrottlingStrategyConfig> commandConfigs) {
         this.windowCheckerMap = new HashMap<>();
         this.strategyTypeMap = new HashMap<>();
         this.defaultStrategyConfig = defaultConfig;
 
-        for (ThrottlingStrategyConfig config : configs) {
-            this.strategyTypeMap.put(config.getName(), config.getType());
-            this.windowCheckerMap.put(config.getName(), getWindowChecker(config));
+        for (Map.Entry<String, ThrottlingStrategyConfig> entry : commandConfigs.entrySet()) {
+            this.strategyTypeMap.put(entry.getKey(), entry.getValue().getType());
+            this.windowCheckerMap.put(entry.getKey(), getWindowChecker(entry.getKey(), entry.getValue()));
         }
     }
 
@@ -55,38 +55,32 @@ public class ThrottlingController {
                                                      final ThrottlingStrategyConfig strategyConfig) {
         return TimedWindowChecker.builder()
                 .commandName(commandName)
-                .unit(strategyConfig.getUnit())
-                .threshold(strategyConfig.getThreshold())
-                .clearAfterInactiveWindows(strategyConfig.getClearAfterWindows())
+                .strategyConfig(strategyConfig)
                 .build();
     }
 
-    private RequestsWindowChecker getWindowChecker(final String commandName,
-                                                   final ThrottlingStrategyConfig strategyConfig) {
+    private TimedWindowChecker getWindowChecker(final String commandName,
+                                                final ThrottlingStrategyConfig strategyConfig) {
         return strategyConfig.getUnit()
-                .accept(new ThrottlingWindowUnit.ThrottlingWindowVisitor<RequestsWindowChecker>() {
+                .accept(new ThrottlingWindowUnit.ThrottlingWindowVisitor<TimedWindowChecker>() {
                     @Override
-                    public RequestsWindowChecker visitMillisecond() {
+                    public TimedWindowChecker visitMillisecond() {
                         return getTimedWindowChecker(commandName, strategyConfig);
                     }
 
                     @Override
-                    public RequestsWindowChecker visitSecond() {
+                    public TimedWindowChecker visitSecond() {
                         return getTimedWindowChecker(commandName, strategyConfig);
                     }
 
                     @Override
-                    public RequestsWindowChecker visitMinute() {
+                    public TimedWindowChecker visitMinute() {
                         return getTimedWindowChecker(commandName, strategyConfig);
                     }
                 });
     }
 
-    private RequestsWindowChecker getWindowChecker(final ThrottlingStrategyConfig strategyConfig) {
-        return getWindowChecker(strategyConfig.getName(), strategyConfig);
-    }
-
-    private synchronized RequestsWindowChecker getWindowChecker(final String commandName) {
+    private synchronized TimedWindowChecker getWindowChecker(final String commandName) {
         if (!windowCheckerMap.containsKey(commandName)) {
             windowCheckerMap.put(commandName, getWindowChecker(commandName, defaultStrategyConfig));
         }
@@ -94,9 +88,13 @@ public class ThrottlingController {
         return windowCheckerMap.get(commandName);
     }
 
-    private StrategyChecker getStrategyChecker(final String commandName) {
-        RequestsWindowChecker windowChecker = getWindowChecker(commandName);
+    private PriorityWindowChecker getPriorityWindowChecker(final String commandName) {
+        return PriorityWindowChecker.builder()
+                .commandName(commandName)
+                .build();
+    }
 
+    private StrategyChecker getStrategyChecker(final String commandName) {
         ThrottlingStrategyType strategyType = strategyTypeMap.getOrDefault(commandName,
                 defaultStrategyConfig.getType());
 
@@ -104,12 +102,23 @@ public class ThrottlingController {
                 .accept(new ThrottlingStrategyType.ThrottlingStrategyTypeVisitor<StrategyChecker>() {
                     @Override
                     public StrategyChecker visitQuota() {
+                        TimedWindowChecker windowChecker = getWindowChecker(commandName);
+
                         return new QuotaStrategyTicker(windowChecker);
                     }
 
                     @Override
                     public StrategyChecker visitLeakyBucket() {
+                        TimedWindowChecker windowChecker = getWindowChecker(commandName);
+
                         return new LeakyBucketTicker(windowChecker);
+                    }
+
+                    @Override
+                    public StrategyChecker visitPriorityBuckets() {
+                        PriorityWindowChecker windowChecker = getPriorityWindowChecker(commandName);
+
+                        return new PriorityBucketTicker(windowChecker);
                     }
 
                     @Override
@@ -119,7 +128,7 @@ public class ThrottlingController {
                 });
     }
 
-    public Map<String, RequestsWindowChecker> getInfo() {
+    public Map<String, TimedWindowChecker> getInfo() {
         return windowCheckerMap;
     }
 

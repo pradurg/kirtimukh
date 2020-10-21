@@ -18,16 +18,15 @@ package io.kalp.athang.aop;
 
 import io.kalp.athang.durg.kirtimukh.throttling.ThrottlingManager;
 import io.kalp.athang.durg.kirtimukh.throttling.annotation.Throttle;
-import io.kalp.athang.durg.kirtimukh.throttling.config.ThrottlingStrategyConfig;
-import io.kalp.athang.durg.kirtimukh.throttling.enums.ThrottlingStrategyType;
+import io.kalp.athang.durg.kirtimukh.throttling.config.impl.LeakyBucketThrottlingStrategyConfig;
 import io.kalp.athang.durg.kirtimukh.throttling.enums.ThrottlingWindowUnit;
 import io.kalp.athang.durg.kirtimukh.throttling.exception.ThrottlingException;
 import io.kalp.athang.durg.kirtimukh.throttling.exception.ThrottlingExceptionTranslator;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -36,7 +35,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by pradeep.dalvi on 14/10/20
  */
-public class AspectJFunctionInterceptorTest {
+class AspectJFunctionInterceptorTest {
     Random random = new Random();
 
     public class SomeFunctionsClass implements Runnable {
@@ -83,14 +82,13 @@ public class AspectJFunctionInterceptorTest {
 
     private SomeFunctionsClass someFunctionsClass;
 
-    @Before
+    @BeforeEach
     public void setup() {
-        ThrottlingManager.initialise(ThrottlingStrategyConfig.builder()
-                        .type(ThrottlingStrategyType.LEAKY_BUCKET)
+        ThrottlingManager.initialise(LeakyBucketThrottlingStrategyConfig.builder()
                         .unit(ThrottlingWindowUnit.SECOND)
                         .threshold(1)
                         .build(),
-                new ArrayList<>(),
+                new HashMap<>(),
                 new ThrottlingExceptionTranslator<RuntimeException>() {
                     @Override
                     public RuntimeException throwable(ThrottlingException e) {
@@ -102,7 +100,7 @@ public class AspectJFunctionInterceptorTest {
     }
 
     @Test
-    public void testAspectJBasic() throws InterruptedException {
+    void testAspectJBasic() throws InterruptedException {
         ExecutorService pool = Executors.newFixedThreadPool(10);
 
         pool.execute(someFunctionsClass);

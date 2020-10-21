@@ -16,28 +16,39 @@
 
 package io.kalp.athang.durg.kirtimukh.throttling.config;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import io.kalp.athang.durg.kirtimukh.throttling.config.impl.LeakyBucketThrottlingStrategyConfig;
+import io.kalp.athang.durg.kirtimukh.throttling.config.impl.PriorityBucketThrottlingStrategyConfig;
+import io.kalp.athang.durg.kirtimukh.throttling.config.impl.QuotaThrottlingStrategyConfig;
 import io.kalp.athang.durg.kirtimukh.throttling.enums.ThrottlingStrategyType;
 import io.kalp.athang.durg.kirtimukh.throttling.enums.ThrottlingWindowUnit;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.NonNull;
+
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
 
 /**
  * Created by pradeep.dalvi on 15/10/20
  */
 @Data
-@Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class ThrottlingStrategyConfig {
-    private String name;
-
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type", visible = true)
+@JsonSubTypes({
+        @JsonSubTypes.Type(name = "QUOTA", value = QuotaThrottlingStrategyConfig.class),
+        @JsonSubTypes.Type(name = "LEAKY_BUCKET", value = LeakyBucketThrottlingStrategyConfig.class),
+        @JsonSubTypes.Type(name = "PRIORITY_BUCKET", value = PriorityBucketThrottlingStrategyConfig.class),
+})
+public abstract class ThrottlingStrategyConfig {
+    @NonNull
     private ThrottlingStrategyType type;
 
+    @NonNull
     private ThrottlingWindowUnit unit;
 
+    @Valid
+    @Min(1)
     private int threshold;
-
-    private long clearAfterWindows;
 }

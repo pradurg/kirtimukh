@@ -14,28 +14,15 @@
  * limitations under the License.
  */
 
-package io.kalp.athang.durg.kirtimukh.throttling.strategies;
+package io.kalp.athang.durg.kirtimukh.throttling.strategies.ticker;
 
 import io.kalp.athang.durg.kirtimukh.throttling.exception.ThrottlingException;
-import io.kalp.athang.durg.kirtimukh.throttling.strategies.checker.RequestsWindowChecker;
 
 /**
  * Created by pradeep.dalvi on 15/10/20
  */
-public class QuotaStrategyTicker implements StrategyChecker {
-    private final RequestsWindowChecker windowChecker;
+public interface StrategyChecker {
+    void enter() throws ThrottlingException;
 
-    public QuotaStrategyTicker(RequestsWindowChecker windowChecker) {
-        this.windowChecker = windowChecker;
-    }
-
-    @Override
-    public void enter() throws ThrottlingException {
-        windowChecker.acquire();
-    }
-
-    @Override
-    public void exit() {
-        // Do nothing
-    }
+    void exit();
 }

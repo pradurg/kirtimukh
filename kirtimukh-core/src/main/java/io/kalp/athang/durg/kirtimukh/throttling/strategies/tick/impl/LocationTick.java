@@ -14,28 +14,17 @@
  * limitations under the License.
  */
 
-package io.kalp.athang.dw.bundle;
+package io.kalp.athang.durg.kirtimukh.throttling.strategies.tick.impl;
 
-import io.kalp.athang.durg.kirtimukh.throttling.config.ThrottlingStrategyConfig;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-
-import javax.validation.constraints.NotNull;
-import java.util.Map;
+import io.kalp.athang.durg.kirtimukh.throttling.strategies.tick.Tick;
+import lombok.Builder;
 
 /**
- * Created by pradeep.dalvi on 15/10/20
+ * Created by pradeep.dalvi on 20/10/20
  */
-@Data
-@EqualsAndHashCode
-@ToString
-@NoArgsConstructor
-public class ThrottlingBundleConfiguration {
-    @NotNull
-    private ThrottlingStrategyConfig defaultStrategyConfig;
-
-    @NotNull
-    private Map<String, ThrottlingStrategyConfig> commandStrategyConfigs;
+public class LocationTick extends Tick {
+    @Builder
+    public LocationTick(final int location) {
+        super(location);
+    }
 }

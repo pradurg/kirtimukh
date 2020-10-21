@@ -14,30 +14,33 @@
  * limitations under the License.
  */
 
-package io.kalp.athang.durg.kirtimukh.throttling.exception;
+package io.kalp.athang.durg.kirtimukh.throttling.config.impl;
 
+import io.kalp.athang.durg.kirtimukh.throttling.config.ThrottlingStrategyConfig;
 import io.kalp.athang.durg.kirtimukh.throttling.enums.ThrottlingStrategyType;
 import io.kalp.athang.durg.kirtimukh.throttling.enums.ThrottlingWindowUnit;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
+
 /**
- * Created by pradeep.dalvi on 15/10/20
+ * Created by pradeep.dalvi on 21/10/20
  */
 @Data
-@Builder
 @EqualsAndHashCode(callSuper = true)
-public class ThrottlingException extends RuntimeException {
-    private final String commandName;
+public class QuotaThrottlingStrategyConfig extends ThrottlingStrategyConfig {
+    @Valid
+    @Min(1)
+    private long windows;
 
-    private final ThrottlingStrategyType strategyType;
-
-    private final ThrottlingWindowUnit unit;
-
-    private final int cardinality;
-
-    private final int threshold;
-
-    private final String message;
+    @Builder
+    public QuotaThrottlingStrategyConfig(final ThrottlingWindowUnit unit,
+                                         final int threshold,
+                                         final long windows) {
+        super(ThrottlingStrategyType.QUOTA, unit, threshold);
+        this.windows = windows;
+    }
 }

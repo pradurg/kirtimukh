@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package io.kalp.athang.durg.kirtimukh.throttling.strategies.checker;
+package io.kalp.athang.durg.kirtimukh.throttling.strategies.window;
 
-import io.kalp.athang.durg.kirtimukh.throttling.exception.ThrottlingException;
+import lombok.Builder;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.BitSet;
@@ -24,17 +25,19 @@ import java.util.BitSet;
 /**
  * Created by pradeep.dalvi on 15/10/20
  */
+@Data
 @Slf4j
-public abstract class RequestsWindowChecker {
+public class Window {
     private static final int MIN_BIT_SET_SIZE = 64; // A word
-    private final String commandName;
+
     private final BitSet bitSet;
     private final int threshold;
-    private int currentLocation;
 
-    protected RequestsWindowChecker(final String commandName,
-                                    final int threshold) {
-        this.commandName = commandName;
+    private int currentLocation;
+    private int cardinality;
+
+    @Builder
+    public Window(final int threshold) {
         this.threshold = threshold;
 
         int maxTicksPerWindow = nPower(threshold);
@@ -54,49 +57,52 @@ public abstract class RequestsWindowChecker {
         return Math.max(n, MIN_BIT_SET_SIZE);
     }
 
-    protected abstract boolean isChangeInWindow();
-
-    protected abstract boolean isOkayToClear();
-
     private boolean locate(final int location) {
-        if (isChangeInWindow()) {
-            currentLocation = 0;
-            if (isOkayToClear()) {
-                log.debug("[{}] Clearing bitset", commandName);
-                bitSet.clear();
-            }
-        }
-
         if (bitSet.get(location)) {
             return false;
         }
 
+        currentLocation = location;
+        cardinality += 1;
+
         bitSet.set(location);
-        log.debug("[{}] Set at location: {} cardinality: {}", commandName, location, bitSet.cardinality());
         return true;
     }
 
-    public synchronized boolean release(final int location) {
+    public int cardinality() {
+        return cardinality;
+    }
+
+    public synchronized void clear() {
+        bitSet.clear();
+
+        currentLocation = 0;
+        cardinality = 0;
+    }
+
+    public synchronized boolean remove(final int location) {
         bitSet.clear(location);
+        cardinality -= 1;
         return true;
     }
 
-    public synchronized int acquire() {
-        int cardinality = bitSet.cardinality();
-        if (cardinality >= threshold) {
-            log.warn("[{}] Cardinality {} exceeding allowed limit {}", commandName, cardinality, threshold);
-            throw ThrottlingException.builder()
-                    .cardinality(cardinality)
-                    .threshold(threshold)
-                    .message("Thank you contacting us! :-)")
-                    .build();
-        }
-        log.debug("[{}] Cardinality {} allowed limit {}", commandName, cardinality, threshold);
+    public synchronized int add() {
+        int currentRequestCount = bitSet.cardinality();
 
-        int marker;
+        // This shouldn't happen. But if it happens, adjust the local counter
+        if (currentRequestCount != cardinality) {
+            log.warn("Adjusting cardinality from {} to {}", cardinality, currentRequestCount);
+            cardinality = currentRequestCount;
+        }
+
+        if (currentRequestCount >= threshold) {
+            return -1;
+        }
+
+        int location;
         do {
-            marker = bitSet.nextClearBit(currentLocation);
-        } while (!locate(marker));
-        return marker;
+            location = bitSet.nextClearBit(currentLocation);
+        } while (!locate(location));
+        return location;
     }
 }

@@ -14,15 +14,22 @@
  * limitations under the License.
  */
 
-package io.kalp.athang.durg.kirtimukh.throttling.strategies;
+package io.kalp.athang.durg.kirtimukh.throttling.config;
 
-import io.kalp.athang.durg.kirtimukh.throttling.exception.ThrottlingException;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
- * Created by pradeep.dalvi on 15/10/20
+ * Created by pradeep.dalvi on 19/10/20
  */
-public interface StrategyChecker {
-    void enter() throws ThrottlingException;
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class ThrottlingPriorityBucketConfig {
+    private int priority;
 
-    void exit();
+    private int minThreshold;
 }

@@ -19,12 +19,11 @@ package io.kalp.athang.durg.kirtimukh.throttling;
 import io.kalp.athang.durg.kirtimukh.throttling.annotation.Throttle;
 import io.kalp.athang.durg.kirtimukh.throttling.config.ThrottlingStrategyConfig;
 import io.kalp.athang.durg.kirtimukh.throttling.exception.ThrottlingExceptionTranslator;
-import io.kalp.athang.durg.kirtimukh.throttling.strategies.StrategyChecker;
-import io.kalp.athang.durg.kirtimukh.throttling.strategies.checker.RequestsWindowChecker;
+import io.kalp.athang.durg.kirtimukh.throttling.strategies.ticker.StrategyChecker;
+import io.kalp.athang.durg.kirtimukh.throttling.strategies.window.TimedWindowChecker;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -38,13 +37,13 @@ public class ThrottlingManager {
     private ThrottlingExceptionTranslator translator;
 
     public void initialise(final ThrottlingStrategyConfig defaultConfig,
-                           final List<ThrottlingStrategyConfig> configs,
+                           final Map<String, ThrottlingStrategyConfig> commandConfigs,
                            final ThrottlingExceptionTranslator exceptionTranslator) {
-        controller = new ThrottlingController(defaultConfig, configs);
+        controller = new ThrottlingController(defaultConfig, commandConfigs);
         translator = exceptionTranslator;
     }
 
-    public Map<String, RequestsWindowChecker> getInfo() {
+    public Map<String, TimedWindowChecker> getInfo() {
         return controller.getInfo();
     }
 

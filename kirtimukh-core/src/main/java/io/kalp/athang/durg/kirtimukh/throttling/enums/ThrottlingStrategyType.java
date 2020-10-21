@@ -32,6 +32,12 @@ public enum ThrottlingStrategyType {
             return visitor.visitLeakyBucket();
         }
     },
+    PRIORITY_BUCKET {
+        @Override
+        public <T> T accept(ThrottlingStrategyTypeVisitor<T> visitor) {
+            return visitor.visitPriorityBuckets();
+        }
+    },
     NG {
         @Override
         public <T> T accept(ThrottlingStrategyTypeVisitor<T> visitor) {
@@ -45,6 +51,8 @@ public enum ThrottlingStrategyType {
         public T visitQuota();
 
         public T visitLeakyBucket();
+
+        public T visitPriorityBuckets();
 
         public T visitNg();
     }

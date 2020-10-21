@@ -14,29 +14,31 @@
  * limitations under the License.
  */
 
-package io.kalp.athang.durg.kirtimukh.throttling.strategies;
+package io.kalp.athang.durg.kirtimukh.throttling.strategies.ticker.impl;
 
 import io.kalp.athang.durg.kirtimukh.throttling.exception.ThrottlingException;
-import io.kalp.athang.durg.kirtimukh.throttling.strategies.checker.RequestsWindowChecker;
+import io.kalp.athang.durg.kirtimukh.throttling.strategies.tick.Tick;
+import io.kalp.athang.durg.kirtimukh.throttling.strategies.ticker.StrategyChecker;
+import io.kalp.athang.durg.kirtimukh.throttling.strategies.window.TimedWindowChecker;
 
 /**
  * Created by pradeep.dalvi on 15/10/20
  */
 public class LeakyBucketTicker implements StrategyChecker {
-    private final RequestsWindowChecker windowChecker;
-    private int loc;
+    private final TimedWindowChecker windowChecker;
+    private Tick tick;
 
-    public LeakyBucketTicker(RequestsWindowChecker windowChecker) {
+    public LeakyBucketTicker(TimedWindowChecker windowChecker) {
         this.windowChecker = windowChecker;
     }
 
     @Override
     public void enter() throws ThrottlingException {
-        loc = windowChecker.acquire();
+        tick = windowChecker.acquire();
     }
 
     @Override
     public void exit() {
-        windowChecker.release(loc);
+        windowChecker.release(tick);
     }
 }
