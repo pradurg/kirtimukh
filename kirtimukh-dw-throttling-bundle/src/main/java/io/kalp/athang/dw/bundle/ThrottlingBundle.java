@@ -41,7 +41,7 @@ public abstract class ThrottlingBundle<T extends Configuration> implements Confi
         ThrottlingExceptionTranslator translator = getExceptionTranslator();
 
         ThrottlingManager.initialise(throttlingBundleConfiguration.getDefaultStrategyConfig(),
-                throttlingBundleConfiguration.getCommandStrategyConfigs(), translator);
+                throttlingBundleConfiguration.getCommandStrategyConfigs(), translator, environment.metrics());
 
         environment.jersey()
                 .register(new InfoResource());

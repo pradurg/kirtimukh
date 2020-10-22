@@ -16,15 +16,18 @@
 
 package io.kalp.athang.aop;
 
+import com.google.common.base.Stopwatch;
 import com.google.common.base.Strings;
 import io.kalp.athang.durg.kirtimukh.throttling.ThrottlingManager;
 import io.kalp.athang.durg.kirtimukh.throttling.annotation.Throttle;
+import io.kalp.athang.durg.kirtimukh.throttling.annotation.Throttleable;
+import io.kalp.athang.durg.kirtimukh.throttling.enums.ThrottlingStage;
 import io.kalp.athang.durg.kirtimukh.throttling.exception.ThrottlingException;
 import io.kalp.athang.durg.kirtimukh.throttling.exception.ThrottlingExceptionTranslator;
 import io.kalp.athang.durg.kirtimukh.throttling.strategies.ticker.StrategyChecker;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
@@ -51,47 +54,60 @@ public class ThrottlingFunctionWrapper {
         // To be empty
     }
 
-    public StrategyChecker getStrategyChecker(final JoinPoint joinPoint) {
-        final MethodSignature methodSignature = MethodSignature.class.cast(joinPoint.getSignature());
+    private String getCommandName(Signature signature) {
+        MethodSignature methodSignature = MethodSignature.class.cast(signature);
         final Throttle rateLimited = methodSignature.getMethod()
                 .getAnnotation(Throttle.class);
 
-        if (rateLimited == null) {
-            throw new UnsupportedOperationException("Not an interceptedFunction");
-        }
-
-        StrategyChecker checker = null;
         if (Strings.isNullOrEmpty(rateLimited.name())) {
-            checker = ThrottlingManager.register(methodSignature.getDeclaringType().getSimpleName()
-                    + '.' + methodSignature.getMethod().getName());
+            return methodSignature.getDeclaringType().getSimpleName()
+                    + '.' + methodSignature.getMethod().getName();
         } else {
-            checker = ThrottlingManager.register(rateLimited);
+            return rateLimited.name();
         }
-        return checker;
     }
 
+    public StrategyChecker getStrategyChecker(final String commandName) {
+        return ThrottlingManager.register(commandName);
+    }
+
+    public StrategyChecker getStrategyChecker(final Throttleable throttleable, final String commandName) {
+        return ThrottlingManager.register(throttleable, commandName);
+    }
 
     @Around("throttlePointcutFunction() && pointCutExecution()")
     public Object process(final ProceedingJoinPoint joinPoint) throws Throwable {
-        StrategyChecker checker = getStrategyChecker(joinPoint);
+        Stopwatch stopwatch = Stopwatch.createStarted();
+        String commandName = getCommandName(joinPoint.getSignature());
+
+        StrategyChecker checker = getStrategyChecker(commandName);
 
         final ThrottlingExceptionTranslator translator = ThrottlingManager.getTranslator();
-        if (translator != null) {
-            try {
-                checker.enter();
-            } catch (ThrottlingException e) {
-                throw translator.throwable(e);
-            }
-        } else {
+        try {
             checker.enter();
+            ThrottlingManager.ticker(commandName, ThrottlingStage.ENTERED, stopwatch);
+        } catch (ThrottlingException e) {
+            stopwatch.stop();
+            ThrottlingManager.ticker(commandName, ThrottlingStage.THROTTLED, stopwatch);
+            if (translator != null) {
+                throw translator.throwable(e);
+            } else {
+                throw e;
+            }
         }
 
         Object response = null;
 
         try {
             response = joinPoint.proceed();
+            stopwatch.stop();
+            ThrottlingManager.ticker(commandName, ThrottlingStage.COMPLETED, stopwatch);
+        } catch (Exception e) {
+            stopwatch.stop();
+            ThrottlingManager.ticker(commandName, ThrottlingStage.ERROR, stopwatch);
         } finally {
             checker.exit();
+            ThrottlingManager.ticker(commandName, ThrottlingStage.ACCEPTED, stopwatch);
         }
         return response;
     }

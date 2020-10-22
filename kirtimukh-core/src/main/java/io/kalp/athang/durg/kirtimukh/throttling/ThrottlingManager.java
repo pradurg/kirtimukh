@@ -16,8 +16,13 @@
 
 package io.kalp.athang.durg.kirtimukh.throttling;
 
-import io.kalp.athang.durg.kirtimukh.throttling.annotation.Throttle;
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.Timer;
+import com.google.common.base.Stopwatch;
+import com.google.common.base.Strings;
+import io.kalp.athang.durg.kirtimukh.throttling.annotation.Throttleable;
 import io.kalp.athang.durg.kirtimukh.throttling.config.ThrottlingStrategyConfig;
+import io.kalp.athang.durg.kirtimukh.throttling.enums.ThrottlingStage;
 import io.kalp.athang.durg.kirtimukh.throttling.exception.ThrottlingExceptionTranslator;
 import io.kalp.athang.durg.kirtimukh.throttling.strategies.ticker.StrategyChecker;
 import io.kalp.athang.durg.kirtimukh.throttling.strategies.window.TimedWindowChecker;
@@ -25,6 +30,7 @@ import lombok.Getter;
 import lombok.experimental.UtilityClass;
 
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by pradeep.dalvi on 15/10/20
@@ -36,22 +42,54 @@ public class ThrottlingManager {
     @Getter
     private ThrottlingExceptionTranslator translator;
 
+    private MetricRegistry metrics;
+
+    private static final String prefix = "kirtimukh";
+
     public void initialise(final ThrottlingStrategyConfig defaultConfig,
                            final Map<String, ThrottlingStrategyConfig> commandConfigs,
-                           final ThrottlingExceptionTranslator exceptionTranslator) {
+                           final ThrottlingExceptionTranslator exceptionTranslator,
+                           final MetricRegistry metricRegistry) {
         controller = new ThrottlingController(defaultConfig, commandConfigs);
         translator = exceptionTranslator;
+        metrics = metricRegistry;
     }
 
     public Map<String, TimedWindowChecker> getInfo() {
         return controller.getInfo();
     }
 
-    public StrategyChecker register(final Throttle throttle) {
-        return controller.register(throttle.name());
+    public StrategyChecker register(final Throttleable throttleable, final String commandName) {
+        return controller.register(throttleable.bucket());
     }
 
     public StrategyChecker register(final String rateLimitedFunctionName) {
         return controller.register(rateLimitedFunctionName);
+    }
+
+    public static void ticker(final String commandName,
+                              final ThrottlingStage stage,
+                              final Stopwatch stopwatch) {
+        ticker("", commandName, stage, stopwatch);
+    }
+
+    public static void ticker(final String bucketName,
+                              final String commandName,
+                              final ThrottlingStage stage,
+                              final Stopwatch stopwatch) {
+        if (metrics == null) {
+            return;
+        }
+
+        Timer timer = null;
+        if (Strings.isNullOrEmpty(bucketName)) {
+            timer = metrics.timer(String.join(".", prefix, commandName, stage.getName()));
+        } else {
+            timer = metrics.timer(String.join(".", prefix, bucketName, commandName, stage.getName()));
+        }
+
+        if (timer != null) {
+            timer.update(stopwatch.elapsed(TimeUnit.MILLISECONDS), TimeUnit.MILLISECONDS);
+        }
     }
 }

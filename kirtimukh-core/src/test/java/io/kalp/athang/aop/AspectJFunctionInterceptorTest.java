@@ -95,7 +95,8 @@ class AspectJFunctionInterceptorTest {
                         System.out.println("Throttling request at " + e.getCardinality());
                         return new RuntimeException("Throttling request at " + e.getCardinality());
                     }
-                });
+                },
+                null);
         someFunctionsClass = new SomeFunctionsClass();
     }
 

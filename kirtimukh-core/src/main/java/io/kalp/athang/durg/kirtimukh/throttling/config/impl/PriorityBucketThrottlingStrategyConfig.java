@@ -16,12 +16,17 @@
 
 package io.kalp.athang.durg.kirtimukh.throttling.config.impl;
 
+import io.kalp.athang.durg.kirtimukh.throttling.config.ThrottlingPriorityBucketConfig;
 import io.kalp.athang.durg.kirtimukh.throttling.config.ThrottlingStrategyConfig;
 import io.kalp.athang.durg.kirtimukh.throttling.enums.ThrottlingStrategyType;
 import io.kalp.athang.durg.kirtimukh.throttling.enums.ThrottlingWindowUnit;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NonNull;
+
+import javax.validation.Valid;
+import java.util.Map;
 
 /**
  * Created by pradeep.dalvi on 21/10/20
@@ -29,9 +34,20 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class PriorityBucketThrottlingStrategyConfig extends ThrottlingStrategyConfig {
+    @Valid
+    @NonNull
+    private ThrottlingPriorityBucketConfig defaultBucketConfig;
+
+    @NonNull
+    private Map<String, ThrottlingPriorityBucketConfig> bucketConfig;
+
     @Builder
     public PriorityBucketThrottlingStrategyConfig(final ThrottlingWindowUnit unit,
-                                                  final int threshold) {
+                                                  final int threshold,
+                                                  final ThrottlingPriorityBucketConfig defaultBucketConfig,
+                                                  final Map<String, ThrottlingPriorityBucketConfig> bucketConfig) {
         super(ThrottlingStrategyType.LEAKY_BUCKET, unit, threshold);
+        this.defaultBucketConfig = defaultBucketConfig;
+        this.bucketConfig = bucketConfig;
     }
 }

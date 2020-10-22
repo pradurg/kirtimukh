@@ -35,12 +35,13 @@ public class Window {
 
     private int currentLocation;
     private int cardinality;
+    private int maxTicksPerWindow;
 
     @Builder
     public Window(final int threshold) {
         this.threshold = threshold;
 
-        int maxTicksPerWindow = nPower(threshold);
+        maxTicksPerWindow = nPower(threshold);
         this.bitSet = new BitSet(maxTicksPerWindow);
     }
 
@@ -102,6 +103,10 @@ public class Window {
         int location;
         do {
             location = bitSet.nextClearBit(currentLocation);
+            if (location >= maxTicksPerWindow) {
+                currentLocation = 0;
+                location = 0;
+            }
         } while (!locate(location));
         return location;
     }

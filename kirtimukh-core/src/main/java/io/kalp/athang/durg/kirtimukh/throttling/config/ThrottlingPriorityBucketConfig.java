@@ -21,6 +21,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
+
 /**
  * Created by pradeep.dalvi on 19/10/20
  */
@@ -29,7 +32,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ThrottlingPriorityBucketConfig {
+    @Valid
+    @Min(0)
     private int priority;
 
+    @Min(1)
     private int minThreshold;
 }

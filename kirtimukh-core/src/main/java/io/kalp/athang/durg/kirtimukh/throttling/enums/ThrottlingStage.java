@@ -14,18 +14,24 @@
  * limitations under the License.
  */
 
-package io.kalp.athang.durg.kirtimukh.throttling.annotation;
+package io.kalp.athang.durg.kirtimukh.throttling.enums;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import lombok.Getter;
 
 /**
- * Created by pradeep.dalvi on 18/10/20
+ * Created by pradeep.dalvi on 23/10/20
  */
-@Target({ElementType.METHOD})
-@Retention(value = RetentionPolicy.RUNTIME)
-public @interface Throttleable {
-    String bucket() default "";
+public enum ThrottlingStage {
+    ENTERED("entered"),
+    THROTTLED("throttled"),
+    ACCEPTED("accepted"),
+    COMPLETED("completed"),
+    ERROR("error");
+
+    @Getter
+    private String name;
+
+    ThrottlingStage(String name) {
+        this.name = name;
+    }
 }

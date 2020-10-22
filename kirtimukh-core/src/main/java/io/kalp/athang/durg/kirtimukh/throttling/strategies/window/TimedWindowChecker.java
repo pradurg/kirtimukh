@@ -125,8 +125,7 @@ public class TimedWindowChecker implements WindowChecker {
 
     @Override
     public synchronized boolean release(final Tick tick) {
-        window.remove(tick.getLocation());
-        return true;
+        return window.remove(tick.getLocation());
     }
 
     @Override
