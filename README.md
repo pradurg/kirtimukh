@@ -48,12 +48,12 @@ A Throttling bundle for [DropWizard](//github.com/dropwizard/dropwizard).
     <dependency>
         <groupId>io.kalp.athang.durg</groupId>
         <artifactId>kirtimukh-dw-throttling-bundle</artifactId>
-        <version>1.0.0.2</version>
+        <version>1.0.0.3</version>
     </dependency>
 ```
 #### Gradle 
 ```
-compile 'io.kalp.athang.durg:kirtimukh:1.0.0.2'
+compile 'io.kalp.athang.durg:kirtimukh:1.0.0.3'
 ```
 
 #### Sample bundle initialisation
