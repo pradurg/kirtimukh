@@ -33,10 +33,10 @@ Throttling essentially provides a mechanism for the flow control in the event of
 
 ### About
 #### Athang | Durg
-######_Durg_ means _Fortress_ or something difficult to conquer.
+###### _Durg_ means _Fortress_ or something difficult to conquer.
 
 #### About Kirtimukh
-######_Kirtimukh_ is the guardian of the thresholds.
+###### _Kirtimukh_ is the guardian of the thresholds.
 
 ##### Core [![Clojars Project](https://img.shields.io/clojars/v/io.kalp.athang.durg/kirtimukh-core.svg)](https://clojars.org/io.kalp.athang.durg/kirtimukh-core)
 ##### Throttling Bundle [![Clojars Project](https://img.shields.io/clojars/v/io.kalp.athang.durg/kirtimukh-dw-throttling-bundle.svg)](https://clojars.org/io.kalp.athang.durg/kirtimukh-dw-throttling-bundle)
