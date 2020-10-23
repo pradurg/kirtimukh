@@ -2,12 +2,13 @@
 ## The Guardian of Thresholds
 
 [![Build Status](https://travis-ci.org/pradurg/kirtimukh.svg?branch=master)](https://travis-ci.org/pradurg/kirtimukh)
+[![Maintainability](https://api.codeclimate.com/v1/badges/69d188353b29f9352a34/maintainability)](https://codeclimate.com/github/pradurg/kirtimukh/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/69d188353b29f9352a34/test_coverage)](https://codeclimate.com/github/pradurg/kirtimukh/test_coverage)
 [![Coverage Status](https://coveralls.io/repos/pradurg/kirtimukh/badge.svg)](https://coveralls.io/r/pradurg/kirtimukh)
 [![Apache V2 License](http://img.shields.io/badge/license-Apache%20V2-blue.svg)](//github.com/pradurg/kirtimukh/blob/develop/LICENSE)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.kalp.athang.durg/kirtimukh/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.kalp.athang.durg/kirtimukh)
 [![Libraries.io for GitHub](https://img.shields.io/librariesio/github/pradurg/kirtimukh.svg)](https://libraries.io/github/pradurg/kirtimukh)
 [![Analytics](https://ga-beacon.appspot.com/UA-40926073-4/hystrix-dropwzard-bundle/README.md)](https://github.com/igrigorik/ga-beacon)
-
 
 ### Introduction
 As a part of constant efforts towards Stability & Reliability, what every Software Engineer look for is High Precisions & Predictability. Especially when margin for errors & recovery gets tinier.
@@ -28,7 +29,7 @@ Resiliency is the key thing to look after in Microservices Architecture.
 While most of the Architectures rely completely on Circuit Breaker Pattern & Retries, which gives the complete control of _The Stability_ to the client side.
 They do perform well initially in the small setup or closely working small number of microservices.
 As organisations grow bigger & bigger, clients may not have fine-tuned parameters, resulting in creating back-pressures.
-######And then comes those _completely eventful_ moments when in the event of _Outages due to Back Pressure_, we end up searching for _which client_ caused this.
+###### And then comes those _completely eventful_ moments when in the event of _Outages due to Back Pressure_, we end up searching for _which client_ caused this.
 Throttling essentially provides a mechanism for the flow control in the event of unexpected increase in traffic.
 
 ### About
