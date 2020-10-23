@@ -1,11 +1,11 @@
 # Athang | Durg | Kirtimukh
 ## The Guardian of Thresholds
 
-[![Build Status](https://travis-ci.org/zapodot/hystrix-dropwizard-bundle.svg?branch=master)](https://travis-ci.org/zapodot/hystrix-dropwizard-bundle)
-[![Coverage Status](https://coveralls.io/repos/zapodot/hystrix-dropwizard-bundle/badge.svg)](https://coveralls.io/r/zapodot/hystrix-dropwizard-bundle)
-[![Apache V2 License](http://img.shields.io/badge/license-Apache%20V2-blue.svg)](//github.com/zapodot/embedded-db-junit/blob/master/LICENSE)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.zapodot/hystrix-dropwizard-bundle/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.zapodot/hystrix-dropwizard-bundle)
-[![Libraries.io for GitHub](https://img.shields.io/librariesio/github/zapodot/hystrix-dropwizard-bundle.svg)](https://libraries.io/github/zapodot/hystrix-dropwizard-bundle)
+[![Build Status](https://travis-ci.org/pradurg/kirtimukh.svg?branch=master)](https://travis-ci.org/pradurg/kirtimukh)
+[![Coverage Status](https://coveralls.io/repos/pradurg/kirtimukh/badge.svg)](https://coveralls.io/r/pradurg/kirtimukh)
+[![Apache V2 License](http://img.shields.io/badge/license-Apache%20V2-blue.svg)](//github.com/pradurg/kirtimukh/blob/develop/LICENSE)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.kalp.athang.durg/kirtimukh/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.kalp.athang.durg/kirtimukh)
+[![Libraries.io for GitHub](https://img.shields.io/librariesio/github/pradurg/kirtimukh.svg)](https://libraries.io/github/pradurg/kirtimukh)
 [![Analytics](https://ga-beacon.appspot.com/UA-40926073-4/hystrix-dropwzard-bundle/README.md)](https://github.com/igrigorik/ga-beacon)
 
 
