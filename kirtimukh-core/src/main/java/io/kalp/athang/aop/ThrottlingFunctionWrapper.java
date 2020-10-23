@@ -75,13 +75,9 @@ public class ThrottlingFunctionWrapper {
         return ThrottlingManager.register(throttleable, commandName);
     }
 
-    @Around("throttlePointcutFunction() && pointCutExecution()")
-    public Object process(final ProceedingJoinPoint joinPoint) throws Throwable {
-        Stopwatch stopwatch = Stopwatch.createStarted();
-        String commandName = getCommandName(joinPoint.getSignature());
-
-        StrategyChecker checker = getStrategyChecker(commandName);
-
+    private void enter(final String commandName,
+                       final StrategyChecker checker,
+                       final Stopwatch stopwatch) throws RuntimeException {
         final ThrottlingExceptionTranslator translator = ThrottlingManager.getTranslator();
         try {
             checker.enter();
@@ -95,7 +91,12 @@ public class ThrottlingFunctionWrapper {
                 throw e;
             }
         }
+    }
 
+    private Object exit(final String commandName,
+                        final ProceedingJoinPoint joinPoint,
+                        final StrategyChecker checker,
+                        final Stopwatch stopwatch) throws Throwable {
         Object response = null;
 
         try {
@@ -110,5 +111,17 @@ public class ThrottlingFunctionWrapper {
             ThrottlingManager.ticker(commandName, ThrottlingStage.ACCEPTED, stopwatch);
         }
         return response;
+    }
+
+    @Around("throttlePointcutFunction() && pointCutExecution()")
+    public Object process(final ProceedingJoinPoint joinPoint) throws Throwable {
+        Stopwatch stopwatch = Stopwatch.createStarted();
+        String commandName = getCommandName(joinPoint.getSignature());
+
+        StrategyChecker checker = getStrategyChecker(commandName);
+
+        enter(commandName, checker, stopwatch);
+
+        return exit(commandName, joinPoint, checker, stopwatch);
     }
 }
