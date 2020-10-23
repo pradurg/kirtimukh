@@ -23,7 +23,6 @@ import io.kalp.athang.durg.kirtimukh.throttling.config.impl.PriorityBucketThrott
 import io.kalp.athang.durg.kirtimukh.throttling.config.impl.QuotaThrottlingStrategyConfig;
 import io.kalp.athang.durg.kirtimukh.throttling.enums.ThrottlingStrategyType;
 import io.kalp.athang.durg.kirtimukh.throttling.enums.ThrottlingWindowUnit;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
 
@@ -34,7 +33,6 @@ import javax.validation.constraints.Min;
  * Created by pradeep.dalvi on 15/10/20
  */
 @Data
-@AllArgsConstructor
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type", visible = true)
 @JsonSubTypes({
         @JsonSubTypes.Type(name = "QUOTA", value = QuotaThrottlingStrategyConfig.class),
@@ -51,4 +49,16 @@ public abstract class ThrottlingStrategyConfig {
     @Valid
     @Min(1)
     private int threshold;
+
+    public ThrottlingStrategyConfig(final ThrottlingStrategyType type) {
+        this.type = type;
+    }
+
+    public ThrottlingStrategyConfig(final ThrottlingStrategyType type,
+                                    final ThrottlingWindowUnit unit,
+                                    final int threshold) {
+        this.type = type;
+        this.unit = unit;
+        this.threshold = threshold;
+    }
 }

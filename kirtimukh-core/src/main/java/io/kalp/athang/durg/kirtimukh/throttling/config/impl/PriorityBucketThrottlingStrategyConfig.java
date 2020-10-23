@@ -41,12 +41,16 @@ public class PriorityBucketThrottlingStrategyConfig extends ThrottlingStrategyCo
     @NonNull
     private Map<String, ThrottlingPriorityBucketConfig> bucketConfig;
 
+    public PriorityBucketThrottlingStrategyConfig() {
+        super(ThrottlingStrategyType.PRIORITY_BUCKET);
+    }
+
     @Builder
     public PriorityBucketThrottlingStrategyConfig(final ThrottlingWindowUnit unit,
                                                   final int threshold,
                                                   final ThrottlingPriorityBucketConfig defaultBucketConfig,
                                                   final Map<String, ThrottlingPriorityBucketConfig> bucketConfig) {
-        super(ThrottlingStrategyType.LEAKY_BUCKET, unit, threshold);
+        super(ThrottlingStrategyType.PRIORITY_BUCKET, unit, threshold);
         this.defaultBucketConfig = defaultBucketConfig;
         this.bucketConfig = bucketConfig;
     }

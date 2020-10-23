@@ -29,6 +29,10 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class LeakyBucketThrottlingStrategyConfig extends ThrottlingStrategyConfig {
+    public LeakyBucketThrottlingStrategyConfig() {
+        super(ThrottlingStrategyType.LEAKY_BUCKET);
+    }
+
     @Builder
     public LeakyBucketThrottlingStrategyConfig(final ThrottlingWindowUnit unit,
                                                final int threshold) {

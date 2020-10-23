@@ -36,6 +36,10 @@ public class QuotaThrottlingStrategyConfig extends ThrottlingStrategyConfig {
     @Min(1)
     private long windows;
 
+    public QuotaThrottlingStrategyConfig() {
+        super(ThrottlingStrategyType.QUOTA);
+    }
+
     @Builder
     public QuotaThrottlingStrategyConfig(final ThrottlingWindowUnit unit,
                                          final int threshold,
