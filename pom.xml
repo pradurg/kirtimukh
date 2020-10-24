@@ -74,6 +74,7 @@
         <lombok.version>1.18.16</lombok.version>
         <guice.version>4.2.3</guice.version>
         <guava.version>30.0-jre</guava.version>
+        <validation-api.version>2.0.1.Final</validation-api.version>
 
         <jackson.core.version>2.11.3</jackson.core.version>
         <junit.jupiter.version>5.7.0</junit.jupiter.version>
@@ -142,7 +143,7 @@
             <dependency>
                 <groupId>javax.validation</groupId>
                 <artifactId>validation-api</artifactId>
-                <version>2.0.1.Final</version>
+                <version>${validation-api.version}</version>
             </dependency>
 
             <dependency>

@@ -1,7 +1,7 @@
 # Durg | Kirtimukh
 ## The Guardian of Thresholds
 
-[![Build Status](https://travis-ci.org/pradurg/kirtimukh.svg?branch=master)](https://travis-ci.org/pradurg/kirtimukh)
+[![Build Status](https://travis-ci.org/pradurg/kirtimukh.svg?branch=develop)](https://travis-ci.org/pradurg/kirtimukh)
 [![Maintainability](https://api.codeclimate.com/v1/badges/69d188353b29f9352a34/maintainability)](https://codeclimate.com/github/pradurg/kirtimukh/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/69d188353b29f9352a34/test_coverage)](https://codeclimate.com/github/pradurg/kirtimukh/test_coverage)
 [![Coverage Status](https://coveralls.io/repos/pradurg/kirtimukh/badge.svg)](https://coveralls.io/r/pradurg/kirtimukh)
