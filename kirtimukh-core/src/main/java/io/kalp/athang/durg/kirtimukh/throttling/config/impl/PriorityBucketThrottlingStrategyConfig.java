@@ -23,9 +23,8 @@ import io.kalp.athang.durg.kirtimukh.throttling.enums.ThrottlingWindowUnit;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NonNull;
 
-import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -34,15 +33,13 @@ import java.util.Map;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class PriorityBucketThrottlingStrategyConfig extends ThrottlingStrategyConfig {
-    @Valid
-    @NonNull
     private ThrottlingPriorityBucketConfig defaultBucketConfig;
 
-    @NonNull
     private Map<String, ThrottlingPriorityBucketConfig> bucketConfig;
 
     public PriorityBucketThrottlingStrategyConfig() {
         super(ThrottlingStrategyType.PRIORITY_BUCKET);
+        this.bucketConfig = new HashMap<>();
     }
 
     @Builder

@@ -38,6 +38,7 @@ public class QuotaThrottlingStrategyConfig extends ThrottlingStrategyConfig {
 
     public QuotaThrottlingStrategyConfig() {
         super(ThrottlingStrategyType.QUOTA);
+        this.windows = 1;
     }
 
     @Builder

@@ -52,6 +52,7 @@ public abstract class ThrottlingStrategyConfig {
 
     public ThrottlingStrategyConfig(final ThrottlingStrategyType type) {
         this.type = type;
+        this.unit = ThrottlingWindowUnit.SECOND;
     }
 
     public ThrottlingStrategyConfig(final ThrottlingStrategyType type,

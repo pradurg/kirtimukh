@@ -16,6 +16,7 @@
 
 package io.kalp.athang.aop;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Stopwatch;
 import io.kalp.athang.durg.kirtimukh.throttling.ThrottlingManager;
 import io.kalp.athang.durg.kirtimukh.throttling.annotation.Throttle;
@@ -37,6 +38,7 @@ import java.util.Objects;
  * Created by pradeep.dalvi on 14/10/20
  */
 @Aspect
+@VisibleForTesting
 public class ThrottlingFunctionWrapper {
     @Pointcut("@annotation(io.kalp.athang.durg.kirtimukh.throttling.annotation.Throttle)")
     public void throttlePointcutFunction() {
@@ -69,6 +71,7 @@ public class ThrottlingFunctionWrapper {
         } else {
             bucketName = throttleFunction.bucket();
         }
+
         return ThrottlingBucketKey.builder()
                 .bucketName(bucketName)
                 .clazz(methodSignature.getDeclaringType())
@@ -76,7 +79,7 @@ public class ThrottlingFunctionWrapper {
                 .build();
     }
 
-    public StrategyChecker getStrategyChecker(final ThrottlingBucketKey bucketKey) {
+    private StrategyChecker getStrategyChecker(final ThrottlingBucketKey bucketKey) {
         return ThrottlingManager.register(bucketKey);
     }
 
