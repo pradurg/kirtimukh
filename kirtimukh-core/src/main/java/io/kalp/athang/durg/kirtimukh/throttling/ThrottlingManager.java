@@ -66,7 +66,7 @@ public class ThrottlingManager {
         return controller.register(bucketKey);
     }
 
-    public static void timer(final String name, final ThrottlingStage stage, final Stopwatch stopwatch) {
+    private static void timer(final String name, final ThrottlingStage stage, final Stopwatch stopwatch) {
         Timer timer = metrics.timer(String.join(SEPARATOR, PREFIX, name, stage.getName()));
         if (timer != null) {
             timer.update(stopwatch.elapsed(TimeUnit.MILLISECONDS), TimeUnit.MILLISECONDS);

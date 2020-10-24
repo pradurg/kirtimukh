@@ -14,38 +14,30 @@
  * limitations under the License.
  */
 
-package io.kalp.athang.aop;
+package io.kalp.athang.durg.kirtimukh.throttling;
 
-import io.kalp.athang.durg.kirtimukh.throttling.ThrottlingManager;
-import io.kalp.athang.durg.kirtimukh.throttling.annotation.Throttle;
+import com.codahale.metrics.MetricRegistry;
+import com.google.common.base.Stopwatch;
+import io.kalp.athang.aop.ThrottlingBucketKey;
 import io.kalp.athang.durg.kirtimukh.throttling.config.impl.LeakyBucketThrottlingStrategyConfig;
+import io.kalp.athang.durg.kirtimukh.throttling.enums.ThrottlingStage;
 import io.kalp.athang.durg.kirtimukh.throttling.enums.ThrottlingWindowUnit;
 import io.kalp.athang.durg.kirtimukh.throttling.exception.ThrottlingException;
 import io.kalp.athang.durg.kirtimukh.throttling.exception.ThrottlingExceptionTranslator;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.Signature;
-import org.aspectj.lang.reflect.MethodSignature;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 /**
- * Created by pradeep.dalvi on 24/10/20
+ * Created by pradeep.dalvi on 25/10/20
  */
-class ThrottlingFunctionWrapperTest {
-    ThrottlingFunctionWrapper functionWrapper;
-    ProceedingJoinPoint joinPoint;
-    Signature signature;
+class ThrottlingManagerTest {
 
     @BeforeEach
     void setUp() {
-        functionWrapper = new ThrottlingFunctionWrapper();
-        joinPoint = Mockito.mock(ProceedingJoinPoint.class);
-        MethodSignature signature = Mockito.mock(MethodSignature.class);
         ThrottlingManager.initialise(LeakyBucketThrottlingStrategyConfig.builder()
                         .unit(ThrottlingWindowUnit.SECOND)
                         .threshold(1)
@@ -57,35 +49,31 @@ class ThrottlingFunctionWrapperTest {
                         return new UnsupportedOperationException();
                     }
                 },
-                null);
-
-        Mockito.when(joinPoint.getTarget())
-                .thenReturn(new ThrottlingFunctionWrapperTest());
-        Mockito.when(joinPoint.getSignature())
-                .thenReturn(signature);
-        Mockito.when(signature.getDeclaringType())
-                .thenReturn(ThrottlingFunctionWrapperTest.class);
-        Mockito.when(signature.getMethod())
-                .thenReturn(wrapperMethod());
-    }
-
-    public Method wrapperMethod() {
-        try {
-            return getClass().getDeclaredMethod("throttleMethod");
-        } catch (NoSuchMethodException e) {
-            throw new UnsupportedOperationException("Not allowed");
-        }
-    }
-
-    @Throttle
-    public void throttleMethod() {
-        // Do nothing
+                new MetricRegistry());
     }
 
     @Test
-    void getStrategyChecker() {
-        Assertions.assertDoesNotThrow(() -> {
-            functionWrapper.processThrottle(joinPoint);
-        });
+    void getInfo() {
+        Assertions.assertNotNull(ThrottlingManager.getInfo());
+    }
+
+    @Test
+    void register() {
+        Assertions.assertNotNull(ThrottlingManager.register(ThrottlingBucketKey.builder()
+                .clazz(ThrottlingManagerTest.class)
+                .functionName("register")
+                .build()));
+    }
+
+    @Test
+    void ticker() {
+        Stopwatch stopwatch = Stopwatch.createStarted();
+        ThrottlingManager.ticker(ThrottlingBucketKey.builder()
+                        .clazz(ThrottlingManagerTest.class)
+                        .functionName("ticker")
+                        .build(),
+                ThrottlingStage.ENTERED,
+                stopwatch);
+        Assertions.assertTrue(stopwatch.elapsed(TimeUnit.MILLISECONDS) > 0);
     }
 }
