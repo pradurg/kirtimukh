@@ -25,7 +25,6 @@ import io.kalp.athang.durg.kirtimukh.throttling.exception.ThrottlingExceptionTra
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
@@ -40,7 +39,7 @@ class AspectJFunctionInterceptorTest {
 
     public class SomeFunctionsClass implements Runnable {
         @Throttle
-        public Response rateLimitedFunction(int count) {
+        public String rateLimitedFunction(int count) {
             System.out.println(String.format("Intercepted Function %d", count));
             try {
                 System.out.println(String.format("Before Sleep for Intercepted Function %d", count));
@@ -54,8 +53,7 @@ class AspectJFunctionInterceptorTest {
                 throw new RuntimeException("Checking throwable & exceptions");
             }
 
-            return Response.ok(count)
-                    .build();
+            return String.format("SUCCESS: %d", count);
         }
 
         public String normalFunction(int count) {
@@ -69,7 +67,7 @@ class AspectJFunctionInterceptorTest {
             System.out.println("Calling " + count);
             if ((count % 2) != 1) {
                 try {
-                    Response response = rateLimitedFunction(count);
+                    String response = rateLimitedFunction(count);
                     System.out.println(response);
                 } catch (Exception e) {
                     e.printStackTrace();

@@ -17,7 +17,6 @@
 package io.kalp.athang.durg.kirtimukh.throttling.config.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.dropwizard.jackson.Jackson;
 import io.kalp.athang.durg.kirtimukh.throttling.enums.ThrottlingWindowUnit;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -44,7 +43,7 @@ class LeakyBucketThrottlingStrategyConfigTest {
 
     @Test
     void testSerDe() {
-        ObjectMapper mapper = Jackson.newObjectMapper();
+        ObjectMapper mapper = new ObjectMapper();
 
         Assertions.assertDoesNotThrow(() -> {
             String configStr = mapper.writeValueAsString(config);
