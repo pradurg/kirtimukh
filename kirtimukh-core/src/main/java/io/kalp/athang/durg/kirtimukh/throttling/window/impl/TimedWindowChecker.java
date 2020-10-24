@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-package io.kalp.athang.durg.kirtimukh.throttling.strategies.window;
+package io.kalp.athang.durg.kirtimukh.throttling.window.impl;
 
 import io.kalp.athang.durg.kirtimukh.throttling.config.ThrottlingStrategyConfig;
 import io.kalp.athang.durg.kirtimukh.throttling.config.impl.QuotaThrottlingStrategyConfig;
 import io.kalp.athang.durg.kirtimukh.throttling.enums.ThrottlingStrategyType;
 import io.kalp.athang.durg.kirtimukh.throttling.enums.ThrottlingWindowUnit;
 import io.kalp.athang.durg.kirtimukh.throttling.exception.ThrottlingException;
-import io.kalp.athang.durg.kirtimukh.throttling.strategies.tick.Tick;
-import io.kalp.athang.durg.kirtimukh.throttling.strategies.tick.impl.LocationTick;
+import io.kalp.athang.durg.kirtimukh.throttling.tick.Tick;
+import io.kalp.athang.durg.kirtimukh.throttling.tick.impl.LocationTick;
+import io.kalp.athang.durg.kirtimukh.throttling.window.Window;
+import io.kalp.athang.durg.kirtimukh.throttling.window.WindowChecker;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,7 +37,7 @@ import java.util.concurrent.TimeUnit;
 public class TimedWindowChecker implements WindowChecker {
     private static final long MIN_INACTIVE_WINDOWS_TO_CLEAR = 5;
 
-    private final String commandName;
+    private final String commandKey;
     private final ThrottlingStrategyType strategyType;
     private final ThrottlingWindowUnit unit;
     private final int threshold;
@@ -47,9 +49,9 @@ public class TimedWindowChecker implements WindowChecker {
     private final Window window;
 
     @Builder
-    public TimedWindowChecker(final String commandName,
+    public TimedWindowChecker(final String commandKey,
                               final ThrottlingStrategyConfig strategyConfig) {
-        this.commandName = commandName;
+        this.commandKey = commandKey;
         this.strategyType = strategyConfig.getType();
         this.unit = strategyConfig.getUnit();
         this.threshold = strategyConfig.getThreshold();
@@ -118,7 +120,7 @@ public class TimedWindowChecker implements WindowChecker {
 
     private void precheck() {
         if (isChangeInWindow() && isOkayToClear()) {
-            log.debug("[{}] Clearing bitset", commandName);
+            log.debug("[{}] Clearing bitset", commandKey);
             window.clear();
         }
     }
@@ -135,7 +137,7 @@ public class TimedWindowChecker implements WindowChecker {
         int location = window.add();
         if (location < 0) {
             throw ThrottlingException.builder()
-                    .commandName(commandName)
+                    .commandKey(commandKey)
                     .strategyType(strategyType)
                     .cardinality(window.cardinality())
                     .unit(unit)
@@ -143,7 +145,7 @@ public class TimedWindowChecker implements WindowChecker {
                     .message("Threshold limits exhausted")
                     .build();
         }
-        log.debug("[{}] Cardinality {} allowed limit {}", commandName, window.cardinality(), threshold);
+        log.debug("[{}] Cardinality {} allowed limit {}", commandKey, window.cardinality(), threshold);
 
         return LocationTick.builder()
                 .location(location)

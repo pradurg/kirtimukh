@@ -14,30 +14,18 @@
  * limitations under the License.
  */
 
-package io.kalp.athang.durg.kirtimukh.throttling.strategies.ticker.impl;
+package io.kalp.athang.durg.kirtimukh.throttling.tick;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import lombok.Getter;
 
 /**
- * Created by pradeep.dalvi on 21/10/20
+ * Created by pradeep.dalvi on 20/10/20
  */
-class LeakyBucketTickerTest {
+public abstract class Tick {
+    @Getter
+    private final int location;
 
-    @BeforeEach
-    void setUp() {
-    }
-
-    @AfterEach
-    void tearDown() {
-    }
-
-    @Test
-    void enter() {
-    }
-
-    @Test
-    void exit() {
+    protected Tick(final int location) {
+        this.location = location;
     }
 }

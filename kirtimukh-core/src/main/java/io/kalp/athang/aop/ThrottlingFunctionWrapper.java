@@ -17,15 +17,13 @@
 package io.kalp.athang.aop;
 
 import com.google.common.base.Stopwatch;
-import com.google.common.base.Strings;
 import io.kalp.athang.durg.kirtimukh.throttling.ThrottlingManager;
 import io.kalp.athang.durg.kirtimukh.throttling.annotation.Throttle;
 import io.kalp.athang.durg.kirtimukh.throttling.annotation.Throttleable;
 import io.kalp.athang.durg.kirtimukh.throttling.enums.ThrottlingStage;
 import io.kalp.athang.durg.kirtimukh.throttling.exception.ThrottlingException;
 import io.kalp.athang.durg.kirtimukh.throttling.exception.ThrottlingExceptionTranslator;
-import io.kalp.athang.durg.kirtimukh.throttling.strategies.ticker.StrategyChecker;
-import lombok.extern.slf4j.Slf4j;
+import io.kalp.athang.durg.kirtimukh.throttling.ticker.StrategyChecker;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
@@ -33,10 +31,11 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 
+import java.util.Objects;
+
 /**
  * Created by pradeep.dalvi on 14/10/20
  */
-@Slf4j
 @Aspect
 public class ThrottlingFunctionWrapper {
     @Pointcut("@annotation(io.kalp.athang.durg.kirtimukh.throttling.annotation.Throttle)")
@@ -54,37 +53,43 @@ public class ThrottlingFunctionWrapper {
         // To be empty
     }
 
-    private String getCommandName(Signature signature) {
+    private ThrottlingBucketKey getThrottleBucketKey(final Signature signature) {
         MethodSignature methodSignature = MethodSignature.class.cast(signature);
-        final Throttle rateLimited = methodSignature.getMethod()
+        final Throttle throttleFunction = methodSignature.getMethod()
                 .getAnnotation(Throttle.class);
+        String bucketName = null;
+        if (Objects.isNull(throttleFunction)) {
+            final Throttleable throttleableFunction = methodSignature.getMethod()
+                    .getAnnotation(Throttleable.class);
+            if (Objects.isNull(throttleableFunction)) {
+                throw new UnsupportedOperationException("Pointcut called without annotations");
+            }
 
-        if (Strings.isNullOrEmpty(rateLimited.name())) {
-            return methodSignature.getDeclaringType().getSimpleName()
-                    + '.' + methodSignature.getMethod().getName();
+            bucketName = throttleableFunction.bucket();
         } else {
-            return rateLimited.name();
+            bucketName = throttleFunction.bucket();
         }
+        return ThrottlingBucketKey.builder()
+                .bucketName(bucketName)
+                .clazz(methodSignature.getDeclaringType())
+                .functionName(methodSignature.getMethod().getName())
+                .build();
     }
 
-    public StrategyChecker getStrategyChecker(final String commandName) {
-        return ThrottlingManager.register(commandName);
+    public StrategyChecker getStrategyChecker(final ThrottlingBucketKey bucketKey) {
+        return ThrottlingManager.register(bucketKey);
     }
 
-    public StrategyChecker getStrategyChecker(final Throttleable throttleable, final String commandName) {
-        return ThrottlingManager.register(throttleable, commandName);
-    }
-
-    private void enter(final String commandName,
+    private void enter(final ThrottlingBucketKey bucketKey,
                        final StrategyChecker checker,
-                       final Stopwatch stopwatch) throws RuntimeException {
-        final ThrottlingExceptionTranslator translator = ThrottlingManager.getTranslator();
+                       final Stopwatch stopwatch) {
+        final ThrottlingExceptionTranslator<? extends RuntimeException> translator = ThrottlingManager.getTranslator();
         try {
             checker.enter();
-            ThrottlingManager.ticker(commandName, ThrottlingStage.ENTERED, stopwatch);
+            ThrottlingManager.ticker(bucketKey, ThrottlingStage.ENTERED, stopwatch);
         } catch (ThrottlingException e) {
             stopwatch.stop();
-            ThrottlingManager.ticker(commandName, ThrottlingStage.THROTTLED, stopwatch);
+            ThrottlingManager.ticker(bucketKey, ThrottlingStage.THROTTLED, stopwatch);
             if (translator != null) {
                 throw translator.throwable(e);
             } else {
@@ -93,7 +98,7 @@ public class ThrottlingFunctionWrapper {
         }
     }
 
-    private Object exit(final String commandName,
+    private Object exit(final ThrottlingBucketKey bucketKey,
                         final ProceedingJoinPoint joinPoint,
                         final StrategyChecker checker,
                         final Stopwatch stopwatch) throws Throwable {
@@ -102,26 +107,26 @@ public class ThrottlingFunctionWrapper {
         try {
             response = joinPoint.proceed();
             stopwatch.stop();
-            ThrottlingManager.ticker(commandName, ThrottlingStage.COMPLETED, stopwatch);
+            ThrottlingManager.ticker(bucketKey, ThrottlingStage.COMPLETED, stopwatch);
         } catch (Exception e) {
             stopwatch.stop();
-            ThrottlingManager.ticker(commandName, ThrottlingStage.ERROR, stopwatch);
+            ThrottlingManager.ticker(bucketKey, ThrottlingStage.ERROR, stopwatch);
         } finally {
             checker.exit();
-            ThrottlingManager.ticker(commandName, ThrottlingStage.ACCEPTED, stopwatch);
+            ThrottlingManager.ticker(bucketKey, ThrottlingStage.ACCEPTED, stopwatch);
         }
         return response;
     }
 
-    @Around("throttlePointcutFunction() && pointCutExecution()")
-    public Object process(final ProceedingJoinPoint joinPoint) throws Throwable {
+    @Around("(throttlePointcutFunction() || throttleablePointcutFunction()) && pointCutExecution()")
+    public Object processThrottle(final ProceedingJoinPoint joinPoint) throws Throwable {
         Stopwatch stopwatch = Stopwatch.createStarted();
-        String commandName = getCommandName(joinPoint.getSignature());
+        ThrottlingBucketKey bucketKey = getThrottleBucketKey(joinPoint.getSignature());
 
-        StrategyChecker checker = getStrategyChecker(commandName);
+        StrategyChecker checker = getStrategyChecker(bucketKey);
 
-        enter(commandName, checker, stopwatch);
+        enter(bucketKey, checker, stopwatch);
 
-        return exit(commandName, joinPoint, checker, stopwatch);
+        return exit(bucketKey, joinPoint, checker, stopwatch);
     }
 }

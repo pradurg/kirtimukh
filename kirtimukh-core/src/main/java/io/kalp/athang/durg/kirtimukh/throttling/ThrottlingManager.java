@@ -20,12 +20,12 @@ import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 import com.google.common.base.Stopwatch;
 import com.google.common.base.Strings;
-import io.kalp.athang.durg.kirtimukh.throttling.annotation.Throttleable;
+import io.kalp.athang.aop.ThrottlingBucketKey;
 import io.kalp.athang.durg.kirtimukh.throttling.config.ThrottlingStrategyConfig;
 import io.kalp.athang.durg.kirtimukh.throttling.enums.ThrottlingStage;
 import io.kalp.athang.durg.kirtimukh.throttling.exception.ThrottlingExceptionTranslator;
-import io.kalp.athang.durg.kirtimukh.throttling.strategies.ticker.StrategyChecker;
-import io.kalp.athang.durg.kirtimukh.throttling.strategies.window.TimedWindowChecker;
+import io.kalp.athang.durg.kirtimukh.throttling.ticker.StrategyChecker;
+import io.kalp.athang.durg.kirtimukh.throttling.window.impl.TimedWindowChecker;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
 
@@ -40,15 +40,18 @@ public class ThrottlingManager {
     private ThrottlingController controller;
 
     @Getter
-    private ThrottlingExceptionTranslator translator;
+    private ThrottlingExceptionTranslator<? extends RuntimeException> translator;
 
     private MetricRegistry metrics;
 
-    private static final String prefix = "kirtimukh";
+    private static final String PREFIX = "kirtimukh";
+    private static final String BUCKETS = "buckets";
+    private static final String COMMANDS = "commands";
+    private static final String SEPARATOR = ".";
 
     public void initialise(final ThrottlingStrategyConfig defaultConfig,
                            final Map<String, ThrottlingStrategyConfig> commandConfigs,
-                           final ThrottlingExceptionTranslator exceptionTranslator,
+                           final ThrottlingExceptionTranslator<? extends RuntimeException> exceptionTranslator,
                            final MetricRegistry metricRegistry) {
         controller = new ThrottlingController(defaultConfig, commandConfigs);
         translator = exceptionTranslator;
@@ -59,37 +62,27 @@ public class ThrottlingManager {
         return controller.getInfo();
     }
 
-    public StrategyChecker register(final Throttleable throttleable, final String commandName) {
-        return controller.register(throttleable.bucket());
+    public StrategyChecker register(final ThrottlingBucketKey bucketKey) {
+        return controller.register(bucketKey);
     }
 
-    public StrategyChecker register(final String rateLimitedFunctionName) {
-        return controller.register(rateLimitedFunctionName);
+    public static void timer(final String name, final ThrottlingStage stage, final Stopwatch stopwatch) {
+        Timer timer = metrics.timer(String.join(SEPARATOR, PREFIX, name, stage.getName()));
+        if (timer != null) {
+            timer.update(stopwatch.elapsed(TimeUnit.MILLISECONDS), TimeUnit.MILLISECONDS);
+        }
     }
 
-    public static void ticker(final String commandName,
-                              final ThrottlingStage stage,
-                              final Stopwatch stopwatch) {
-        ticker("", commandName, stage, stopwatch);
-    }
-
-    public static void ticker(final String bucketName,
-                              final String commandName,
+    public static void ticker(final ThrottlingBucketKey bucketKey,
                               final ThrottlingStage stage,
                               final Stopwatch stopwatch) {
         if (metrics == null) {
             return;
         }
 
-        Timer timer = null;
-        if (Strings.isNullOrEmpty(bucketName)) {
-            timer = metrics.timer(String.join(".", prefix, commandName, stage.getName()));
-        } else {
-            timer = metrics.timer(String.join(".", prefix, bucketName, commandName, stage.getName()));
+        if (!Strings.isNullOrEmpty(bucketKey.getBucketName())) {
+            timer(BUCKETS + SEPARATOR + bucketKey.getBucketName(), stage, stopwatch);
         }
-
-        if (timer != null) {
-            timer.update(stopwatch.elapsed(TimeUnit.MILLISECONDS), TimeUnit.MILLISECONDS);
-        }
+        timer(COMMANDS + SEPARATOR + bucketKey.getCommandName(), stage, stopwatch);
     }
 }

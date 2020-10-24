@@ -20,7 +20,6 @@ import io.dropwizard.Configuration;
 import io.dropwizard.ConfiguredBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-import io.kalp.athang.durg.kirtimukh.throttling.ThrottlingController;
 import io.kalp.athang.durg.kirtimukh.throttling.ThrottlingManager;
 import io.kalp.athang.durg.kirtimukh.throttling.exception.ThrottlingExceptionTranslator;
 
@@ -28,8 +27,6 @@ import io.kalp.athang.durg.kirtimukh.throttling.exception.ThrottlingExceptionTra
  * Created by pradeep.dalvi on 15/10/20
  */
 public abstract class ThrottlingBundle<T extends Configuration> implements ConfiguredBundle<T> {
-    private ThrottlingController controller;
-
     @Override
     public void initialize(Bootstrap<?> bootstrap) {
 
@@ -38,7 +35,7 @@ public abstract class ThrottlingBundle<T extends Configuration> implements Confi
     @Override
     public void run(T configuration, Environment environment) throws Exception {
         ThrottlingBundleConfiguration throttlingBundleConfiguration = getThrottlingConfiguration(configuration);
-        ThrottlingExceptionTranslator translator = getExceptionTranslator();
+        ThrottlingExceptionTranslator<? extends RuntimeException> translator = getExceptionTranslator();
 
         ThrottlingManager.initialise(throttlingBundleConfiguration.getDefaultStrategyConfig(),
                 throttlingBundleConfiguration.getCommandStrategyConfigs(), translator, environment.metrics());

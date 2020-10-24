@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package io.kalp.athang.durg.kirtimukh.throttling.strategies.ticker.impl;
+package io.kalp.athang.durg.kirtimukh.throttling.ticker.impl;
 
-import io.kalp.athang.durg.kirtimukh.throttling.exception.ThrottlingException;
-import io.kalp.athang.durg.kirtimukh.throttling.strategies.tick.impl.WindowLocationTick;
-import io.kalp.athang.durg.kirtimukh.throttling.strategies.ticker.StrategyChecker;
-import io.kalp.athang.durg.kirtimukh.throttling.strategies.window.PriorityWindowChecker;
+import io.kalp.athang.durg.kirtimukh.throttling.tick.impl.WindowLocationTick;
+import io.kalp.athang.durg.kirtimukh.throttling.ticker.StrategyChecker;
+import io.kalp.athang.durg.kirtimukh.throttling.window.impl.PriorityWindowChecker;
 
 /**
  * Created by pradeep.dalvi on 15/10/20
@@ -33,7 +32,7 @@ public class PriorityBucketTicker implements StrategyChecker {
     }
 
     @Override
-    public void enter() throws ThrottlingException {
+    public void enter() {
         tick = windowChecker.acquire();
     }
 

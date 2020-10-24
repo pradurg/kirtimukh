@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package io.kalp.athang.durg.kirtimukh.throttling.strategies.tick.impl;
+package io.kalp.athang.durg.kirtimukh.throttling.tick.impl;
 
-import io.kalp.athang.durg.kirtimukh.throttling.strategies.tick.Tick;
+import io.kalp.athang.durg.kirtimukh.throttling.tick.Tick;
 import lombok.Builder;
 import lombok.Getter;
 

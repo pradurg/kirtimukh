@@ -14,30 +14,40 @@
  * limitations under the License.
  */
 
-package io.kalp.athang.durg.kirtimukh.throttling.exception;
+package io.kalp.athang.aop;
 
-import io.kalp.athang.durg.kirtimukh.throttling.enums.ThrottlingStrategyType;
-import io.kalp.athang.durg.kirtimukh.throttling.enums.ThrottlingWindowUnit;
+import com.google.common.base.Strings;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
- * Created by pradeep.dalvi on 15/10/20
+ * Created by pradeep.dalvi on 24/10/20
  */
 @Data
 @Builder
-@EqualsAndHashCode(callSuper = true)
-public class ThrottlingException extends RuntimeException {
-    private final String commandKey;
+@NoArgsConstructor
+@AllArgsConstructor
+public class ThrottlingBucketKey {
+    private String bucketName;
 
-    private final ThrottlingStrategyType strategyType;
+    private Class<?> clazz;
 
-    private final ThrottlingWindowUnit unit;
+    private String functionName;
 
-    private final int cardinality;
 
-    private final int threshold;
+    public String getClassName() {
+        return clazz.getSimpleName();
+    }
 
-    private final String message;
+    public String getCommandName() {
+        return getClassName() + "." + functionName;
+    }
+
+    public String getConfigName() {
+        return Strings.isNullOrEmpty(bucketName)
+                ? getCommandName()
+                : bucketName;
+    }
 }

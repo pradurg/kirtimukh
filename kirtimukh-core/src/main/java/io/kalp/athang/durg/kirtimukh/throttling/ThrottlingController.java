@@ -17,15 +17,16 @@
 package io.kalp.athang.durg.kirtimukh.throttling;
 
 import com.google.inject.Singleton;
+import io.kalp.athang.aop.ThrottlingBucketKey;
 import io.kalp.athang.durg.kirtimukh.throttling.config.ThrottlingStrategyConfig;
 import io.kalp.athang.durg.kirtimukh.throttling.enums.ThrottlingStrategyType;
 import io.kalp.athang.durg.kirtimukh.throttling.enums.ThrottlingWindowUnit;
-import io.kalp.athang.durg.kirtimukh.throttling.strategies.ticker.StrategyChecker;
-import io.kalp.athang.durg.kirtimukh.throttling.strategies.ticker.impl.LeakyBucketTicker;
-import io.kalp.athang.durg.kirtimukh.throttling.strategies.ticker.impl.PriorityBucketTicker;
-import io.kalp.athang.durg.kirtimukh.throttling.strategies.ticker.impl.QuotaStrategyTicker;
-import io.kalp.athang.durg.kirtimukh.throttling.strategies.window.PriorityWindowChecker;
-import io.kalp.athang.durg.kirtimukh.throttling.strategies.window.TimedWindowChecker;
+import io.kalp.athang.durg.kirtimukh.throttling.ticker.StrategyChecker;
+import io.kalp.athang.durg.kirtimukh.throttling.ticker.impl.LeakyBucketTicker;
+import io.kalp.athang.durg.kirtimukh.throttling.ticker.impl.PriorityBucketTicker;
+import io.kalp.athang.durg.kirtimukh.throttling.ticker.impl.QuotaStrategyTicker;
+import io.kalp.athang.durg.kirtimukh.throttling.window.impl.PriorityWindowChecker;
+import io.kalp.athang.durg.kirtimukh.throttling.window.impl.TimedWindowChecker;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -51,72 +52,75 @@ public class ThrottlingController {
         }
     }
 
-    private TimedWindowChecker getTimedWindowChecker(final String commandName,
+    private TimedWindowChecker getTimedWindowChecker(final String configKey,
                                                      final ThrottlingStrategyConfig strategyConfig) {
         return TimedWindowChecker.builder()
-                .commandName(commandName)
+                .commandKey(configKey)
                 .strategyConfig(strategyConfig)
                 .build();
     }
 
-    private TimedWindowChecker getWindowChecker(final String commandName,
+    private TimedWindowChecker getWindowChecker(final String configKey,
                                                 final ThrottlingStrategyConfig strategyConfig) {
         return strategyConfig.getUnit()
                 .accept(new ThrottlingWindowUnit.ThrottlingWindowVisitor<TimedWindowChecker>() {
                     @Override
                     public TimedWindowChecker visitMillisecond() {
-                        return getTimedWindowChecker(commandName, strategyConfig);
+                        return getTimedWindowChecker(configKey, strategyConfig);
                     }
 
                     @Override
                     public TimedWindowChecker visitSecond() {
-                        return getTimedWindowChecker(commandName, strategyConfig);
+                        return getTimedWindowChecker(configKey, strategyConfig);
                     }
 
                     @Override
                     public TimedWindowChecker visitMinute() {
-                        return getTimedWindowChecker(commandName, strategyConfig);
+                        return getTimedWindowChecker(configKey, strategyConfig);
                     }
                 });
     }
 
-    private synchronized TimedWindowChecker getWindowChecker(final String commandName) {
-        if (!windowCheckerMap.containsKey(commandName)) {
-            windowCheckerMap.put(commandName, getWindowChecker(commandName, defaultStrategyConfig));
+    private synchronized TimedWindowChecker getWindowChecker(final ThrottlingBucketKey bucketKey) {
+        final String configKey = bucketKey.getConfigName();
+        if (!windowCheckerMap.containsKey(configKey)) {
+            windowCheckerMap.put(configKey, getWindowChecker(configKey, defaultStrategyConfig));
         }
 
-        return windowCheckerMap.get(commandName);
+        return windowCheckerMap.get(configKey);
     }
 
-    private PriorityWindowChecker getPriorityWindowChecker(final String commandName) {
+    private PriorityWindowChecker getPriorityWindowChecker(final ThrottlingBucketKey bucketKey) {
         return PriorityWindowChecker.builder()
-                .commandName(commandName)
+                .commandName(bucketKey.getCommandName())
                 .build();
     }
 
-    private StrategyChecker getStrategyChecker(final String commandName) {
-        ThrottlingStrategyType strategyType = strategyTypeMap.getOrDefault(commandName,
+    private StrategyChecker getStrategyChecker(final ThrottlingBucketKey bucketKey) {
+        final String configKey = bucketKey.getConfigName();
+
+        ThrottlingStrategyType strategyType = strategyTypeMap.getOrDefault(configKey,
                 defaultStrategyConfig.getType());
 
         return strategyType
                 .accept(new ThrottlingStrategyType.ThrottlingStrategyTypeVisitor<StrategyChecker>() {
                     @Override
                     public StrategyChecker visitQuota() {
-                        TimedWindowChecker windowChecker = getWindowChecker(commandName);
+                        TimedWindowChecker windowChecker = getWindowChecker(bucketKey);
 
                         return new QuotaStrategyTicker(windowChecker);
                     }
 
                     @Override
                     public StrategyChecker visitLeakyBucket() {
-                        TimedWindowChecker windowChecker = getWindowChecker(commandName);
+                        TimedWindowChecker windowChecker = getWindowChecker(bucketKey);
 
                         return new LeakyBucketTicker(windowChecker);
                     }
 
                     @Override
                     public StrategyChecker visitPriorityBuckets() {
-                        PriorityWindowChecker windowChecker = getPriorityWindowChecker(commandName);
+                        PriorityWindowChecker windowChecker = getPriorityWindowChecker(bucketKey);
 
                         return new PriorityBucketTicker(windowChecker);
                     }
@@ -132,7 +136,7 @@ public class ThrottlingController {
         return windowCheckerMap;
     }
 
-    public StrategyChecker register(final String rateLimitedFunctionName) {
-        return getStrategyChecker(rateLimitedFunctionName);
+    public StrategyChecker register(final ThrottlingBucketKey bucketKey) {
+        return getStrategyChecker(bucketKey);
     }
 }

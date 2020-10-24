@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package io.kalp.athang.durg.kirtimukh.throttling.strategies.window;
+package io.kalp.athang.durg.kirtimukh.throttling.window.impl;
 
 import io.kalp.athang.durg.kirtimukh.throttling.config.impl.LeakyBucketThrottlingStrategyConfig;
 import io.kalp.athang.durg.kirtimukh.throttling.enums.ThrottlingWindowUnit;
 import io.kalp.athang.durg.kirtimukh.throttling.exception.ThrottlingException;
-import io.kalp.athang.durg.kirtimukh.throttling.strategies.tick.Tick;
+import io.kalp.athang.durg.kirtimukh.throttling.tick.Tick;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,7 +35,7 @@ class TimedWindowCheckerTest {
     @BeforeEach
     void setUp() {
         windowChecker = TimedWindowChecker.builder()
-                .commandName("test")
+                .commandKey("test")
                 .strategyConfig(LeakyBucketThrottlingStrategyConfig.builder()
                         .unit(ThrottlingWindowUnit.SECOND)
                         .threshold(2)

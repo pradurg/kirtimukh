@@ -14,30 +14,28 @@
  * limitations under the License.
  */
 
-package io.kalp.athang.durg.kirtimukh.throttling.strategies.ticker.impl;
+package io.kalp.athang.durg.kirtimukh.throttling.ticker.impl;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import io.kalp.athang.durg.kirtimukh.throttling.ticker.StrategyChecker;
+import io.kalp.athang.durg.kirtimukh.throttling.window.impl.TimedWindowChecker;
 
 /**
- * Created by pradeep.dalvi on 21/10/20
+ * Created by pradeep.dalvi on 15/10/20
  */
-class QuotaStrategyTickerTest {
+public class QuotaStrategyTicker implements StrategyChecker {
+    private final TimedWindowChecker windowChecker;
 
-    @BeforeEach
-    void setUp() {
+    public QuotaStrategyTicker(TimedWindowChecker windowChecker) {
+        this.windowChecker = windowChecker;
     }
 
-    @AfterEach
-    void tearDown() {
+    @Override
+    public void enter() {
+        windowChecker.acquire();
     }
 
-    @Test
-    void enter() {
-    }
-
-    @Test
-    void exit() {
+    @Override
+    public void exit() {
+        // Do nothing
     }
 }

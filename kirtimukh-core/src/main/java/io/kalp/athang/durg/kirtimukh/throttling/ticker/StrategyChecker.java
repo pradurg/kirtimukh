@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package io.kalp.athang.durg.kirtimukh.throttling.strategies.ticker;
-
-import io.kalp.athang.durg.kirtimukh.throttling.exception.ThrottlingException;
+package io.kalp.athang.durg.kirtimukh.throttling.ticker;
 
 /**
  * Created by pradeep.dalvi on 15/10/20
  */
 public interface StrategyChecker {
-    void enter() throws ThrottlingException;
+    void enter();
 
     void exit();
 }

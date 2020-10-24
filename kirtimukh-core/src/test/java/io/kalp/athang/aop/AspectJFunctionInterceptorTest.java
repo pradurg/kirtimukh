@@ -40,11 +40,11 @@ class AspectJFunctionInterceptorTest {
     public class SomeFunctionsClass implements Runnable {
         @Throttle
         public String rateLimitedFunction(int count) {
-            System.out.println(String.format("Intercepted Function %d", count));
+            System.out.printf("Intercepted Function %d%n", count);
             try {
-                System.out.println(String.format("Before Sleep for Intercepted Function %d", count));
+                System.out.printf("Before Sleep for Intercepted Function %d%n", count);
                 Thread.sleep(count * 10);
-                System.out.println(String.format("After Sleep for Intercepted Function %d", count));
+                System.out.printf("After Sleep for Intercepted Function %d%n", count);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -57,7 +57,7 @@ class AspectJFunctionInterceptorTest {
         }
 
         public String normalFunction(int count) {
-            System.out.println(String.format("Not Intercepted Function %d", count));
+            System.out.printf("Not Intercepted Function %d%n", count);
             return "Not Intercepted Function Response";
         }
 

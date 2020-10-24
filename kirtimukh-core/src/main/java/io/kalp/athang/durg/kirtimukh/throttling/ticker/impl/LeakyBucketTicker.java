@@ -14,31 +14,38 @@
  * limitations under the License.
  */
 
-package io.kalp.athang.durg.kirtimukh.throttling.strategies.ticker.impl;
+package io.kalp.athang.durg.kirtimukh.throttling.ticker.impl;
 
-import io.kalp.athang.durg.kirtimukh.throttling.exception.ThrottlingException;
-import io.kalp.athang.durg.kirtimukh.throttling.strategies.tick.Tick;
-import io.kalp.athang.durg.kirtimukh.throttling.strategies.ticker.StrategyChecker;
-import io.kalp.athang.durg.kirtimukh.throttling.strategies.window.TimedWindowChecker;
+import io.kalp.athang.durg.kirtimukh.throttling.tick.Tick;
+import io.kalp.athang.durg.kirtimukh.throttling.ticker.StrategyChecker;
+import io.kalp.athang.durg.kirtimukh.throttling.window.impl.TimedWindowChecker;
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.Objects;
 
 /**
  * Created by pradeep.dalvi on 15/10/20
  */
+@Slf4j
 public class LeakyBucketTicker implements StrategyChecker {
     private final TimedWindowChecker windowChecker;
-    private Tick tick;
+    private Tick tick = null;
 
     public LeakyBucketTicker(TimedWindowChecker windowChecker) {
         this.windowChecker = windowChecker;
     }
 
     @Override
-    public void enter() throws ThrottlingException {
+    public void enter() {
         tick = windowChecker.acquire();
     }
 
     @Override
     public void exit() {
+        if (Objects.isNull(tick)) {
+            log.warn("Oh Dear! Tick is null");
+            return;
+        }
         windowChecker.release(tick);
     }
 }

@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package io.kalp.athang.durg.kirtimukh.throttling.strategies.window;
+package io.kalp.athang.durg.kirtimukh.throttling.window.impl;
 
 import io.kalp.athang.durg.kirtimukh.throttling.config.impl.PriorityBucketThrottlingStrategyConfig;
-import io.kalp.athang.durg.kirtimukh.throttling.strategies.tick.Tick;
-import io.kalp.athang.durg.kirtimukh.throttling.strategies.tick.impl.WindowLocationTick;
+import io.kalp.athang.durg.kirtimukh.throttling.tick.Tick;
+import io.kalp.athang.durg.kirtimukh.throttling.tick.impl.WindowLocationTick;
+import io.kalp.athang.durg.kirtimukh.throttling.window.Window;
+import io.kalp.athang.durg.kirtimukh.throttling.window.WindowChecker;
 import lombok.Builder;
 
 import java.util.Map;

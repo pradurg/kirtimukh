@@ -91,6 +91,16 @@
         <maven.plugin.enforcer.version>3.0.0-M2</maven.plugin.enforcer.version>
         <maven.plugin.cobertura.version>2.7</maven.plugin.cobertura.version>
         <maven.plugin.coveralls.version>4.3.0</maven.plugin.coveralls.version>
+
+        <!-- Sonar-JaCoCo properties -->
+        <sonar.sources>src/main</sonar.sources>
+        <sonar.tests>src/test</sonar.tests>
+        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+        <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+        <sonar.language>java</sonar.language>
+
+        <sonar.exclusions>
+        </sonar.exclusions>
     </properties>
 
     <dependencyManagement>

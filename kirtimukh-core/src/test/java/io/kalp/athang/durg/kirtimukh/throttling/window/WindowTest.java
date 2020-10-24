@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.kalp.athang.durg.kirtimukh.throttling.strategies.window;
+package io.kalp.athang.durg.kirtimukh.throttling.window;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;

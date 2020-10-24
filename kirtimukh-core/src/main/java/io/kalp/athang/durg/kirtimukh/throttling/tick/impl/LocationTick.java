@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-package io.kalp.athang.durg.kirtimukh.throttling.strategies.window;
+package io.kalp.athang.durg.kirtimukh.throttling.tick.impl;
 
-import io.kalp.athang.durg.kirtimukh.throttling.strategies.tick.Tick;
+import io.kalp.athang.durg.kirtimukh.throttling.tick.Tick;
+import lombok.Builder;
 
 /**
  * Created by pradeep.dalvi on 20/10/20
  */
-public interface WindowChecker {
-    Tick acquire();
-
-    boolean release(final Tick location);
+public class LocationTick extends Tick {
+    @Builder
+    public LocationTick(final int location) {
+        super(location);
+    }
 }
