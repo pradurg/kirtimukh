@@ -8,9 +8,10 @@
 [![Apache V2 License](http://img.shields.io/badge/license-Apache%20V2-blue.svg)](//github.com/pradurg/kirtimukh/blob/develop/LICENSE)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.kalp.athang.durg/kirtimukh/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.kalp.athang.durg/kirtimukh)
 [![Libraries.io for GitHub](https://img.shields.io/librariesio/github/pradurg/kirtimukh.svg)](https://libraries.io/github/pradurg/kirtimukh)
-[![Analytics](https://ga-beacon.appspot.com/UA-40926073-4/hystrix-dropwzard-bundle/README.md)](https://github.com/igrigorik/ga-beacon)
+[![Analytics](https://ga-beacon.appspot.com/UA-181243333-1/pradurg/kirtimukh/README.md)](https://github.com/igrigorik/ga-beacon)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=pradurg_kirtimukh&metric=alert_status)](https://sonarcloud.io/dashboard?id=pradurg_kirtimukh)
 [![Clojars Project](https://img.shields.io/clojars/v/io.kalp.athang.durg/kirtimukh.svg)](https://clojars.org/io.kalp.athang.durg/kirtimukh)
+
 
 
 ## Introduction

@@ -1,9 +1,14 @@
 dist: xenial
 language: java
 jdk:
-  - oraclejdk11
+  #  - oraclejdk11
   - openjdk8
-  - openjdk10
-  - openjdk11
+#  - openjdk10
+#  - openjdk11
+addons:
+  sonarcloud:
+    organization: "pradurg"
+script:
+  - mvn clean verify sonar:sonar -Pcoverage -Dsonar.projectKey=pradurg_kirtimukh
 after_success:
-  - mvn clean test jacoco:report coveralls:report -DrepoToken=$REPO_TOKEN
+  - mvn clean test jacoco:report coveralls:report -DrepoToken=$COVERALLS_TOKEN
