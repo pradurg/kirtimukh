@@ -40,31 +40,31 @@ class AspectJFunctionInterceptorTest {
     public class SomeFunctionsClass implements Runnable {
         @Throttle
         public String rateLimitedFunction(int count) {
-            System.out.printf("Intercepted Function %d%n", count);
+            System.out.printf("Intercepted Function %d\n", count);
             try {
-                System.out.printf("Before Sleep for Intercepted Function %d%n", count);
+                System.out.printf("Before Sleep for Intercepted Function %d\n", count);
                 Thread.sleep(count * 10);
-                System.out.printf("After Sleep for Intercepted Function %d%n", count);
+                System.out.printf("After Sleep for Intercepted Function %d\n", count);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
             if ((random.nextInt(10) % 2) == 1) {
-                throw new RuntimeException("Checking throwable & exceptions");
+                throw new RuntimeException("Checking throwable & exceptions\n");
             }
 
             return String.format("SUCCESS: %d", count);
         }
 
         public String normalFunction(int count) {
-            System.out.printf("Not Intercepted Function %d%n", count);
+            System.out.printf("Not Intercepted Function %d\n", count);
             return "Not Intercepted Function Response";
         }
 
         @Override
         public void run() {
             int count = random.nextInt(100);
-            System.out.println("Calling " + count);
+            System.out.printf("Calling %d\n", count);
             if ((count % 2) != 1) {
                 try {
                     String response = rateLimitedFunction(count);

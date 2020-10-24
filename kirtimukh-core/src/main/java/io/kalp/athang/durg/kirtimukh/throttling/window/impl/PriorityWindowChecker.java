@@ -16,26 +16,20 @@
 
 package io.kalp.athang.durg.kirtimukh.throttling.window.impl;
 
+import io.kalp.athang.aop.ThrottlingBucketKey;
 import io.kalp.athang.durg.kirtimukh.throttling.config.impl.PriorityBucketThrottlingStrategyConfig;
 import io.kalp.athang.durg.kirtimukh.throttling.tick.Tick;
 import io.kalp.athang.durg.kirtimukh.throttling.tick.impl.WindowLocationTick;
-import io.kalp.athang.durg.kirtimukh.throttling.window.Window;
 import io.kalp.athang.durg.kirtimukh.throttling.window.WindowChecker;
 import lombok.Builder;
-
-import java.util.Map;
 
 /**
  * Created by pradeep.dalvi on 20/10/20
  */
 public class PriorityWindowChecker implements WindowChecker {
-    private final String commandName;
-    private Map<Integer, Window> priorityWindows;
-
     @Builder
-    public PriorityWindowChecker(final String commandName,
+    public PriorityWindowChecker(final ThrottlingBucketKey bucketKey,
                                  final PriorityBucketThrottlingStrategyConfig strategyConfig) {
-        this.commandName = commandName;
     }
 
     @Override

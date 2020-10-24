@@ -50,14 +50,14 @@ public abstract class ThrottlingStrategyConfig {
     @Min(1)
     private int threshold;
 
-    public ThrottlingStrategyConfig(final ThrottlingStrategyType type) {
+    protected ThrottlingStrategyConfig(final ThrottlingStrategyType type) {
         this.type = type;
         this.unit = ThrottlingWindowUnit.SECOND;
     }
 
-    public ThrottlingStrategyConfig(final ThrottlingStrategyType type,
-                                    final ThrottlingWindowUnit unit,
-                                    final int threshold) {
+    protected ThrottlingStrategyConfig(final ThrottlingStrategyType type,
+                                       final ThrottlingWindowUnit unit,
+                                       final int threshold) {
         this.type = type;
         this.unit = unit;
         this.threshold = threshold;

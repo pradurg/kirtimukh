@@ -92,7 +92,7 @@ public class ThrottlingController {
 
     private PriorityWindowChecker getPriorityWindowChecker(final ThrottlingBucketKey bucketKey) {
         return PriorityWindowChecker.builder()
-                .commandName(bucketKey.getCommandName())
+                .bucketKey(bucketKey)
                 .build();
     }
 
