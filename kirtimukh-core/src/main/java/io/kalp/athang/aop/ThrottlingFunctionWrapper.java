@@ -23,7 +23,6 @@ import io.kalp.athang.durg.kirtimukh.throttling.annotation.Throttle;
 import io.kalp.athang.durg.kirtimukh.throttling.annotation.Throttleable;
 import io.kalp.athang.durg.kirtimukh.throttling.enums.ThrottlingStage;
 import io.kalp.athang.durg.kirtimukh.throttling.exception.ThrottlingException;
-import io.kalp.athang.durg.kirtimukh.throttling.exception.ThrottlingExceptionTranslator;
 import io.kalp.athang.durg.kirtimukh.throttling.ticker.StrategyChecker;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
@@ -86,18 +85,13 @@ public class ThrottlingFunctionWrapper {
     private void enter(final ThrottlingBucketKey bucketKey,
                        final StrategyChecker checker,
                        final Stopwatch stopwatch) {
-        final ThrottlingExceptionTranslator<? extends RuntimeException> translator = ThrottlingManager.getTranslator();
         try {
             checker.enter();
             ThrottlingManager.ticker(bucketKey, ThrottlingStage.ENTERED, stopwatch);
         } catch (ThrottlingException e) {
             stopwatch.stop();
             ThrottlingManager.ticker(bucketKey, ThrottlingStage.THROTTLED, stopwatch);
-            if (translator != null) {
-                throw translator.throwable(e);
-            } else {
-                throw e;
-            }
+            ThrottlingManager.translate(e);
         }
     }
 
@@ -105,20 +99,19 @@ public class ThrottlingFunctionWrapper {
                         final ProceedingJoinPoint joinPoint,
                         final StrategyChecker checker,
                         final Stopwatch stopwatch) throws Throwable {
-        Object response = null;
-
         try {
-            response = joinPoint.proceed();
+            Object response = joinPoint.proceed();
             stopwatch.stop();
             ThrottlingManager.ticker(bucketKey, ThrottlingStage.COMPLETED, stopwatch);
-        } catch (Exception e) {
+            return response;
+        } catch (Throwable t) {
             stopwatch.stop();
             ThrottlingManager.ticker(bucketKey, ThrottlingStage.ERROR, stopwatch);
+            throw t;
         } finally {
             checker.exit();
             ThrottlingManager.ticker(bucketKey, ThrottlingStage.ACCEPTED, stopwatch);
         }
-        return response;
     }
 
     @Around("(throttlePointcutFunction() || throttleablePointcutFunction()) && pointCutExecution()")

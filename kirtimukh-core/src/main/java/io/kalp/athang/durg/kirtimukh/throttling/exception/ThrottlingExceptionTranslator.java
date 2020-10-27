@@ -20,5 +20,14 @@ package io.kalp.athang.durg.kirtimukh.throttling.exception;
  * Created by pradeep.dalvi on 17/10/20
  */
 public abstract class ThrottlingExceptionTranslator<T extends RuntimeException> {
+    public static void translate(final ThrottlingExceptionTranslator<? extends RuntimeException> translator,
+                                 final ThrottlingException e) {
+        if (translator != null) {
+            throw translator.throwable(e);
+        } else {
+            throw e;
+        }
+    }
+
     public abstract T throwable(ThrottlingException e);
 }

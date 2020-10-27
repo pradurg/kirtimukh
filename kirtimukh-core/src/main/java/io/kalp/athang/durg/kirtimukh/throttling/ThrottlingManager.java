@@ -23,10 +23,10 @@ import com.google.common.base.Strings;
 import io.kalp.athang.aop.ThrottlingBucketKey;
 import io.kalp.athang.durg.kirtimukh.throttling.config.ThrottlingStrategyConfig;
 import io.kalp.athang.durg.kirtimukh.throttling.enums.ThrottlingStage;
+import io.kalp.athang.durg.kirtimukh.throttling.exception.ThrottlingException;
 import io.kalp.athang.durg.kirtimukh.throttling.exception.ThrottlingExceptionTranslator;
 import io.kalp.athang.durg.kirtimukh.throttling.ticker.StrategyChecker;
 import io.kalp.athang.durg.kirtimukh.throttling.window.impl.TimedWindowChecker;
-import lombok.Getter;
 import lombok.experimental.UtilityClass;
 
 import java.util.Map;
@@ -39,7 +39,6 @@ import java.util.concurrent.TimeUnit;
 public class ThrottlingManager {
     private ThrottlingController controller;
 
-    @Getter
     private ThrottlingExceptionTranslator<? extends RuntimeException> translator;
 
     private MetricRegistry metrics;
@@ -71,6 +70,10 @@ public class ThrottlingManager {
         if (timer != null) {
             timer.update(stopwatch.elapsed(TimeUnit.MILLISECONDS), TimeUnit.MILLISECONDS);
         }
+    }
+
+    public static void translate(ThrottlingException t) {
+        ThrottlingExceptionTranslator.translate(translator, t);
     }
 
     public static void ticker(final ThrottlingBucketKey bucketKey,

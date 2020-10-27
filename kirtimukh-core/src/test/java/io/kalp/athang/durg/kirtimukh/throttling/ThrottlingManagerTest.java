@@ -66,7 +66,7 @@ class ThrottlingManagerTest {
     }
 
     @Test
-    void ticker() {
+    void tickerWithoutBucket() {
         Stopwatch stopwatch = Stopwatch.createStarted();
         ThrottlingManager.ticker(ThrottlingBucketKey.builder()
                         .clazz(ThrottlingManagerTest.class)
@@ -74,6 +74,19 @@ class ThrottlingManagerTest {
                         .build(),
                 ThrottlingStage.ENTERED,
                 stopwatch);
-        Assertions.assertTrue(stopwatch.elapsed(TimeUnit.MILLISECONDS) > 0);
+        Assertions.assertTrue(stopwatch.elapsed(TimeUnit.NANOSECONDS) > 0);
+    }
+
+    @Test
+    void tickerWithBucket() {
+        Stopwatch stopwatch = Stopwatch.createStarted();
+        ThrottlingManager.ticker(ThrottlingBucketKey.builder()
+                        .bucketName("TEST_BUCKET")
+                        .clazz(ThrottlingManagerTest.class)
+                        .functionName("ticker")
+                        .build(),
+                ThrottlingStage.THROTTLED,
+                stopwatch);
+        Assertions.assertTrue(stopwatch.elapsed(TimeUnit.NANOSECONDS) > 0);
     }
 }
