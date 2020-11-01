@@ -69,8 +69,6 @@
     </distributionManagement>
 
     <properties>
-        <revision>0.0.1-SNAPSHOT</revision>
-        <project.version>0.0.1-SNAPSHOT</project.version>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
