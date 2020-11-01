@@ -24,7 +24,7 @@ echo "Preparing to release version:" $RELEASE_VERSION
 
 # Update pom release version
 mvn versions:set -DnewVersion=$RELEASE_VERSION
-if !git status --porcelain; then
+if ! git status --porcelain; then
   # Deploy release version
   echo "Deploying changes for version:" $RELEASE_VERSION
   if mvn clean install sonar:sonar deploy; then
