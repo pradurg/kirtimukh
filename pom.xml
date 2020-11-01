@@ -97,7 +97,6 @@
         <maven.plugin.surefire.version>2.19.1</maven.plugin.surefire.version>
         <maven.plugin.jacoco.version>0.8.5</maven.plugin.jacoco.version>
         <maven.plugin.enforcer.version>3.0.0-M2</maven.plugin.enforcer.version>
-        <maven.plugin.release.version>3.0.0-M1</maven.plugin.release.version>
         <maven.plugin.cobertura.version>2.7</maven.plugin.cobertura.version>
         <maven.plugin.coveralls.version>4.3.0</maven.plugin.coveralls.version>
 
@@ -373,14 +372,6 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>${maven.plugin.release.version}</version>
-                <configuration>
-                    <tagNameFormat>v@{project.version}</tagNameFormat>
-                </configuration>
             </plugin>
         </plugins>
     </build>
