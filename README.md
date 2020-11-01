@@ -6,12 +6,11 @@
 [![Test Coverage](https://api.codeclimate.com/v1/badges/69d188353b29f9352a34/test_coverage)](https://codeclimate.com/github/pradurg/kirtimukh/test_coverage)
 [![Coverage Status](https://coveralls.io/repos/pradurg/kirtimukh/badge.svg)](https://coveralls.io/r/pradurg/kirtimukh)
 [![Apache V2 License](http://img.shields.io/badge/license-Apache%20V2-blue.svg)](//github.com/pradurg/kirtimukh/blob/develop/LICENSE)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.kalp.athang.durg/kirtimukh/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.kalp.athang.durg/kirtimukh)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.durg.kirtimukh/kirtimukh/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.durg.kirtimukh/kirtimukh)
 [![Libraries.io for GitHub](https://img.shields.io/librariesio/github/pradurg/kirtimukh.svg)](https://libraries.io/github/pradurg/kirtimukh)
 [![Analytics](https://ga-beacon.appspot.com/UA-181243333-1/pradurg/kirtimukh/README.md)](https://github.com/igrigorik/ga-beacon)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=pradurg_kirtimukh&metric=alert_status)](https://sonarcloud.io/dashboard?id=pradurg_kirtimukh)
-[![Clojars Project](https://img.shields.io/clojars/v/io.kalp.athang.durg/kirtimukh.svg)](https://clojars.org/io.kalp.athang.durg/kirtimukh)
-
+[![Clojars Project](https://img.shields.io/clojars/v/io.durg.kirtimukh/kirtimukh.svg)](https://clojars.org/io.durg.kirtimukh/kirtimukh)
 
 
 ## Introduction
@@ -43,22 +42,22 @@ Throttling essentially provides a mechanism for the flow control in the event of
 ### About Kirtimukh
 ##### _Kirtimukh_ is the guardian of the thresholds.
 
-[![Clojars Project](https://img.shields.io/clojars/v/io.kalp.athang.durg/kirtimukh-core.svg)](https://clojars.org/io.kalp.athang.durg/kirtimukh-core)
-[![Clojars Project](https://img.shields.io/clojars/v/io.kalp.athang.durg/kirtimukh-dw-throttling-bundle.svg)](https://clojars.org/io.kalp.athang.durg/kirtimukh-dw-throttling-bundle)
+[![Clojars Project](https://img.shields.io/clojars/v/io.durg.kirtimukh/kirtimukh-core.svg)](https://clojars.org/io.durg.kirtimukh/kirtimukh-core)
+[![Clojars Project](https://img.shields.io/clojars/v/io.durg.kirtimukh.dw/throttling-bundle.svg)](https://clojars.org/io.durg.kirtimukh.dw/throttling-bundle)
 
 ## How to use?
 A Throttling bundle for [DropWizard](//github.com/dropwizard/dropwizard).
 ### Maven
 ```
-    <dependency>
-        <groupId>io.kalp.athang.durg</groupId>
-        <artifactId>kirtimukh-dw-throttling-bundle</artifactId>
-        <version>1.0.0.4</version>
-    </dependency>
+<dependency>
+    <groupId>io.durg.kirtimukh.dw</groupId>
+    <artifactId>throttling-bundle</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+</dependency>
 ```
 ### Gradle 
 ```
-compile 'io.kalp.athang.durg:kirtimukh:1.0.0.4'
+compile 'io.durg.kirtimukh.dw:throttling-bundle:0.0.1-SNAPSHOT'
 ```
 
 ### Sample bundle initialisation
