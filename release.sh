@@ -17,7 +17,7 @@
 #!/usr/bin/env bash
 
 #Default release version
-source .version
+. .version
 RELEASE_VERSION=${1:-$RELEASE_VERSION}
 
 echo "Preparing to release version:" $RELEASE_VERSION
