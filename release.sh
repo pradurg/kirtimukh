@@ -27,7 +27,7 @@ mvn versions:set -DnewVersion=$RELEASE_VERSION
 if ! git diff-index --quiet HEAD; then
   # Deploy release version
   echo "Deploying changes for version:" $RELEASE_VERSION
-  if mvn clean install sonar:sonar deploy; then
+  if mvn clean install deploy; then
     # Once deploy is successful
     if [[ "$RELEASE_VERSION" == *-SNAPSHOT ]]; then
       echo "Working on snapshot version"
