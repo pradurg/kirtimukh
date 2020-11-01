@@ -65,7 +65,7 @@ public class HystrixCommandController {
                 if (parentActiveSpan != null) {
                     scope = GlobalTracer.get()
                             .scopeManager()
-                            .activate(parentActiveSpan, false);
+                            .activate(parentActiveSpan);
                 }
 
                 if (!Strings.isNullOrEmpty(traceId)) {

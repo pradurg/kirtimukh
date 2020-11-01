@@ -36,16 +36,20 @@ As organisations grow bigger & bigger, clients may not have fine-tuned parameter
 Throttling essentially provides a mechanism for the flow control in the event of unexpected increase in traffic.
 
 ## About
-### Athang | Durg
+### Durg
 ##### _Durg_ means _Fortress_ or something difficult to conquer.
 
 ### About Kirtimukh
 ##### _Kirtimukh_ is the guardian of the thresholds.
 
+##### Versions
+[![Clojars Project](https://img.shields.io/clojars/v/io.durg.kirtimukh/kirtimukh.svg)](https://clojars.org/io.durg.kirtimukh/kirtimukh)
+
 [![Clojars Project](https://img.shields.io/clojars/v/io.durg.kirtimukh/kirtimukh-core.svg)](https://clojars.org/io.durg.kirtimukh/kirtimukh-core)
+
 [![Clojars Project](https://img.shields.io/clojars/v/io.durg.kirtimukh.dw/throttling-bundle.svg)](https://clojars.org/io.durg.kirtimukh.dw/throttling-bundle)
 
-## How to use?
+## How to use throttling?
 A Throttling bundle for [DropWizard](//github.com/dropwizard/dropwizard).
 ### Maven
 ```

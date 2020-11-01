@@ -77,7 +77,7 @@
         <lombok.version>1.18.16</lombok.version>
 
         <hystrix.version>1.5.18</hystrix.version>
-        <opentracing.version>0.31.0</opentracing.version>
+        <opentracing.version>0.33.0</opentracing.version>
         <guice.version>4.2.3</guice.version>
         <guava.version>30.0-jre</guava.version>
         <validation-api.version>2.0.1.Final</validation-api.version>
@@ -88,7 +88,7 @@
 
         <junit.jupiter.version>5.7.0</junit.jupiter.version>
         <junit.surefire.provider.version>1.0.3</junit.surefire.provider.version>
-        <junit.mockito.version>3.4.6</junit.mockito.version>
+        <junit.mockito.version>3.6.0</junit.mockito.version>
 
         <maven.plugin.aspectj.version>1.11</maven.plugin.aspectj.version>
         <maven.plugin.compiler.version>3.8.1</maven.plugin.compiler.version>
