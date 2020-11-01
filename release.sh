@@ -23,7 +23,7 @@ RELEASE_VERSION=${1:-$RELEASE_VERSION}
 echo "Preparing to release version:" $RELEASE_VERSION
 
 # Update pom release version
-mvn versions:set -DnewVersion=$RELEASE_VERSION
+mvn versions:set -DgenerateBackupPoms=false -DnewVersion=$RELEASE_VERSION
 if ! git diff-index --quiet HEAD; then
   # Deploy release version
   echo "Deploying changes for version:" $RELEASE_VERSION

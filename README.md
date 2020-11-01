@@ -99,7 +99,7 @@ throttlingConfig:
 ```
 
 ## Licence
-This project is released under an [Apache Licence v2](http://www.apache.org/licenses/LICENSE-2.0).
+This project has been released under an [Apache Licence v2](http://www.apache.org/licenses/LICENSE-2.0).
 ### ASF v2.0
 ```
  Copyright (c) 2020 Pradeep A. Dalvi <prad@apache.org>
