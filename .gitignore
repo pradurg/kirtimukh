@@ -3,6 +3,6 @@
 *.iws
 *.iml
 target/*
-kirtimukh-core/target/
-kirtimukh-dw-throttling-bundle/target/
+core/target/
+throttling-dw-bundle/target/
 .DS_Store

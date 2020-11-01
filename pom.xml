@@ -19,12 +19,17 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>io.durg</groupId>
+        <artifactId>kirtimukh</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
 
-    <groupId>io.kalp.athang.durg</groupId>
+    <groupId>io.durg.kirtimukh</groupId>
     <artifactId>kirtimukh</artifactId>
-    <version>1.0.0.4</version>
+    <name>Durg | Kirtimukh</name>
+    <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>Kirtimukh</name>
 
     <licenses>
         <license>
@@ -35,8 +40,8 @@
         </license>
     </licenses>
     <modules>
-        <module>kirtimukh-core</module>
-        <module>kirtimukh-dw-throttling-bundle</module>
+        <module>core</module>
+        <module>throttling-dw-bundle</module>
     </modules>
 
     <developers>
@@ -64,31 +69,37 @@
     </distributionManagement>
 
     <properties>
-        <project.version>1.0.0.4</project.version>
+        <revision>0.0.1-SNAPSHOT</revision>
+        <project.version>0.0.1-SNAPSHOT</project.version>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
         <sl4j.version>1.7.26</sl4j.version>
         <aspectj.version>1.9.6</aspectj.version>
-        <dropwizard.version>2.0.14</dropwizard.version>
-        <dropwizard.metrics.version>4.1.14</dropwizard.metrics.version>
         <lombok.version>1.18.16</lombok.version>
+
+        <hystrix.version>1.5.18</hystrix.version>
+        <opentracing.version>0.31.0</opentracing.version>
         <guice.version>4.2.3</guice.version>
         <guava.version>30.0-jre</guava.version>
         <validation-api.version>2.0.1.Final</validation-api.version>
-
         <jackson.core.version>2.11.3</jackson.core.version>
+
+        <dropwizard.version>2.0.14</dropwizard.version>
+        <dropwizard.metrics.version>4.1.14</dropwizard.metrics.version>
+
         <junit.jupiter.version>5.7.0</junit.jupiter.version>
         <junit.surefire.provider.version>1.0.3</junit.surefire.provider.version>
         <junit.mockito.version>3.4.6</junit.mockito.version>
 
         <maven.plugin.aspectj.version>1.11</maven.plugin.aspectj.version>
         <maven.plugin.compiler.version>3.8.1</maven.plugin.compiler.version>
-        <maven.plugin.deploy.version>2.8.2</maven.plugin.deploy.version>
         <maven.plugin.jar.version>3.0.2</maven.plugin.jar.version>
         <maven.plugin.lombok.version>1.16.22.0</maven.plugin.lombok.version>
         <maven.plugin.surefire.version>2.19.1</maven.plugin.surefire.version>
         <maven.plugin.jacoco.version>0.8.5</maven.plugin.jacoco.version>
         <maven.plugin.enforcer.version>3.0.0-M2</maven.plugin.enforcer.version>
+        <maven.plugin.release.version>3.0.0-M1</maven.plugin.release.version>
         <maven.plugin.cobertura.version>2.7</maven.plugin.cobertura.version>
         <maven.plugin.coveralls.version>4.3.0</maven.plugin.coveralls.version>
 
@@ -110,6 +121,24 @@
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
                 <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.netflix.hystrix</groupId>
+                <artifactId>hystrix-core</artifactId>
+                <version>${hystrix.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>io.opentracing</groupId>
+                <artifactId>opentracing-api</artifactId>
+                <version>${opentracing.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.opentracing</groupId>
+                <artifactId>opentracing-util</artifactId>
+                <version>${opentracing.version}</version>
             </dependency>
 
             <dependency>
@@ -342,12 +371,19 @@
                                     <message>No Snapshots Allowed!</message>
                                 </requireReleaseDeps>
                             </rules>
-                            <fail>true</fail>
+                            <fail>false</fail>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>${maven.plugin.release.version}</version>
+                <configuration>
+                    <tagNameFormat>v@{project.version}</tagNameFormat>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
