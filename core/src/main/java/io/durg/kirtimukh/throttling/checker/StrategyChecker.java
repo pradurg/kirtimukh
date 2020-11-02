@@ -14,20 +14,13 @@
  * limitations under the License.
  */
 
-package io.durg.kirtimukh.throttling.exception;
+package io.durg.kirtimukh.throttling.checker;
 
 /**
- * Created by pradeep.dalvi on 17/10/20
+ * Created by pradeep.dalvi on 15/10/20
  */
-public interface ThrottlingExceptionTranslator<T extends RuntimeException> {
-    static void translate(final ThrottlingExceptionTranslator<? extends RuntimeException> translator,
-                          final ThrottlingException e) {
-        if (translator != null) {
-            throw translator.throwable(e);
-        } else {
-            throw e;
-        }
-    }
+public interface StrategyChecker {
+    void enter();
 
-    T throwable(ThrottlingException e);
+    void exit();
 }

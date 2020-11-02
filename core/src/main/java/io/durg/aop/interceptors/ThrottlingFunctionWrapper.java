@@ -19,11 +19,11 @@ package io.durg.aop.interceptors;
 import com.google.common.base.Stopwatch;
 import io.durg.aop.annotation.Throttle;
 import io.durg.aop.annotation.Throttleable;
-import io.durg.kirtimukh.throttling.ThrottlingBucketKey;
+import io.durg.kirtimukh.throttling.ThrottlingKey;
 import io.durg.kirtimukh.throttling.ThrottlingManager;
+import io.durg.kirtimukh.throttling.checker.StrategyChecker;
 import io.durg.kirtimukh.throttling.enums.ThrottlingStage;
 import io.durg.kirtimukh.throttling.exception.ThrottlingException;
-import io.durg.kirtimukh.throttling.ticker.StrategyChecker;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
@@ -53,7 +53,7 @@ public class ThrottlingFunctionWrapper {
         // To be empty
     }
 
-    private ThrottlingBucketKey getThrottleBucketKey(final Signature signature) {
+    private ThrottlingKey getThrottleBucketKey(final Signature signature) {
         MethodSignature methodSignature = MethodSignature.class.cast(signature);
         final Throttle throttleFunction = methodSignature.getMethod()
                 .getAnnotation(Throttle.class);
@@ -70,18 +70,18 @@ public class ThrottlingFunctionWrapper {
             bucketName = throttleFunction.bucket();
         }
 
-        return ThrottlingBucketKey.builder()
+        return ThrottlingKey.builder()
                 .bucketName(bucketName)
                 .clazz(methodSignature.getDeclaringType())
                 .functionName(methodSignature.getMethod().getName())
                 .build();
     }
 
-    private StrategyChecker getStrategyChecker(final ThrottlingBucketKey bucketKey) {
+    private StrategyChecker getStrategyChecker(final ThrottlingKey bucketKey) {
         return ThrottlingManager.register(bucketKey);
     }
 
-    private void enter(final ThrottlingBucketKey bucketKey,
+    private void enter(final ThrottlingKey bucketKey,
                        final StrategyChecker checker,
                        final Stopwatch stopwatch) {
         try {
@@ -94,7 +94,7 @@ public class ThrottlingFunctionWrapper {
         }
     }
 
-    private Object exit(final ThrottlingBucketKey bucketKey,
+    private Object exit(final ThrottlingKey bucketKey,
                         final ProceedingJoinPoint joinPoint,
                         final StrategyChecker checker,
                         final Stopwatch stopwatch) throws Throwable {
@@ -116,7 +116,7 @@ public class ThrottlingFunctionWrapper {
     @Around("(throttlePointcutFunction() || throttleablePointcutFunction()) && pointCutExecution()")
     public Object processThrottle(final ProceedingJoinPoint joinPoint) throws Throwable {
         Stopwatch stopwatch = Stopwatch.createStarted();
-        ThrottlingBucketKey bucketKey = getThrottleBucketKey(joinPoint.getSignature());
+        ThrottlingKey bucketKey = getThrottleBucketKey(joinPoint.getSignature());
 
         StrategyChecker checker = getStrategyChecker(bucketKey);
 

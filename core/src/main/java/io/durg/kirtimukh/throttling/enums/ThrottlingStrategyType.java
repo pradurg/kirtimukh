@@ -22,38 +22,38 @@ package io.durg.kirtimukh.throttling.enums;
 public enum ThrottlingStrategyType {
     QUOTA() {
         @Override
-        public <T> T accept(ThrottlingStrategyTypeVisitor<T> visitor) {
+        public <T> T accept(Visitor<T> visitor) {
             return visitor.visitQuota();
         }
     },
     LEAKY_BUCKET {
         @Override
-        public <T> T accept(ThrottlingStrategyTypeVisitor<T> visitor) {
+        public <T> T accept(Visitor<T> visitor) {
             return visitor.visitLeakyBucket();
         }
     },
     PRIORITY_BUCKET {
         @Override
-        public <T> T accept(ThrottlingStrategyTypeVisitor<T> visitor) {
-            return visitor.visitPriorityBuckets();
+        public <T> T accept(Visitor<T> visitor) {
+            return visitor.visitPriorityBucket();
         }
     },
-    NG {
+    CUSTOM_STRATEGY {
         @Override
-        public <T> T accept(ThrottlingStrategyTypeVisitor<T> visitor) {
-            return visitor.visitNg();
+        public <T> T accept(Visitor<T> visitor) {
+            return visitor.visitCustomStrategy();
         }
     };
 
-    public abstract <T> T accept(ThrottlingStrategyType.ThrottlingStrategyTypeVisitor<T> visitor);
+    public abstract <T> T accept(Visitor<T> visitor);
 
-    public interface ThrottlingStrategyTypeVisitor<T> {
-        public T visitQuota();
+    public interface Visitor<T> {
+        T visitQuota();
 
-        public T visitLeakyBucket();
+        T visitLeakyBucket();
 
-        public T visitPriorityBuckets();
+        T visitPriorityBucket();
 
-        public T visitNg();
+        T visitCustomStrategy();
     }
 }

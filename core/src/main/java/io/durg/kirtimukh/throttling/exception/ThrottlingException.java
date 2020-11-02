@@ -17,27 +17,26 @@
 package io.durg.kirtimukh.throttling.exception;
 
 import io.durg.kirtimukh.throttling.enums.ThrottlingStrategyType;
-import io.durg.kirtimukh.throttling.enums.ThrottlingWindowUnit;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
 /**
  * Created by pradeep.dalvi on 15/10/20
  */
-@Data
-@Builder
-@EqualsAndHashCode(callSuper = true)
-public class ThrottlingException extends RuntimeException {
-    private final String commandKey;
-
+public abstract class ThrottlingException extends RuntimeException {
+    @Getter
     private final ThrottlingStrategyType strategyType;
 
-    private final ThrottlingWindowUnit unit;
-
-    private final int cardinality;
-
-    private final int threshold;
-
+    @Getter
     private final String message;
+
+    @Getter
+    private final boolean graceful;
+
+    public ThrottlingException(final ThrottlingStrategyType strategyType,
+                               final String message,
+                               final boolean graceful) {
+        this.strategyType = strategyType;
+        this.message = message;
+        this.graceful = graceful;
+    }
 }

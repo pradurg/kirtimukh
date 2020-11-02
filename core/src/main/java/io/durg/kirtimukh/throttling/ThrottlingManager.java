@@ -20,11 +20,11 @@ import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 import com.google.common.base.Stopwatch;
 import com.google.common.base.Strings;
+import io.durg.kirtimukh.throttling.checker.StrategyChecker;
 import io.durg.kirtimukh.throttling.config.ThrottlingStrategyConfig;
+import io.durg.kirtimukh.throttling.custom.CustomThrottlingController;
 import io.durg.kirtimukh.throttling.enums.ThrottlingStage;
 import io.durg.kirtimukh.throttling.exception.ThrottlingException;
-import io.durg.kirtimukh.throttling.exception.ThrottlingExceptionTranslator;
-import io.durg.kirtimukh.throttling.ticker.StrategyChecker;
 import io.durg.kirtimukh.throttling.window.impl.TimedWindowChecker;
 import lombok.experimental.UtilityClass;
 
@@ -49,9 +49,14 @@ public class ThrottlingManager {
 
     public void initialise(final ThrottlingStrategyConfig defaultConfig,
                            final Map<String, ThrottlingStrategyConfig> commandConfigs,
+                           final CustomThrottlingController customThrottlingController,
                            final ThrottlingExceptionTranslator<? extends RuntimeException> exceptionTranslator,
                            final MetricRegistry metricRegistry) {
-        controller = new ThrottlingController(defaultConfig, commandConfigs);
+        controller = ThrottlingController.builder()
+                .defaultConfig(defaultConfig)
+                .commandConfigs(commandConfigs)
+                .customThrottlingController(customThrottlingController)
+                .build();
         translator = exceptionTranslator;
         metrics = metricRegistry;
     }
@@ -60,8 +65,12 @@ public class ThrottlingManager {
         return controller.getInfo();
     }
 
-    public StrategyChecker register(final ThrottlingBucketKey bucketKey) {
+    public StrategyChecker register(final ThrottlingKey bucketKey) {
         return controller.register(bucketKey);
+    }
+
+    public static void translate(final ThrottlingException t) {
+        ThrottlingExceptionTranslator.translate(translator, t);
     }
 
     private static void timer(final String name, final ThrottlingStage stage, final Stopwatch stopwatch) {
@@ -71,11 +80,7 @@ public class ThrottlingManager {
         }
     }
 
-    public static void translate(ThrottlingException t) {
-        ThrottlingExceptionTranslator.translate(translator, t);
-    }
-
-    public static void ticker(final ThrottlingBucketKey bucketKey,
+    public static void ticker(final ThrottlingKey bucketKey,
                               final ThrottlingStage stage,
                               final Stopwatch stopwatch) {
         if (metrics == null) {

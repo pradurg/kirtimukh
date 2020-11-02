@@ -14,28 +14,23 @@
  * limitations under the License.
  */
 
-package io.durg.kirtimukh.throttling.ticker.impl;
+package io.durg.kirtimukh.throttling.custom;
 
-import io.durg.kirtimukh.throttling.ticker.StrategyChecker;
-import io.durg.kirtimukh.throttling.window.impl.TimedWindowChecker;
+import io.durg.kirtimukh.throttling.ThrottlingKey;
 
 /**
- * Created by pradeep.dalvi on 15/10/20
+ * Created by pradeep.dalvi on 03/11/20
  */
-public class QuotaStrategyTicker implements StrategyChecker {
-    private final TimedWindowChecker windowChecker;
+public abstract class CustomThrottlingController {
+    private final CustomThrottlingKeyResolver keyResolver;
 
-    public QuotaStrategyTicker(TimedWindowChecker windowChecker) {
-        this.windowChecker = windowChecker;
+    public CustomThrottlingController(final CustomThrottlingKeyResolver customThrottlingKeyResolver) {
+        this.keyResolver = customThrottlingKeyResolver;
     }
 
-    @Override
-    public void enter() {
-        windowChecker.acquire();
+    public CustomGatePass resolve(final ThrottlingKey key) {
+        return keyResolver.resolve(key);
     }
 
-    @Override
-    public void exit() {
-        // Do nothing
-    }
+    public abstract CustomThrottlingStrategyChecker checker(final CustomGatePass customGatePass);
 }

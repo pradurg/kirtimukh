@@ -16,13 +16,11 @@
 
 package io.durg.aop;
 
+import io.durg.aop.annotation.Throttle;
 import io.durg.aop.interceptors.ThrottlingFunctionWrapper;
 import io.durg.kirtimukh.throttling.ThrottlingManager;
-import io.durg.aop.annotation.Throttle;
 import io.durg.kirtimukh.throttling.config.impl.LeakyBucketThrottlingStrategyConfig;
 import io.durg.kirtimukh.throttling.enums.ThrottlingWindowUnit;
-import io.durg.kirtimukh.throttling.exception.ThrottlingException;
-import io.durg.kirtimukh.throttling.exception.ThrottlingExceptionTranslator;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.reflect.MethodSignature;
@@ -52,12 +50,8 @@ class ThrottlingFunctionWrapperTest {
                         .threshold(1)
                         .build(),
                 new HashMap<>(),
-                new ThrottlingExceptionTranslator<RuntimeException>() {
-                    @Override
-                    public RuntimeException throwable(ThrottlingException e) {
-                        return new UnsupportedOperationException();
-                    }
-                },
+                null,
+                e -> new UnsupportedOperationException(),
                 null);
 
         Mockito.when(joinPoint.getTarget())

@@ -14,13 +14,30 @@
  * limitations under the License.
  */
 
-package io.durg.kirtimukh.throttling.ticker;
+package io.durg.kirtimukh.throttling.custom.ng;
 
 /**
- * Created by pradeep.dalvi on 15/10/20
+ * Created by pradeep.dalvi on 03/11/20
  */
-public interface StrategyChecker {
-    void enter();
+public enum NgThrottlingKeyType {
+    BUCKET() {
+        @Override
+        public <T> T accept(final Visitor<T> visitor) {
+            return visitor.visitBucket();
+        }
+    },
+    COMMAND() {
+        @Override
+        public <T> T accept(final Visitor<T> visitor) {
+            return visitor.visitCommand();
+        }
+    };
 
-    void exit();
+    public abstract <T> T accept(final NgThrottlingKeyType.Visitor<T> visitor);
+
+    public interface Visitor<T> {
+        T visitBucket();
+
+        T visitCommand();
+    }
 }

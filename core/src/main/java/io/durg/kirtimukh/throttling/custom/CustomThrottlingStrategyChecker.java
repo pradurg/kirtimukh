@@ -14,30 +14,33 @@
  * limitations under the License.
  */
 
-package io.durg.kirtimukh.throttling.ticker.impl;
+package io.durg.kirtimukh.throttling.custom;
 
-import io.durg.kirtimukh.throttling.tick.impl.WindowLocationTick;
-import io.durg.kirtimukh.throttling.ticker.StrategyChecker;
-import io.durg.kirtimukh.throttling.window.impl.PriorityWindowChecker;
+import io.durg.kirtimukh.throttling.checker.StrategyChecker;
 
 /**
- * Created by pradeep.dalvi on 15/10/20
+ * Created by pradeep.dalvi on 02/11/20
  */
-public class PriorityBucketTicker implements StrategyChecker {
-    private final PriorityWindowChecker windowChecker;
-    private WindowLocationTick tick;
+public abstract class CustomThrottlingStrategyChecker implements StrategyChecker {
+    private final CustomGatePass customGatePass;
 
-    public PriorityBucketTicker(PriorityWindowChecker windowChecker) {
-        this.windowChecker = windowChecker;
+    public CustomThrottlingStrategyChecker(final CustomGatePass customGatePass) {
+        this.customGatePass = customGatePass;
     }
 
     @Override
     public void enter() {
-        tick = windowChecker.acquire();
+        CustomThrottlingVerdict verdict = customGatePass.enter();
+
+        if (verdict != CustomThrottlingVerdict.ALLOW) {
+            react(verdict, customGatePass);
+        }
     }
 
     @Override
     public void exit() {
-        windowChecker.release(tick);
+        customGatePass.exit();
     }
+
+    public abstract void react(final CustomThrottlingVerdict verdict, final CustomGatePass customGatePass);
 }

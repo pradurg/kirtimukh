@@ -16,12 +16,10 @@
 
 package io.durg.kirtimukh.dw;
 
-import io.durg.kirtimukh.throttling.ThrottlingBucketKey;
+import io.durg.kirtimukh.throttling.ThrottlingKey;
 import io.durg.kirtimukh.throttling.ThrottlingManager;
 import io.durg.kirtimukh.throttling.config.impl.LeakyBucketThrottlingStrategyConfig;
 import io.durg.kirtimukh.throttling.enums.ThrottlingWindowUnit;
-import io.durg.kirtimukh.throttling.exception.ThrottlingException;
-import io.durg.kirtimukh.throttling.exception.ThrottlingExceptionTranslator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,18 +38,14 @@ class InfoResourceTest {
                         .threshold(1)
                         .build(),
                 new HashMap<>(),
-                new ThrottlingExceptionTranslator<RuntimeException>() {
-                    @Override
-                    public RuntimeException throwable(ThrottlingException e) {
-                        return new UnsupportedOperationException();
-                    }
-                },
+                null,
+                e -> new UnsupportedOperationException(),
                 null);
     }
 
     @Test
     void list() {
-        ThrottlingManager.register(ThrottlingBucketKey.builder()
+        ThrottlingManager.register(ThrottlingKey.builder()
                 .clazz(InfoResourceTest.class)
                 .functionName("list")
                 .build());
@@ -60,7 +54,7 @@ class InfoResourceTest {
 
     @Test
     void test() {
-        ThrottlingManager.register(ThrottlingBucketKey.builder()
+        ThrottlingManager.register(ThrottlingKey.builder()
                 .clazz(InfoResourceTest.class)
                 .functionName("test")
                 .build());

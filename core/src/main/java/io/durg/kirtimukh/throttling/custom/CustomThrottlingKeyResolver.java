@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package io.durg.kirtimukh.throttling.enums;
+package io.durg.kirtimukh.throttling.custom;
+
+import io.durg.kirtimukh.throttling.ThrottlingKey;
 
 /**
- * Created by pradeep.dalvi on 15/10/20
+ * Created by pradeep.dalvi on 03/11/20
  */
-public enum ThrottlingVerdict {
-    APPROVE,
-    DECLINE,
-    WAIT,
-    ACK
+public interface CustomThrottlingKeyResolver {
+    CustomGatePass resolve(final ThrottlingKey bucketKey);
 }

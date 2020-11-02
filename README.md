@@ -35,14 +35,13 @@ As organisations grow bigger & bigger, clients may not have fine-tuned parameter
 ##### And then comes those _completely eventful_ moments when in the event of _Outages due to Back Pressure_, we end up searching for _which client_ caused this.
 Throttling essentially provides a mechanism for the flow control in the event of unexpected increase in traffic.
 
-## About
-### Durg
+## About Durg | Kirtimukh
 ##### _Durg_ means _Fortress_ or something difficult to conquer.
 
 ### About Kirtimukh
 ##### _Kirtimukh_ is the guardian of the thresholds.
 
-##### Versions
+##### Current Version
 [![Clojars Project](https://img.shields.io/clojars/v/io.durg.kirtimukh/kirtimukh.svg)](https://clojars.org/io.durg.kirtimukh/kirtimukh)
 
 [![Clojars Project](https://img.shields.io/clojars/v/io.durg.kirtimukh/kirtimukh-core.svg)](https://clojars.org/io.durg.kirtimukh/kirtimukh-core)

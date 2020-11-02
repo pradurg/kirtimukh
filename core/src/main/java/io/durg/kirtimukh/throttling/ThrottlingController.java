@@ -17,17 +17,21 @@
 package io.durg.kirtimukh.throttling;
 
 import com.google.inject.Singleton;
+import io.durg.kirtimukh.throttling.checker.StrategyChecker;
+import io.durg.kirtimukh.throttling.checker.impl.LeakyBucketStrategyChecker;
+import io.durg.kirtimukh.throttling.checker.impl.PriorityBucketStrategyChecker;
+import io.durg.kirtimukh.throttling.checker.impl.QuotaStrategyChecker;
 import io.durg.kirtimukh.throttling.config.ThrottlingStrategyConfig;
+import io.durg.kirtimukh.throttling.custom.CustomGatePass;
+import io.durg.kirtimukh.throttling.custom.CustomThrottlingController;
 import io.durg.kirtimukh.throttling.enums.ThrottlingStrategyType;
 import io.durg.kirtimukh.throttling.enums.ThrottlingWindowUnit;
-import io.durg.kirtimukh.throttling.ticker.StrategyChecker;
-import io.durg.kirtimukh.throttling.ticker.impl.LeakyBucketTicker;
-import io.durg.kirtimukh.throttling.ticker.impl.PriorityBucketTicker;
-import io.durg.kirtimukh.throttling.ticker.impl.QuotaStrategyTicker;
 import io.durg.kirtimukh.throttling.window.impl.PriorityWindowChecker;
 import io.durg.kirtimukh.throttling.window.impl.TimedWindowChecker;
+import lombok.Builder;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -38,12 +42,16 @@ public class ThrottlingController {
     private final ConcurrentHashMap<String, TimedWindowChecker> windowCheckerMap;
     private final ConcurrentHashMap<String, ThrottlingStrategyType> strategyTypeMap;
     private final ThrottlingStrategyConfig defaultStrategyConfig;
+    private final CustomThrottlingController customThrottlingController;
 
+    @Builder
     public ThrottlingController(final ThrottlingStrategyConfig defaultConfig,
-                                final Map<String, ThrottlingStrategyConfig> commandConfigs) {
+                                final Map<String, ThrottlingStrategyConfig> commandConfigs,
+                                final CustomThrottlingController customThrottlingController) {
         this.windowCheckerMap = new ConcurrentHashMap<>();
         this.strategyTypeMap = new ConcurrentHashMap<>();
         this.defaultStrategyConfig = defaultConfig;
+        this.customThrottlingController = customThrottlingController;
 
         for (Map.Entry<String, ThrottlingStrategyConfig> entry : commandConfigs.entrySet()) {
             this.strategyTypeMap.put(entry.getKey(), entry.getValue().getType());
@@ -62,7 +70,7 @@ public class ThrottlingController {
     private TimedWindowChecker getWindowChecker(final String configKey,
                                                 final ThrottlingStrategyConfig strategyConfig) {
         return strategyConfig.getUnit()
-                .accept(new ThrottlingWindowUnit.ThrottlingWindowVisitor<TimedWindowChecker>() {
+                .accept(new ThrottlingWindowUnit.Visitor<TimedWindowChecker>() {
                     @Override
                     public TimedWindowChecker visitMillisecond() {
                         return getTimedWindowChecker(configKey, strategyConfig);
@@ -80,7 +88,7 @@ public class ThrottlingController {
                 });
     }
 
-    private TimedWindowChecker getWindowChecker(final ThrottlingBucketKey bucketKey) {
+    private TimedWindowChecker getWindowChecker(final ThrottlingKey bucketKey) {
         final String configKey = bucketKey.getConfigName();
         if (!windowCheckerMap.containsKey(configKey)) {
             windowCheckerMap.put(configKey, getWindowChecker(configKey, defaultStrategyConfig));
@@ -89,44 +97,53 @@ public class ThrottlingController {
         return windowCheckerMap.get(configKey);
     }
 
-    private PriorityWindowChecker getPriorityWindowChecker(final ThrottlingBucketKey bucketKey) {
+    private PriorityWindowChecker getPriorityWindowChecker(final ThrottlingKey bucketKey) {
         return PriorityWindowChecker.builder()
                 .bucketKey(bucketKey)
                 .build();
     }
 
-    private StrategyChecker getStrategyChecker(final ThrottlingBucketKey bucketKey) {
+    private CustomGatePass getCustomGateKeeper(final ThrottlingKey bucketKey) {
+        if (Objects.isNull(customThrottlingController)) {
+            throw new UnsupportedOperationException("Custom config found without resolver");
+        }
+        return customThrottlingController.resolve(bucketKey);
+    }
+
+    private StrategyChecker getStrategyChecker(final ThrottlingKey bucketKey) {
         final String configKey = bucketKey.getConfigName();
 
         ThrottlingStrategyType strategyType = strategyTypeMap.getOrDefault(configKey,
                 defaultStrategyConfig.getType());
 
         return strategyType
-                .accept(new ThrottlingStrategyType.ThrottlingStrategyTypeVisitor<StrategyChecker>() {
+                .accept(new ThrottlingStrategyType.Visitor<StrategyChecker>() {
                     @Override
                     public StrategyChecker visitQuota() {
                         TimedWindowChecker windowChecker = getWindowChecker(bucketKey);
 
-                        return new QuotaStrategyTicker(windowChecker);
+                        return new QuotaStrategyChecker(windowChecker);
                     }
 
                     @Override
                     public StrategyChecker visitLeakyBucket() {
                         TimedWindowChecker windowChecker = getWindowChecker(bucketKey);
 
-                        return new LeakyBucketTicker(windowChecker);
+                        return new LeakyBucketStrategyChecker(windowChecker);
                     }
 
                     @Override
-                    public StrategyChecker visitPriorityBuckets() {
+                    public StrategyChecker visitPriorityBucket() {
                         PriorityWindowChecker windowChecker = getPriorityWindowChecker(bucketKey);
 
-                        return new PriorityBucketTicker(windowChecker);
+                        return new PriorityBucketStrategyChecker(windowChecker);
                     }
 
                     @Override
-                    public StrategyChecker visitNg() {
-                        throw new UnsupportedOperationException("Ng strategy unsupported");
+                    public StrategyChecker visitCustomStrategy() {
+                        CustomGatePass customGatePass = getCustomGateKeeper(bucketKey);
+
+                        return customThrottlingController.checker(customGatePass);
                     }
                 });
     }
@@ -135,7 +152,7 @@ public class ThrottlingController {
         return windowCheckerMap;
     }
 
-    public StrategyChecker register(final ThrottlingBucketKey bucketKey) {
+    public StrategyChecker register(final ThrottlingKey bucketKey) {
         return getStrategyChecker(bucketKey);
     }
 }

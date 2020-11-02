@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package io.durg.kirtimukh.throttling.ticker.impl;
+package io.durg.kirtimukh.throttling.checker.impl;
 
-import io.durg.kirtimukh.throttling.config.impl.QuotaThrottlingStrategyConfig;
+import io.durg.kirtimukh.throttling.config.impl.LeakyBucketThrottlingStrategyConfig;
 import io.durg.kirtimukh.throttling.enums.ThrottlingWindowUnit;
 import io.durg.kirtimukh.throttling.exception.ThrottlingException;
-import io.durg.kirtimukh.throttling.ticker.StrategyChecker;
+import io.durg.kirtimukh.throttling.checker.StrategyChecker;
 import io.durg.kirtimukh.throttling.window.impl.TimedWindowChecker;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -29,14 +29,14 @@ import org.junit.jupiter.api.Test;
 /**
  * Created by pradeep.dalvi on 21/10/20
  */
-class QuotaStrategyTickerTest {
+class LeakyBucketTickerTest {
 
     private StrategyChecker strategyChecker;
 
     @BeforeEach
     void setUp() {
-        strategyChecker = new QuotaStrategyTicker(TimedWindowChecker.builder()
-                .strategyConfig(QuotaThrottlingStrategyConfig.builder()
+        strategyChecker = new LeakyBucketStrategyChecker(TimedWindowChecker.builder()
+                .strategyConfig(LeakyBucketThrottlingStrategyConfig.builder()
                         .unit(ThrottlingWindowUnit.SECOND)
                         .threshold(1)
                         .build())
@@ -60,7 +60,7 @@ class QuotaStrategyTickerTest {
 
         strategyChecker.exit();
 
-        Assertions.assertThrows(ThrottlingException.class, () -> {
+        Assertions.assertDoesNotThrow(() -> {
             strategyChecker.enter();
         });
     }
@@ -78,7 +78,7 @@ class QuotaStrategyTickerTest {
 
         strategyChecker.exit();
 
-        Assertions.assertThrows(ThrottlingException.class, () -> {
+        Assertions.assertDoesNotThrow(() -> {
             strategyChecker.enter();
         });
     }

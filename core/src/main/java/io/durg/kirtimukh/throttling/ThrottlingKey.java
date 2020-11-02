@@ -29,7 +29,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ThrottlingBucketKey {
+public class ThrottlingKey {
     private String bucketName;
 
     private Class<?> clazz;

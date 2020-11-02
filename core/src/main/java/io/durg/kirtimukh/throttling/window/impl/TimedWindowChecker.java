@@ -20,7 +20,7 @@ import io.durg.kirtimukh.throttling.config.ThrottlingStrategyConfig;
 import io.durg.kirtimukh.throttling.config.impl.QuotaThrottlingStrategyConfig;
 import io.durg.kirtimukh.throttling.enums.ThrottlingStrategyType;
 import io.durg.kirtimukh.throttling.enums.ThrottlingWindowUnit;
-import io.durg.kirtimukh.throttling.exception.ThrottlingException;
+import io.durg.kirtimukh.throttling.exception.TimedThrottlingException;
 import io.durg.kirtimukh.throttling.tick.Tick;
 import io.durg.kirtimukh.throttling.tick.impl.LocationTick;
 import io.durg.kirtimukh.throttling.window.Window;
@@ -58,7 +58,7 @@ public class TimedWindowChecker implements WindowChecker {
 
         this.liveWindow = getWindow();
         this.clearAfterInactiveWindows = strategyConfig.getType()
-                .accept(new ThrottlingStrategyType.ThrottlingStrategyTypeVisitor<Long>() {
+                .accept(new ThrottlingStrategyType.Visitor<Long>() {
                     @Override
                     public Long visitQuota() {
                         return ((QuotaThrottlingStrategyConfig) strategyConfig).getWindows();
@@ -70,12 +70,12 @@ public class TimedWindowChecker implements WindowChecker {
                     }
 
                     @Override
-                    public Long visitPriorityBuckets() {
+                    public Long visitPriorityBucket() {
                         return MIN_INACTIVE_WINDOWS_TO_CLEAR;
                     }
 
                     @Override
-                    public Long visitNg() {
+                    public Long visitCustomStrategy() {
                         return null;
                     }
                 });
@@ -86,7 +86,7 @@ public class TimedWindowChecker implements WindowChecker {
     }
 
     private long getWindow() {
-        return unit.accept(new ThrottlingWindowUnit.ThrottlingWindowVisitor<Long>() {
+        return unit.accept(new ThrottlingWindowUnit.Visitor<Long>() {
             @Override
             public Long visitMillisecond() {
                 return System.currentTimeMillis();
@@ -136,7 +136,7 @@ public class TimedWindowChecker implements WindowChecker {
 
         int location = window.add();
         if (location < 0) {
-            throw ThrottlingException.builder()
+            throw TimedThrottlingException.builder()
                     .commandKey(commandKey)
                     .strategyType(strategyType)
                     .cardinality(window.cardinality())

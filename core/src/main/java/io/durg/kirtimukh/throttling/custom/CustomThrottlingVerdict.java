@@ -14,38 +14,46 @@
  * limitations under the License.
  */
 
-package io.durg.kirtimukh.throttling.enums;
+package io.durg.kirtimukh.throttling.custom;
 
 /**
  * Created by pradeep.dalvi on 15/10/20
  */
-public enum ThrottlingWindowUnit {
-    MILLISECOND() {
+public enum CustomThrottlingVerdict {
+    ALLOW() {
         @Override
         public <T> T accept(Visitor<T> visitor) {
-            return visitor.visitMillisecond();
+            return visitor.visitAllow();
         }
     },
-    SECOND {
+    DENY() {
         @Override
         public <T> T accept(Visitor<T> visitor) {
-            return visitor.visitSecond();
+            return visitor.visitDeny();
         }
     },
-    MINUTE {
+    WAIT() {
         @Override
         public <T> T accept(Visitor<T> visitor) {
-            return visitor.visitMinute();
+            return visitor.visitWait();
+        }
+    },
+    ACK() {
+        @Override
+        public <T> T accept(Visitor<T> visitor) {
+            return visitor.visitAck();
         }
     };
 
     public abstract <T> T accept(Visitor<T> visitor);
 
     public interface Visitor<T> {
-        public T visitMillisecond();
+        T visitAllow();
 
-        public T visitSecond();
+        T visitDeny();
 
-        public T visitMinute();
+        T visitWait();
+
+        T visitAck();
     }
 }

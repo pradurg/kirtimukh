@@ -21,8 +21,6 @@ import com.google.common.base.Stopwatch;
 import io.durg.kirtimukh.throttling.config.impl.LeakyBucketThrottlingStrategyConfig;
 import io.durg.kirtimukh.throttling.enums.ThrottlingStage;
 import io.durg.kirtimukh.throttling.enums.ThrottlingWindowUnit;
-import io.durg.kirtimukh.throttling.exception.ThrottlingException;
-import io.durg.kirtimukh.throttling.exception.ThrottlingExceptionTranslator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,12 +40,8 @@ class ThrottlingManagerTest {
                         .threshold(1)
                         .build(),
                 new HashMap<>(),
-                new ThrottlingExceptionTranslator<RuntimeException>() {
-                    @Override
-                    public RuntimeException throwable(ThrottlingException e) {
-                        return new UnsupportedOperationException();
-                    }
-                },
+                null,
+                e -> new UnsupportedOperationException(),
                 new MetricRegistry());
     }
 
@@ -58,7 +52,7 @@ class ThrottlingManagerTest {
 
     @Test
     void register() {
-        Assertions.assertNotNull(ThrottlingManager.register(ThrottlingBucketKey.builder()
+        Assertions.assertNotNull(ThrottlingManager.register(ThrottlingKey.builder()
                 .clazz(ThrottlingManagerTest.class)
                 .functionName("register")
                 .build()));
@@ -67,7 +61,7 @@ class ThrottlingManagerTest {
     @Test
     void tickerWithoutBucket() {
         Stopwatch stopwatch = Stopwatch.createStarted();
-        ThrottlingManager.ticker(ThrottlingBucketKey.builder()
+        ThrottlingManager.ticker(ThrottlingKey.builder()
                         .clazz(ThrottlingManagerTest.class)
                         .functionName("ticker")
                         .build(),
@@ -79,7 +73,7 @@ class ThrottlingManagerTest {
     @Test
     void tickerWithBucket() {
         Stopwatch stopwatch = Stopwatch.createStarted();
-        ThrottlingManager.ticker(ThrottlingBucketKey.builder()
+        ThrottlingManager.ticker(ThrottlingKey.builder()
                         .bucketName("TEST_BUCKET")
                         .clazz(ThrottlingManagerTest.class)
                         .functionName("ticker")

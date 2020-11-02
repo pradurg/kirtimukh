@@ -16,7 +16,7 @@
 
 package io.durg.kirtimukh.throttling.window.impl;
 
-import io.durg.kirtimukh.throttling.ThrottlingBucketKey;
+import io.durg.kirtimukh.throttling.ThrottlingKey;
 import io.durg.kirtimukh.throttling.config.impl.PriorityBucketThrottlingStrategyConfig;
 import io.durg.kirtimukh.throttling.tick.Tick;
 import io.durg.kirtimukh.throttling.tick.impl.WindowLocationTick;
@@ -28,7 +28,7 @@ import lombok.Builder;
  */
 public class PriorityWindowChecker implements WindowChecker {
     @Builder
-    public PriorityWindowChecker(final ThrottlingBucketKey bucketKey,
+    public PriorityWindowChecker(final ThrottlingKey bucketKey,
                                  final PriorityBucketThrottlingStrategyConfig strategyConfig) {
     }
 

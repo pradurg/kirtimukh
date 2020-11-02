@@ -49,11 +49,13 @@ class ThrottlingControllerTest {
                 .unit(ThrottlingWindowUnit.MINUTE)
                 .threshold(1)
                 .build());
-        throttlingController = new ThrottlingController(LeakyBucketThrottlingStrategyConfig.builder()
-                .unit(ThrottlingWindowUnit.SECOND)
-                .threshold(1)
-                .build(),
-                strategyConfigs);
+        throttlingController = ThrottlingController.builder()
+                .defaultConfig(LeakyBucketThrottlingStrategyConfig.builder()
+                        .unit(ThrottlingWindowUnit.SECOND)
+                        .threshold(1)
+                        .build())
+                .commandConfigs(strategyConfigs)
+                .build();
     }
 
     @AfterEach
@@ -62,7 +64,7 @@ class ThrottlingControllerTest {
 
     @Test
     void getInfo() {
-        throttlingController.register(ThrottlingBucketKey.builder()
+        throttlingController.register(ThrottlingKey.builder()
                 .clazz(ThrottlingControllerTest.class)
                 .functionName("getInfo")
                 .build());
@@ -71,7 +73,7 @@ class ThrottlingControllerTest {
 
     @Test
     void registerDefault() {
-        throttlingController.register(ThrottlingBucketKey.builder()
+        throttlingController.register(ThrottlingKey.builder()
                 .clazz(ThrottlingControllerTest.class)
                 .functionName("getInfo")
                 .build());
@@ -81,7 +83,7 @@ class ThrottlingControllerTest {
 
     @Test
     void registerQuota() {
-        throttlingController.register(ThrottlingBucketKey.builder()
+        throttlingController.register(ThrottlingKey.builder()
                 .clazz(ThrottlingControllerTest.class)
                 .functionName("testQuota")
                 .build());
@@ -91,7 +93,7 @@ class ThrottlingControllerTest {
 
     @Test
     void registerQuotaWithWindows() {
-        throttlingController.register(ThrottlingBucketKey.builder()
+        throttlingController.register(ThrottlingKey.builder()
                 .clazz(ThrottlingControllerTest.class)
                 .functionName("testQuotaWindows")
                 .build());
@@ -101,7 +103,7 @@ class ThrottlingControllerTest {
 
     @Test
     void registerPriorityBucket() {
-        throttlingController.register(ThrottlingBucketKey.builder()
+        throttlingController.register(ThrottlingKey.builder()
                 .clazz(ThrottlingControllerTest.class)
                 .functionName("testPriorityBucket")
                 .build());

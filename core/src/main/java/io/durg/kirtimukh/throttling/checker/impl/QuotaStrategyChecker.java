@@ -14,38 +14,28 @@
  * limitations under the License.
  */
 
-package io.durg.kirtimukh.throttling.ticker.impl;
+package io.durg.kirtimukh.throttling.checker.impl;
 
-import io.durg.kirtimukh.throttling.tick.Tick;
-import io.durg.kirtimukh.throttling.ticker.StrategyChecker;
+import io.durg.kirtimukh.throttling.checker.StrategyChecker;
 import io.durg.kirtimukh.throttling.window.impl.TimedWindowChecker;
-import lombok.extern.slf4j.Slf4j;
-
-import java.util.Objects;
 
 /**
  * Created by pradeep.dalvi on 15/10/20
  */
-@Slf4j
-public class LeakyBucketTicker implements StrategyChecker {
+public class QuotaStrategyChecker implements StrategyChecker {
     private final TimedWindowChecker windowChecker;
-    private Tick tick = null;
 
-    public LeakyBucketTicker(TimedWindowChecker windowChecker) {
+    public QuotaStrategyChecker(TimedWindowChecker windowChecker) {
         this.windowChecker = windowChecker;
     }
 
     @Override
     public void enter() {
-        tick = windowChecker.acquire();
+        windowChecker.acquire();
     }
 
     @Override
     public void exit() {
-        if (Objects.isNull(tick)) {
-            log.warn("Oh Dear! Tick is null");
-            return;
-        }
-        windowChecker.release(tick);
+        // Do nothing
     }
 }
