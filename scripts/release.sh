@@ -24,17 +24,16 @@ echo "Preparing to release version:" $RELEASE_VERSION
 
 # Update pom release version
 mvn versions:set -DgenerateBackupPoms=false -DnewVersion=$RELEASE_VERSION
-if ! git diff-index --quiet HEAD; then
+
+if [[ "$RELEASE_VERSION" == *-SNAPSHOT ]]; then
+  echo "Working on snapshot version"
+  mvn clean install deploy
+elif ! git diff-index --quiet HEAD; then
   # Deploy release version
   echo "Deploying changes for version:" $RELEASE_VERSION
   if mvn clean install deploy; then
-    # Once deploy is successful
-    if [[ "$RELEASE_VERSION" == *-SNAPSHOT ]]; then
-      echo "Working on snapshot version"
-    else
-      # Commit release version
-      echo "git commit" $RELEASE_VERSION
-      git commit . -m "Preparing release $RELEASE_VERSION"
-    fi
+    # Once deploy is successful, Commit release version
+    echo "git commit" $RELEASE_VERSION
+    git commit . -m "Preparing version release $RELEASE_VERSION"
   fi
 fi
