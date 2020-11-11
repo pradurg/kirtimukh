@@ -22,7 +22,6 @@ import io.durg.kirtimukh.throttling.config.impl.LeakyBucketThrottlingStrategyCon
 import io.durg.kirtimukh.throttling.config.impl.PriorityBucketThrottlingStrategyConfig;
 import io.durg.kirtimukh.throttling.config.impl.QuotaThrottlingStrategyConfig;
 import io.durg.kirtimukh.throttling.enums.ThrottlingStrategyType;
-import io.durg.kirtimukh.throttling.enums.ThrottlingWindowUnit;
 import lombok.Data;
 import lombok.NonNull;
 
@@ -43,23 +42,17 @@ public abstract class ThrottlingStrategyConfig {
     @NonNull
     private ThrottlingStrategyType type;
 
-    @NonNull
-    private ThrottlingWindowUnit unit;
-
     @Valid
     @Min(1)
     private int threshold;
 
     protected ThrottlingStrategyConfig(final ThrottlingStrategyType type) {
         this.type = type;
-        this.unit = ThrottlingWindowUnit.SECOND;
     }
 
     protected ThrottlingStrategyConfig(final ThrottlingStrategyType type,
-                                       final ThrottlingWindowUnit unit,
                                        final int threshold) {
         this.type = type;
-        this.unit = unit;
         this.threshold = threshold;
     }
 }

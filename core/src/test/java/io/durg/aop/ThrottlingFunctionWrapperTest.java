@@ -20,7 +20,6 @@ import io.durg.aop.annotation.Throttle;
 import io.durg.aop.interceptors.ThrottlingFunctionWrapper;
 import io.durg.kirtimukh.throttling.ThrottlingManager;
 import io.durg.kirtimukh.throttling.config.impl.LeakyBucketThrottlingStrategyConfig;
-import io.durg.kirtimukh.throttling.enums.ThrottlingWindowUnit;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.reflect.MethodSignature;
@@ -46,7 +45,6 @@ class ThrottlingFunctionWrapperTest {
         joinPoint = Mockito.mock(ProceedingJoinPoint.class);
         MethodSignature signature = Mockito.mock(MethodSignature.class);
         ThrottlingManager.initialise(LeakyBucketThrottlingStrategyConfig.builder()
-                        .unit(ThrottlingWindowUnit.SECOND)
                         .threshold(1)
                         .build(),
                 new HashMap<>(),

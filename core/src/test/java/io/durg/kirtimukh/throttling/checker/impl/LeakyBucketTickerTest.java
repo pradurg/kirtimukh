@@ -16,11 +16,10 @@
 
 package io.durg.kirtimukh.throttling.checker.impl;
 
-import io.durg.kirtimukh.throttling.config.impl.LeakyBucketThrottlingStrategyConfig;
-import io.durg.kirtimukh.throttling.enums.ThrottlingWindowUnit;
-import io.durg.kirtimukh.throttling.exception.ThrottlingException;
 import io.durg.kirtimukh.throttling.checker.StrategyChecker;
-import io.durg.kirtimukh.throttling.window.impl.TimedWindowChecker;
+import io.durg.kirtimukh.throttling.config.impl.LeakyBucketThrottlingStrategyConfig;
+import io.durg.kirtimukh.throttling.exception.ThrottlingException;
+import io.durg.kirtimukh.throttling.window.impl.SimpleWindowChecker;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,9 +34,8 @@ class LeakyBucketTickerTest {
 
     @BeforeEach
     void setUp() {
-        strategyChecker = new LeakyBucketStrategyChecker(TimedWindowChecker.builder()
+        strategyChecker = new LeakyBucketStrategyChecker(SimpleWindowChecker.builder()
                 .strategyConfig(LeakyBucketThrottlingStrategyConfig.builder()
-                        .unit(ThrottlingWindowUnit.SECOND)
                         .threshold(1)
                         .build())
                 .build());

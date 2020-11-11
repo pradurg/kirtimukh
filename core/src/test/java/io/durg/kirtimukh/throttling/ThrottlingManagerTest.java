@@ -20,7 +20,6 @@ import com.codahale.metrics.MetricRegistry;
 import com.google.common.base.Stopwatch;
 import io.durg.kirtimukh.throttling.config.impl.LeakyBucketThrottlingStrategyConfig;
 import io.durg.kirtimukh.throttling.enums.ThrottlingStage;
-import io.durg.kirtimukh.throttling.enums.ThrottlingWindowUnit;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,7 +35,6 @@ class ThrottlingManagerTest {
     @BeforeEach
     void setUp() {
         ThrottlingManager.initialise(LeakyBucketThrottlingStrategyConfig.builder()
-                        .unit(ThrottlingWindowUnit.SECOND)
                         .threshold(1)
                         .build(),
                 new HashMap<>(),

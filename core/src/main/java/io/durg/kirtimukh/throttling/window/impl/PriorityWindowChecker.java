@@ -22,14 +22,24 @@ import io.durg.kirtimukh.throttling.tick.Tick;
 import io.durg.kirtimukh.throttling.tick.impl.WindowLocationTick;
 import io.durg.kirtimukh.throttling.window.WindowChecker;
 import lombok.Builder;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by pradeep.dalvi on 20/10/20
  */
+@Data
+@Slf4j
 public class PriorityWindowChecker implements WindowChecker {
+    private ThrottlingKey throttlingKey;
+    private ConcurrentHashMap<Integer, SimpleWindowChecker> windowCheckers;
+
     @Builder
     public PriorityWindowChecker(final ThrottlingKey bucketKey,
                                  final PriorityBucketThrottlingStrategyConfig strategyConfig) {
+        this.throttlingKey = bucketKey;
     }
 
     @Override

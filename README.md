@@ -97,12 +97,10 @@ compile 'io.durg.kirtimukh.dw:throttling-bundle:0.0.1'
 throttlingConfig:
   defaultStrategyConfig:
     type: LEAKY_BUCKET
-    unit: SECOND
     threshold: 64
   commandStrategyConfigs:
     EventIngestor.publish:
       type: LEAKY_BUCKET
-      unit: SECOND
       threshold: 16
     STATUS_APIS_BUCKET:
       type: QUOTA

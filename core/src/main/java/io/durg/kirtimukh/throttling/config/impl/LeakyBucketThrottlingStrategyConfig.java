@@ -18,7 +18,6 @@ package io.durg.kirtimukh.throttling.config.impl;
 
 import io.durg.kirtimukh.throttling.config.ThrottlingStrategyConfig;
 import io.durg.kirtimukh.throttling.enums.ThrottlingStrategyType;
-import io.durg.kirtimukh.throttling.enums.ThrottlingWindowUnit;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -34,8 +33,7 @@ public class LeakyBucketThrottlingStrategyConfig extends ThrottlingStrategyConfi
     }
 
     @Builder
-    public LeakyBucketThrottlingStrategyConfig(final ThrottlingWindowUnit unit,
-                                               final int threshold) {
-        super(ThrottlingStrategyType.LEAKY_BUCKET, unit, threshold);
+    public LeakyBucketThrottlingStrategyConfig(final int threshold) {
+        super(ThrottlingStrategyType.LEAKY_BUCKET, threshold);
     }
 }

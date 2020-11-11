@@ -18,7 +18,7 @@ package io.durg.kirtimukh.throttling.checker.impl;
 
 import io.durg.kirtimukh.throttling.checker.StrategyChecker;
 import io.durg.kirtimukh.throttling.tick.Tick;
-import io.durg.kirtimukh.throttling.window.impl.TimedWindowChecker;
+import io.durg.kirtimukh.throttling.window.WindowChecker;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Objects;
@@ -28,10 +28,10 @@ import java.util.Objects;
  */
 @Slf4j
 public class LeakyBucketStrategyChecker implements StrategyChecker {
-    private final TimedWindowChecker windowChecker;
+    private final WindowChecker windowChecker;
     private Tick tick = null;
 
-    public LeakyBucketStrategyChecker(TimedWindowChecker windowChecker) {
+    public LeakyBucketStrategyChecker(WindowChecker windowChecker) {
         this.windowChecker = windowChecker;
     }
 

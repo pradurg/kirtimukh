@@ -16,10 +16,11 @@
 
 package io.durg.kirtimukh.dw;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import io.dropwizard.jackson.Jackson;
 import io.durg.kirtimukh.throttling.ThrottlingKey;
 import io.durg.kirtimukh.throttling.ThrottlingManager;
 import io.durg.kirtimukh.throttling.config.impl.LeakyBucketThrottlingStrategyConfig;
-import io.durg.kirtimukh.throttling.enums.ThrottlingWindowUnit;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,7 +35,6 @@ class InfoResourceTest {
     @BeforeEach
     void setUp() {
         ThrottlingManager.initialise(LeakyBucketThrottlingStrategyConfig.builder()
-                        .unit(ThrottlingWindowUnit.SECOND)
                         .threshold(1)
                         .build(),
                 new HashMap<>(),
@@ -50,6 +50,17 @@ class InfoResourceTest {
                 .functionName("list")
                 .build());
         Assertions.assertNotNull(ThrottlingManager.getInfo());
+    }
+
+    @Test
+    void serialise() throws JsonProcessingException {
+        ThrottlingManager.register(ThrottlingKey.builder()
+                .clazz(InfoResourceTest.class)
+                .functionName("list")
+                .build());
+
+        Assertions.assertNotNull(Jackson.newObjectMapper()
+                .writeValueAsString(ThrottlingManager.getInfo()));
     }
 
     @Test

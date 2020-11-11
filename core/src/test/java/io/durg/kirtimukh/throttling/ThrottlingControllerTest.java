@@ -51,7 +51,6 @@ class ThrottlingControllerTest {
                 .build());
         throttlingController = ThrottlingController.builder()
                 .defaultConfig(LeakyBucketThrottlingStrategyConfig.builder()
-                        .unit(ThrottlingWindowUnit.SECOND)
                         .threshold(1)
                         .build())
                 .commandConfigs(strategyConfigs)

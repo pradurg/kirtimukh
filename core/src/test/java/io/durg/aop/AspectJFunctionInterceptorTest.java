@@ -23,7 +23,6 @@ import io.durg.kirtimukh.throttling.config.impl.LeakyBucketThrottlingStrategyCon
 import io.durg.kirtimukh.throttling.custom.CustomThrottlingVerdict;
 import io.durg.kirtimukh.throttling.custom.ng.NgThrottlingException;
 import io.durg.kirtimukh.throttling.enums.ThrottlingStrategyType;
-import io.durg.kirtimukh.throttling.enums.ThrottlingWindowUnit;
 import io.durg.kirtimukh.throttling.exception.ThrottlingException;
 import io.durg.kirtimukh.throttling.exception.TimedThrottlingException;
 import org.junit.jupiter.api.BeforeEach;
@@ -87,7 +86,6 @@ class AspectJFunctionInterceptorTest {
     @BeforeEach
     public void setup() {
         ThrottlingManager.initialise(LeakyBucketThrottlingStrategyConfig.builder()
-                        .unit(ThrottlingWindowUnit.SECOND)
                         .threshold(1)
                         .build(),
                 new HashMap<>(),

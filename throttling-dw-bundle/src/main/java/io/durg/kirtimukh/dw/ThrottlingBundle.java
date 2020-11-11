@@ -30,7 +30,7 @@ import io.durg.kirtimukh.throttling.custom.CustomThrottlingController;
 public abstract class ThrottlingBundle<T extends Configuration> implements ConfiguredBundle<T> {
     @Override
     public void initialize(Bootstrap<?> bootstrap) {
-
+        // Nothing happens here
     }
 
     @Override

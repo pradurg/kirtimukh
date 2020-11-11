@@ -17,7 +17,6 @@
 package io.durg.kirtimukh.throttling.config.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.durg.kirtimukh.throttling.enums.ThrottlingWindowUnit;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,7 +31,6 @@ class LeakyBucketThrottlingStrategyConfigTest {
     @BeforeEach
     void setUp() {
         config = LeakyBucketThrottlingStrategyConfig.builder()
-                .unit(ThrottlingWindowUnit.SECOND)
                 .threshold(10)
                 .build();
     }

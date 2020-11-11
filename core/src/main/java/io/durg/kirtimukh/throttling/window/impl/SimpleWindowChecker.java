@@ -16,9 +16,8 @@
 
 package io.durg.kirtimukh.throttling.window.impl;
 
-import io.durg.kirtimukh.throttling.config.impl.QuotaThrottlingStrategyConfig;
+import io.durg.kirtimukh.throttling.config.ThrottlingStrategyConfig;
 import io.durg.kirtimukh.throttling.enums.ThrottlingStrategyType;
-import io.durg.kirtimukh.throttling.enums.ThrottlingWindowUnit;
 import io.durg.kirtimukh.throttling.exception.TimedThrottlingException;
 import io.durg.kirtimukh.throttling.tick.Tick;
 import io.durg.kirtimukh.throttling.tick.impl.LocationTick;
@@ -28,94 +27,36 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.concurrent.TimeUnit;
-
 /**
- * Created by pradeep.dalvi on 15/10/20
+ * Created by pradeep.dalvi on 11/11/20
  */
 @Data
 @Slf4j
-public class TimedWindowChecker implements WindowChecker {
+public class SimpleWindowChecker implements WindowChecker {
     private final String commandKey;
     private final ThrottlingStrategyType strategyType;
-    private final ThrottlingWindowUnit unit;
-
-    private final long clearAfterInactiveWindows;
-    private long prevWindow;
-    private long liveWindow;
 
     private final Window window;
 
     @Builder
-    public TimedWindowChecker(final String commandKey,
-                              final QuotaThrottlingStrategyConfig strategyConfig) {
+    public SimpleWindowChecker(final String commandKey,
+                               final ThrottlingStrategyConfig strategyConfig) {
         this.commandKey = commandKey;
         this.strategyType = strategyConfig.getType();
-        this.unit = strategyConfig.getUnit();
 
-        this.liveWindow = getWindow();
-        this.clearAfterInactiveWindows = strategyConfig.getWindows();
         this.window = Window.builder()
                 .threshold(strategyConfig.getThreshold())
                 .build();
     }
 
-    private long getWindow() {
-        return unit.accept(new ThrottlingWindowUnit.Visitor<Long>() {
-            @Override
-            public Long visitMillisecond() {
-                return System.currentTimeMillis();
-            }
-
-            @Override
-            public Long visitSecond() {
-                return TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
-            }
-
-            @Override
-            public Long visitMinute() {
-                return TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis());
-            }
-        });
-    }
-
-    private boolean isChangeInWindow() {
-        long currentWindow = getWindow();
-        if (liveWindow != currentWindow) {
-            prevWindow = liveWindow;
-            liveWindow = currentWindow;
-            return true;
-        }
-        return false;
-    }
-
-    private boolean isOkayToClear() {
-        return ((liveWindow - prevWindow) >= clearAfterInactiveWindows);
-    }
-
-    private void precheck() {
-        if (isChangeInWindow() && isOkayToClear()) {
-            log.debug("[{}] Clearing bitset", commandKey);
-            window.clear();
-        }
-    }
-
     @Override
-    public synchronized boolean release(final Tick location) {
-        return window.remove(location.getLocation());
-    }
-
-    @Override
-    public synchronized Tick acquire() {
-        precheck();
-
+    public Tick acquire() {
         int location = window.add();
         if (location < 0) {
             throw TimedThrottlingException.builder()
                     .commandKey(commandKey)
                     .strategyType(strategyType)
                     .cardinality(window.cardinality())
-                    .unit(unit)
                     .threshold(window.getThreshold())
                     .message("Threshold limits exhausted")
                     .build();
@@ -125,5 +66,10 @@ public class TimedWindowChecker implements WindowChecker {
         return LocationTick.builder()
                 .location(location)
                 .build();
+    }
+
+    @Override
+    public boolean release(Tick location) {
+        return window.remove(location.getLocation());
     }
 }

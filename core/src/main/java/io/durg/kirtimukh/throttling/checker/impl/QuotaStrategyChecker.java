@@ -17,15 +17,15 @@
 package io.durg.kirtimukh.throttling.checker.impl;
 
 import io.durg.kirtimukh.throttling.checker.StrategyChecker;
-import io.durg.kirtimukh.throttling.window.impl.TimedWindowChecker;
+import io.durg.kirtimukh.throttling.window.WindowChecker;
 
 /**
  * Created by pradeep.dalvi on 15/10/20
  */
 public class QuotaStrategyChecker implements StrategyChecker {
-    private final TimedWindowChecker windowChecker;
+    private final WindowChecker windowChecker;
 
-    public QuotaStrategyChecker(TimedWindowChecker windowChecker) {
+    public QuotaStrategyChecker(WindowChecker windowChecker) {
         this.windowChecker = windowChecker;
     }
 

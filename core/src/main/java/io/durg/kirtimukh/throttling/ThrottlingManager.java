@@ -25,7 +25,7 @@ import io.durg.kirtimukh.throttling.config.ThrottlingStrategyConfig;
 import io.durg.kirtimukh.throttling.custom.CustomThrottlingController;
 import io.durg.kirtimukh.throttling.enums.ThrottlingStage;
 import io.durg.kirtimukh.throttling.exception.ThrottlingException;
-import io.durg.kirtimukh.throttling.window.impl.TimedWindowChecker;
+import io.durg.kirtimukh.throttling.window.WindowChecker;
 import lombok.experimental.UtilityClass;
 
 import java.util.Map;
@@ -61,7 +61,7 @@ public class ThrottlingManager {
         metrics = metricRegistry;
     }
 
-    public Map<String, TimedWindowChecker> getInfo() {
+    public Map<String, WindowChecker> getInfo() {
         return controller.getInfo();
     }
 

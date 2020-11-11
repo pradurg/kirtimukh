@@ -22,6 +22,7 @@ import io.durg.kirtimukh.throttling.enums.ThrottlingWindowUnit;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NonNull;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
@@ -36,8 +37,12 @@ public class QuotaThrottlingStrategyConfig extends ThrottlingStrategyConfig {
     @Min(1)
     private long windows;
 
+    @NonNull
+    private ThrottlingWindowUnit unit;
+
     public QuotaThrottlingStrategyConfig() {
         super(ThrottlingStrategyType.QUOTA);
+        this.unit = ThrottlingWindowUnit.SECOND;
         this.windows = 1;
     }
 
@@ -45,7 +50,8 @@ public class QuotaThrottlingStrategyConfig extends ThrottlingStrategyConfig {
     public QuotaThrottlingStrategyConfig(final ThrottlingWindowUnit unit,
                                          final int threshold,
                                          final long windows) {
-        super(ThrottlingStrategyType.QUOTA, unit, threshold);
+        super(ThrottlingStrategyType.QUOTA, threshold);
+        this.unit = unit;
         this.windows = windows;
     }
 }

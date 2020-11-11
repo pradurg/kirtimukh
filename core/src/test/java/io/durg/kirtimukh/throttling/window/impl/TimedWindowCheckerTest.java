@@ -16,7 +16,7 @@
 
 package io.durg.kirtimukh.throttling.window.impl;
 
-import io.durg.kirtimukh.throttling.config.impl.LeakyBucketThrottlingStrategyConfig;
+import io.durg.kirtimukh.throttling.config.impl.QuotaThrottlingStrategyConfig;
 import io.durg.kirtimukh.throttling.enums.ThrottlingWindowUnit;
 import io.durg.kirtimukh.throttling.exception.ThrottlingException;
 import io.durg.kirtimukh.throttling.tick.Tick;
@@ -36,7 +36,7 @@ class TimedWindowCheckerTest {
     void setUp() {
         windowChecker = TimedWindowChecker.builder()
                 .commandKey("test")
-                .strategyConfig(LeakyBucketThrottlingStrategyConfig.builder()
+                .strategyConfig(QuotaThrottlingStrategyConfig.builder()
                         .unit(ThrottlingWindowUnit.SECOND)
                         .threshold(2)
                         .build())
