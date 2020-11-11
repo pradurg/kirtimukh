@@ -21,10 +21,10 @@ import io.durg.kirtimukh.throttling.ThrottlingExceptionTranslator;
 import io.durg.kirtimukh.throttling.ThrottlingManager;
 import io.durg.kirtimukh.throttling.config.impl.LeakyBucketThrottlingStrategyConfig;
 import io.durg.kirtimukh.throttling.custom.CustomThrottlingVerdict;
-import io.durg.kirtimukh.throttling.custom.ng.NgThrottlingException;
 import io.durg.kirtimukh.throttling.enums.ThrottlingStrategyType;
 import io.durg.kirtimukh.throttling.exception.ThrottlingException;
-import io.durg.kirtimukh.throttling.exception.TimedThrottlingException;
+import io.durg.kirtimukh.throttling.exception.impl.QuotaThrottlingException;
+import io.durg.kirtimukh.throttling.window.impl.CustomThrottlingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -97,33 +97,33 @@ class AspectJFunctionInterceptorTest {
                                 .accept(new ThrottlingStrategyType.Visitor<RuntimeException>() {
                                     @Override
                                     public RuntimeException visitQuota() {
-                                        return timed((TimedThrottlingException) e);
+                                        return timed((QuotaThrottlingException) e);
                                     }
 
                                     @Override
                                     public RuntimeException visitLeakyBucket() {
-                                        return timed((TimedThrottlingException) e);
+                                        return timed((QuotaThrottlingException) e);
                                     }
 
                                     @Override
                                     public RuntimeException visitPriorityBucket() {
-                                        return timed((TimedThrottlingException) e);
+                                        return timed((QuotaThrottlingException) e);
                                     }
 
                                     @Override
                                     public RuntimeException visitCustomStrategy() {
-                                        return ng((NgThrottlingException) e);
+                                        return ng((CustomThrottlingException) e);
                                     }
                                 });
                     }
 
-                    public RuntimeException timed(TimedThrottlingException e) {
+                    public RuntimeException timed(QuotaThrottlingException e) {
                         System.out.println("Throttling request at " + e.getCardinality());
                         return new RuntimeException("Throttling request at " + e.getCardinality());
                     }
 
-                    public RuntimeException ng(NgThrottlingException ngThrottlingException) {
-                        CustomThrottlingVerdict verdict = ngThrottlingException.getVerdict();
+                    public RuntimeException ng(CustomThrottlingException customThrottlingException) {
+                        CustomThrottlingVerdict verdict = customThrottlingException.getVerdict();
                         return verdict
                                 .accept(new CustomThrottlingVerdict.Visitor<RuntimeException>() {
                                     @Override
@@ -134,19 +134,19 @@ class AspectJFunctionInterceptorTest {
                                     @Override
                                     public RuntimeException visitDeny() {
                                         System.out.println("Throttling request with verdict " + verdict);
-                                        return ngThrottlingException;
+                                        return customThrottlingException;
                                     }
 
                                     @Override
                                     public RuntimeException visitWait() {
                                         System.out.println("Throttling request with verdict " + verdict);
-                                        return ngThrottlingException;
+                                        return customThrottlingException;
                                     }
 
                                     @Override
                                     public RuntimeException visitAck() {
                                         System.out.println("Throttling request with verdict " + verdict);
-                                        return ngThrottlingException;
+                                        return customThrottlingException;
                                     }
                                 });
                     }

@@ -30,11 +30,11 @@ import org.junit.jupiter.api.Test;
  */
 class TimedWindowCheckerTest {
 
-    private TimedWindowChecker windowChecker;
+    private QuotaWindowChecker windowChecker;
 
     @BeforeEach
     void setUp() {
-        windowChecker = TimedWindowChecker.builder()
+        windowChecker = QuotaWindowChecker.builder()
                 .commandKey("test")
                 .strategyConfig(QuotaThrottlingStrategyConfig.builder()
                         .unit(ThrottlingWindowUnit.SECOND)

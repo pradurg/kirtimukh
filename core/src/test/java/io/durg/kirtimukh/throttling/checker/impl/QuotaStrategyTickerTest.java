@@ -16,11 +16,11 @@
 
 package io.durg.kirtimukh.throttling.checker.impl;
 
+import io.durg.kirtimukh.throttling.checker.StrategyChecker;
 import io.durg.kirtimukh.throttling.config.impl.QuotaThrottlingStrategyConfig;
 import io.durg.kirtimukh.throttling.enums.ThrottlingWindowUnit;
 import io.durg.kirtimukh.throttling.exception.ThrottlingException;
-import io.durg.kirtimukh.throttling.checker.StrategyChecker;
-import io.durg.kirtimukh.throttling.window.impl.TimedWindowChecker;
+import io.durg.kirtimukh.throttling.window.impl.QuotaWindowChecker;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,7 +35,7 @@ class QuotaStrategyTickerTest {
 
     @BeforeEach
     void setUp() {
-        strategyChecker = new QuotaStrategyChecker(TimedWindowChecker.builder()
+        strategyChecker = new QuotaStrategyChecker(QuotaWindowChecker.builder()
                 .strategyConfig(QuotaThrottlingStrategyConfig.builder()
                         .unit(ThrottlingWindowUnit.SECOND)
                         .threshold(1)

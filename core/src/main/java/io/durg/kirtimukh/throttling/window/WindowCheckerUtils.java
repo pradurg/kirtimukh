@@ -21,9 +21,9 @@ import io.durg.kirtimukh.throttling.config.ThrottlingStrategyConfig;
 import io.durg.kirtimukh.throttling.config.impl.PriorityBucketThrottlingStrategyConfig;
 import io.durg.kirtimukh.throttling.config.impl.QuotaThrottlingStrategyConfig;
 import io.durg.kirtimukh.throttling.enums.ThrottlingStrategyType;
+import io.durg.kirtimukh.throttling.window.impl.LeakyBucketWindowChecker;
 import io.durg.kirtimukh.throttling.window.impl.PriorityWindowChecker;
-import io.durg.kirtimukh.throttling.window.impl.SimpleWindowChecker;
-import io.durg.kirtimukh.throttling.window.impl.TimedWindowChecker;
+import io.durg.kirtimukh.throttling.window.impl.QuotaWindowChecker;
 import lombok.experimental.UtilityClass;
 
 /**
@@ -31,17 +31,17 @@ import lombok.experimental.UtilityClass;
  */
 @UtilityClass
 public class WindowCheckerUtils {
-    private TimedWindowChecker getTimedWindowChecker(final ThrottlingKey throttlingKey,
+    private QuotaWindowChecker getTimedWindowChecker(final ThrottlingKey throttlingKey,
                                                      final QuotaThrottlingStrategyConfig strategyConfig) {
-        return TimedWindowChecker.builder()
+        return QuotaWindowChecker.builder()
                 .commandKey(throttlingKey.getConfigName())
                 .strategyConfig(strategyConfig)
                 .build();
     }
 
-    private SimpleWindowChecker getSimpleWindowChecker(final ThrottlingKey throttlingKey,
-                                                       final ThrottlingStrategyConfig strategyConfig) {
-        return SimpleWindowChecker.builder()
+    private LeakyBucketWindowChecker getSimpleWindowChecker(final ThrottlingKey throttlingKey,
+                                                            final ThrottlingStrategyConfig strategyConfig) {
+        return LeakyBucketWindowChecker.builder()
                 .commandKey(throttlingKey.getConfigName())
                 .strategyConfig(strategyConfig)
                 .build();

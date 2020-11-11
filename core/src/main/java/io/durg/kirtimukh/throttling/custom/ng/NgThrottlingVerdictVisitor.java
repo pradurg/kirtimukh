@@ -18,7 +18,7 @@ package io.durg.kirtimukh.throttling.custom.ng;
 
 import io.durg.kirtimukh.throttling.custom.CustomGatePass;
 import io.durg.kirtimukh.throttling.custom.CustomThrottlingVerdict;
-import io.durg.kirtimukh.throttling.enums.ThrottlingStrategyType;
+import io.durg.kirtimukh.throttling.window.impl.CustomThrottlingException;
 import lombok.Builder;
 
 /**
@@ -39,8 +39,7 @@ public class NgThrottlingVerdictVisitor implements CustomThrottlingVerdict.Visit
 
     @Override
     public Void visitDeny() {
-        throw NgThrottlingException.builder()
-                .strategyType(ThrottlingStrategyType.CUSTOM_STRATEGY)
+        throw CustomThrottlingException.builder()
                 .keyType(customGatePass.getKeyType())
                 .key(customGatePass.getKey())
                 .keyType(customGatePass.getKeyType())
@@ -51,8 +50,7 @@ public class NgThrottlingVerdictVisitor implements CustomThrottlingVerdict.Visit
 
     @Override
     public Void visitWait() {
-        throw NgThrottlingException.builder()
-                .strategyType(ThrottlingStrategyType.CUSTOM_STRATEGY)
+        throw CustomThrottlingException.builder()
                 .keyType(customGatePass.getKeyType())
                 .key(customGatePass.getKey())
                 .verdict(CustomThrottlingVerdict.WAIT)
@@ -64,8 +62,7 @@ public class NgThrottlingVerdictVisitor implements CustomThrottlingVerdict.Visit
 
     @Override
     public Void visitAck() {
-        throw NgThrottlingException.builder()
-                .strategyType(ThrottlingStrategyType.CUSTOM_STRATEGY)
+        throw CustomThrottlingException.builder()
                 .keyType(customGatePass.getKeyType())
                 .key(customGatePass.getKey())
                 .verdict(CustomThrottlingVerdict.ACK)

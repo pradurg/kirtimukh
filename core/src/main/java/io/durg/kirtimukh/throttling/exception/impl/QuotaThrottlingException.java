@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package io.durg.kirtimukh.throttling.exception;
+package io.durg.kirtimukh.throttling.exception.impl;
 
 import io.durg.kirtimukh.throttling.enums.ThrottlingStrategyType;
 import io.durg.kirtimukh.throttling.enums.ThrottlingWindowUnit;
+import io.durg.kirtimukh.throttling.exception.ThrottlingException;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -27,7 +28,7 @@ import lombok.Getter;
  */
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public class TimedThrottlingException extends ThrottlingException {
+public class QuotaThrottlingException extends ThrottlingException {
     private final String commandKey;
 
     private final ThrottlingWindowUnit unit;
@@ -37,13 +38,12 @@ public class TimedThrottlingException extends ThrottlingException {
     private final int threshold;
 
     @Builder
-    public TimedThrottlingException(final ThrottlingStrategyType strategyType,
-                                    final String commandKey,
+    public QuotaThrottlingException(final String commandKey,
                                     final ThrottlingWindowUnit unit,
                                     final int cardinality,
                                     final int threshold,
                                     final String message) {
-        super(strategyType, message, false);
+        super(ThrottlingStrategyType.QUOTA, message, false);
         this.commandKey = commandKey;
         this.unit = unit;
         this.cardinality = cardinality;

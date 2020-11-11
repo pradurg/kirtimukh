@@ -19,8 +19,7 @@ package io.durg.kirtimukh.throttling.window.impl;
 import io.durg.kirtimukh.throttling.ThrottlingKey;
 import io.durg.kirtimukh.throttling.config.PriorityBucketThrottlingConfig;
 import io.durg.kirtimukh.throttling.config.impl.PriorityBucketThrottlingStrategyConfig;
-import io.durg.kirtimukh.throttling.enums.ThrottlingStrategyType;
-import io.durg.kirtimukh.throttling.exception.SimpleThrottlingException;
+import io.durg.kirtimukh.throttling.exception.impl.PriorityBucketThrottlingException;
 import io.durg.kirtimukh.throttling.tick.Tick;
 import io.durg.kirtimukh.throttling.tick.impl.WindowLocationTick;
 import io.durg.kirtimukh.throttling.window.Window;
@@ -80,9 +79,10 @@ public class PriorityWindowChecker implements WindowChecker {
             }
         }
 
-        throw SimpleThrottlingException.builder()
+        throw PriorityBucketThrottlingException.builder()
+                .bucket(throttlingKey.getBucketName())
+                .priority(priority)
                 .commandKey(throttlingKey.getConfigName())
-                .strategyType(ThrottlingStrategyType.PRIORITY_BUCKET)
                 .message("Threshold limits exhausted")
                 .build();
     }

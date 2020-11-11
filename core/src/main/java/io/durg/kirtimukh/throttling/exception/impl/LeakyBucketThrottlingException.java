@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package io.durg.kirtimukh.throttling.exception;
+package io.durg.kirtimukh.throttling.exception.impl;
 
 import io.durg.kirtimukh.throttling.enums.ThrottlingStrategyType;
+import io.durg.kirtimukh.throttling.exception.ThrottlingException;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -26,7 +27,7 @@ import lombok.Getter;
  */
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public class SimpleThrottlingException extends ThrottlingException {
+public class LeakyBucketThrottlingException extends ThrottlingException {
     private final String commandKey;
 
     private final int cardinality;
@@ -34,12 +35,11 @@ public class SimpleThrottlingException extends ThrottlingException {
     private final int threshold;
 
     @Builder
-    public SimpleThrottlingException(final ThrottlingStrategyType strategyType,
-                                     final String commandKey,
-                                     final int cardinality,
-                                     final int threshold,
-                                     final String message) {
-        super(strategyType, message, false);
+    public LeakyBucketThrottlingException(final String commandKey,
+                                          final int cardinality,
+                                          final int threshold,
+                                          final String message) {
+        super(ThrottlingStrategyType.LEAKY_BUCKET, message, false);
         this.commandKey = commandKey;
         this.cardinality = cardinality;
         this.threshold = threshold;

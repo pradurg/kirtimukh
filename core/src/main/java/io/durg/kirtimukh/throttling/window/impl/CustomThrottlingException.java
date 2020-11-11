@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.durg.kirtimukh.throttling.custom.ng;
+package io.durg.kirtimukh.throttling.window.impl;
 
 import io.durg.kirtimukh.throttling.custom.CustomThrottlingVerdict;
 import io.durg.kirtimukh.throttling.enums.ThrottlingStrategyType;
@@ -28,7 +28,7 @@ import lombok.Getter;
  */
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public class NgThrottlingException extends ThrottlingException {
+public class CustomThrottlingException extends ThrottlingException {
     private final Enum keyType;
 
     private final String key;
@@ -38,14 +38,13 @@ public class NgThrottlingException extends ThrottlingException {
     private final long retryAfterMs;
 
     @Builder
-    public NgThrottlingException(final ThrottlingStrategyType strategyType,
-                                 final Enum keyType,
-                                 final String key,
-                                 final boolean graceful,
-                                 final CustomThrottlingVerdict verdict,
-                                 final long retryAfterMs,
-                                 final String message) {
-        super(strategyType, message, graceful);
+    public CustomThrottlingException(final Enum keyType,
+                                     final String key,
+                                     final boolean graceful,
+                                     final CustomThrottlingVerdict verdict,
+                                     final long retryAfterMs,
+                                     final String message) {
+        super(ThrottlingStrategyType.CUSTOM_STRATEGY, message, graceful);
         this.keyType = keyType;
         this.key = key;
         this.verdict = verdict;

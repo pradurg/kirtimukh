@@ -17,8 +17,7 @@
 package io.durg.kirtimukh.throttling.window.impl;
 
 import io.durg.kirtimukh.throttling.config.ThrottlingStrategyConfig;
-import io.durg.kirtimukh.throttling.enums.ThrottlingStrategyType;
-import io.durg.kirtimukh.throttling.exception.SimpleThrottlingException;
+import io.durg.kirtimukh.throttling.exception.impl.LeakyBucketThrottlingException;
 import io.durg.kirtimukh.throttling.tick.Tick;
 import io.durg.kirtimukh.throttling.tick.impl.LocationTick;
 import io.durg.kirtimukh.throttling.window.Window;
@@ -32,17 +31,15 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Data
 @Slf4j
-public class SimpleWindowChecker implements WindowChecker {
+public class LeakyBucketWindowChecker implements WindowChecker {
     private final String commandKey;
-    private final ThrottlingStrategyType strategyType;
 
     private final Window window;
 
     @Builder
-    public SimpleWindowChecker(final String commandKey,
-                               final ThrottlingStrategyConfig strategyConfig) {
+    public LeakyBucketWindowChecker(final String commandKey,
+                                    final ThrottlingStrategyConfig strategyConfig) {
         this.commandKey = commandKey;
-        this.strategyType = strategyConfig.getType();
 
         this.window = Window.builder()
                 .threshold(strategyConfig.getThreshold())
@@ -53,9 +50,8 @@ public class SimpleWindowChecker implements WindowChecker {
     public Tick acquire() {
         int location = window.add();
         if (location < 0) {
-            throw SimpleThrottlingException.builder()
+            throw LeakyBucketThrottlingException.builder()
                     .commandKey(commandKey)
-                    .strategyType(strategyType)
                     .cardinality(window.cardinality())
                     .threshold(window.getThreshold())
                     .message("Threshold limits exhausted")

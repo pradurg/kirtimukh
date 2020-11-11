@@ -17,9 +17,8 @@
 package io.durg.kirtimukh.throttling.window.impl;
 
 import io.durg.kirtimukh.throttling.config.impl.QuotaThrottlingStrategyConfig;
-import io.durg.kirtimukh.throttling.enums.ThrottlingStrategyType;
 import io.durg.kirtimukh.throttling.enums.ThrottlingWindowUnit;
-import io.durg.kirtimukh.throttling.exception.TimedThrottlingException;
+import io.durg.kirtimukh.throttling.exception.impl.QuotaThrottlingException;
 import io.durg.kirtimukh.throttling.tick.Tick;
 import io.durg.kirtimukh.throttling.tick.impl.LocationTick;
 import io.durg.kirtimukh.throttling.window.Window;
@@ -35,9 +34,8 @@ import java.util.concurrent.TimeUnit;
  */
 @Data
 @Slf4j
-public class TimedWindowChecker implements WindowChecker {
+public class QuotaWindowChecker implements WindowChecker {
     private final String commandKey;
-    private final ThrottlingStrategyType strategyType;
     private final ThrottlingWindowUnit unit;
 
     private final long clearAfterInactiveWindows;
@@ -47,10 +45,9 @@ public class TimedWindowChecker implements WindowChecker {
     private final Window window;
 
     @Builder
-    public TimedWindowChecker(final String commandKey,
+    public QuotaWindowChecker(final String commandKey,
                               final QuotaThrottlingStrategyConfig strategyConfig) {
         this.commandKey = commandKey;
-        this.strategyType = strategyConfig.getType();
         this.unit = strategyConfig.getUnit();
 
         this.liveWindow = getWindow();
@@ -111,9 +108,8 @@ public class TimedWindowChecker implements WindowChecker {
 
         int location = window.add();
         if (location < 0) {
-            throw TimedThrottlingException.builder()
+            throw QuotaThrottlingException.builder()
                     .commandKey(commandKey)
-                    .strategyType(strategyType)
                     .cardinality(window.cardinality())
                     .unit(unit)
                     .threshold(window.getThreshold())
