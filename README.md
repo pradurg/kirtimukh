@@ -3,14 +3,17 @@
 
 [![Build Status](https://travis-ci.org/pradurg/kirtimukh.svg?branch=develop)](https://travis-ci.org/pradurg/kirtimukh)
 [![Maintainability](https://api.codeclimate.com/v1/badges/69d188353b29f9352a34/maintainability)](https://codeclimate.com/github/pradurg/kirtimukh/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/69d188353b29f9352a34/test_coverage)](https://codeclimate.com/github/pradurg/kirtimukh/test_coverage)
 [![Coverage Status](https://coveralls.io/repos/pradurg/kirtimukh/badge.svg)](https://coveralls.io/r/pradurg/kirtimukh)
 [![Apache V2 License](http://img.shields.io/badge/license-Apache%20V2-blue.svg)](//github.com/pradurg/kirtimukh/blob/develop/LICENSE)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.durg.kirtimukh/kirtimukh/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.durg.kirtimukh/kirtimukh)
 [![Libraries.io for GitHub](https://img.shields.io/librariesio/github/pradurg/kirtimukh.svg)](https://libraries.io/github/pradurg/kirtimukh)
 [![Analytics](https://ga-beacon.appspot.com/UA-181243333-1/pradurg/kirtimukh/README.md)](https://github.com/igrigorik/ga-beacon)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=pradurg_kirtimukh&metric=alert_status)](https://sonarcloud.io/dashboard?id=pradurg_kirtimukh)
 [![Clojars Project](https://img.shields.io/clojars/v/io.durg.kirtimukh/kirtimukh.svg)](https://clojars.org/io.durg.kirtimukh/kirtimukh)
+
+<!--
+[![Test Coverage](https://api.codeclimate.com/v1/badges/69d188353b29f9352a34/test_coverage)](https://codeclimate.com/github/pradurg/kirtimukh/test_coverage)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.durg.kirtimukh/kirtimukh/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.durg.kirtimukh/kirtimukh)
+-->
 
 
 ## Introduction
@@ -55,12 +58,12 @@ A Throttling bundle for [DropWizard](//github.com/dropwizard/dropwizard).
 <dependency>
     <groupId>io.durg.kirtimukh.dw</groupId>
     <artifactId>throttling-bundle</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
 </dependency>
 ```
 ### Gradle 
 ```
-compile 'io.durg.kirtimukh.dw:throttling-bundle:0.0.1-SNAPSHOT'
+compile 'io.durg.kirtimukh.dw:throttling-bundle:0.0.1'
 ```
 
 ### Sample bundle initialisation
@@ -69,6 +72,12 @@ compile 'io.durg.kirtimukh.dw:throttling-bundle:0.0.1-SNAPSHOT'
         @Override
         protected ThrottlingBundleConfiguration getThrottlingConfiguration(ApplicationConfiguration appConfig) {
             return appConfig.getThrottlingConfig();
+        }
+
+        @Override
+        protected CustomThrottlingController getCustomController() {
+            // Introduce custom controller logic here
+            return null;
         }
 
         @Override
@@ -92,15 +101,31 @@ throttlingConfig:
     threshold: 64
   commandStrategyConfigs:
     EventIngestor.publish:
-      type: QUOTA
-      unit: SECOND
-      threshold: 32
-    STATUS_APIS:
       type: LEAKY_BUCKET
+      unit: SECOND
+      threshold: 16
+    STATUS_APIS_BUCKET:
+      type: QUOTA
       unit: SECOND
       threshold: 64
 ```
 
+### Sample code
+```
+// Single API level throttling
+@Throttle
+public Response publish(EventPublishRequest request)
+
+// API Bucket level throttling
+@Throttle(bucket = STATUS_APIS_BUCKET)
+public Response statusV1(StatusRequest request)
+
+@Throttle(bucket = STATUS_APIS_BUCKET)
+public Response statusV2(StatusRequest request)
+
+@Throttle(bucket = STATUS_APIS_BUCKET)
+public Response statusV3(StatusRequest request)
+```
 ## Licence
 This project has been released under an [Apache Licence v2](http://www.apache.org/licenses/LICENSE-2.0).
 ### ASF v2.0
