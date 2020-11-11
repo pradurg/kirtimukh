@@ -30,7 +30,7 @@ import java.util.HashMap;
 /**
  * Created by pradeep.dalvi on 25/10/20
  */
-class InfoResourceTest {
+class AdminInfoResourceTest {
 
     @BeforeEach
     void setUp() {
@@ -46,7 +46,7 @@ class InfoResourceTest {
     @Test
     void list() {
         ThrottlingManager.register(ThrottlingKey.builder()
-                .clazz(InfoResourceTest.class)
+                .clazz(AdminInfoResourceTest.class)
                 .functionName("list")
                 .build());
         Assertions.assertNotNull(ThrottlingManager.getInfo());
@@ -55,7 +55,7 @@ class InfoResourceTest {
     @Test
     void serialise() throws JsonProcessingException {
         ThrottlingManager.register(ThrottlingKey.builder()
-                .clazz(InfoResourceTest.class)
+                .clazz(AdminInfoResourceTest.class)
                 .functionName("list")
                 .build());
 
@@ -66,7 +66,7 @@ class InfoResourceTest {
     @Test
     void test() {
         ThrottlingManager.register(ThrottlingKey.builder()
-                .clazz(InfoResourceTest.class)
+                .clazz(AdminInfoResourceTest.class)
                 .functionName("test")
                 .build());
         Assertions.assertNotNull(ThrottlingManager.getInfo());

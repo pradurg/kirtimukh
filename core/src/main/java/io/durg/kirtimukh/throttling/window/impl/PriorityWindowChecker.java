@@ -17,15 +17,21 @@
 package io.durg.kirtimukh.throttling.window.impl;
 
 import io.durg.kirtimukh.throttling.ThrottlingKey;
+import io.durg.kirtimukh.throttling.config.PriorityBucketThrottlingConfig;
 import io.durg.kirtimukh.throttling.config.impl.PriorityBucketThrottlingStrategyConfig;
+import io.durg.kirtimukh.throttling.enums.ThrottlingStrategyType;
+import io.durg.kirtimukh.throttling.exception.SimpleThrottlingException;
 import io.durg.kirtimukh.throttling.tick.Tick;
 import io.durg.kirtimukh.throttling.tick.impl.WindowLocationTick;
+import io.durg.kirtimukh.throttling.window.Window;
 import io.durg.kirtimukh.throttling.window.WindowChecker;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentNavigableMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 /**
  * Created by pradeep.dalvi on 20/10/20
@@ -33,25 +39,58 @@ import java.util.concurrent.ConcurrentHashMap;
 @Data
 @Slf4j
 public class PriorityWindowChecker implements WindowChecker {
+    private int priority;
     private ThrottlingKey throttlingKey;
-    private ConcurrentHashMap<Integer, SimpleWindowChecker> windowCheckers;
+    private ConcurrentNavigableMap<Integer, Window> priorityWindows;
 
     @Builder
     public PriorityWindowChecker(final ThrottlingKey bucketKey,
                                  final PriorityBucketThrottlingStrategyConfig strategyConfig) {
         this.throttlingKey = bucketKey;
+        this.priorityWindows = new ConcurrentSkipListMap<>();
+
+        for (Map.Entry<String, PriorityBucketThrottlingConfig> configEntry :
+                strategyConfig.getBucketConfigs()
+                        .entrySet()) {
+            if (!this.priorityWindows.containsKey(configEntry.getValue().getPriority())) {
+                this.priorityWindows.put(configEntry.getValue()
+                                .getPriority(),
+                        Window.builder()
+                                .threshold(strategyConfig.getSharedBucketThreshold())
+                                .build());
+            }
+        }
+
+        this.priorityWindows.put(Integer.MAX_VALUE, Window.builder()
+                .threshold(strategyConfig.getSharedBucketThreshold())
+                .build());
     }
 
     @Override
     public WindowLocationTick acquire() {
-        return WindowLocationTick.builder()
-                .windowId(1)
-                .location(1)
+        for (Map.Entry<Integer, Window> entry :
+                priorityWindows.tailMap(priority).entrySet()) {
+            int location = entry.getValue()
+                    .add();
+            if (location >= 0) {
+                return WindowLocationTick.builder()
+                        .windowId(entry.getKey())
+                        .location(location)
+                        .build();
+            }
+        }
+
+        throw SimpleThrottlingException.builder()
+                .commandKey(throttlingKey.getConfigName())
+                .strategyType(ThrottlingStrategyType.PRIORITY_BUCKET)
+                .message("Threshold limits exhausted")
                 .build();
     }
 
     @Override
     public boolean release(Tick location) {
-        return true;
+        WindowLocationTick windowLocationTick = (WindowLocationTick) location;
+        return priorityWindows.get(windowLocationTick.getWindowId())
+                .remove(windowLocationTick.getLocation());
     }
 }

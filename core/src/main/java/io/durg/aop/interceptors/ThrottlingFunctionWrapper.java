@@ -17,8 +17,8 @@
 package io.durg.aop.interceptors;
 
 import com.google.common.base.Stopwatch;
+import io.durg.aop.annotation.PriorityThrottle;
 import io.durg.aop.annotation.Throttle;
-import io.durg.aop.annotation.Throttleable;
 import io.durg.kirtimukh.throttling.ThrottlingKey;
 import io.durg.kirtimukh.throttling.ThrottlingManager;
 import io.durg.kirtimukh.throttling.checker.StrategyChecker;
@@ -43,8 +43,8 @@ public class ThrottlingFunctionWrapper {
         // To be empty
     }
 
-    @Pointcut("@annotation(io.durg.aop.annotation.Throttleable)")
-    public void throttleablePointcutFunction() {
+    @Pointcut("@annotation(io.durg.aop.annotation.PriorityThrottle)")
+    public void priorityThrottlePointcutFunction() {
         // To be empty
     }
 
@@ -59,13 +59,13 @@ public class ThrottlingFunctionWrapper {
                 .getAnnotation(Throttle.class);
         String bucketName = null;
         if (Objects.isNull(throttleFunction)) {
-            final Throttleable throttleableFunction = methodSignature.getMethod()
-                    .getAnnotation(Throttleable.class);
-            if (Objects.isNull(throttleableFunction)) {
+            final PriorityThrottle priorityThrottleFunction = methodSignature.getMethod()
+                    .getAnnotation(PriorityThrottle.class);
+            if (Objects.isNull(priorityThrottleFunction)) {
                 throw new UnsupportedOperationException("Pointcut called without annotations");
             }
 
-            bucketName = throttleableFunction.bucket();
+            bucketName = priorityThrottleFunction.bucket();
         } else {
             bucketName = throttleFunction.bucket();
         }
@@ -113,7 +113,7 @@ public class ThrottlingFunctionWrapper {
         }
     }
 
-    @Around("(throttlePointcutFunction() || throttleablePointcutFunction()) && pointCutExecution()")
+    @Around("(throttlePointcutFunction() || priorityThrottlePointcutFunction()) && pointCutExecution()")
     public Object processThrottle(final ProceedingJoinPoint joinPoint) throws Throwable {
         Stopwatch stopwatch = Stopwatch.createStarted();
         ThrottlingKey bucketKey = getThrottleBucketKey(joinPoint.getSignature());

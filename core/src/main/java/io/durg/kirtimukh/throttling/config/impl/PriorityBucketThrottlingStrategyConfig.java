@@ -16,14 +16,12 @@
 
 package io.durg.kirtimukh.throttling.config.impl;
 
-import io.durg.kirtimukh.throttling.config.ThrottlingPriorityBucketConfig;
+import io.durg.kirtimukh.throttling.config.PriorityBucketThrottlingConfig;
 import io.durg.kirtimukh.throttling.config.ThrottlingStrategyConfig;
 import io.durg.kirtimukh.throttling.enums.ThrottlingStrategyType;
-import io.durg.kirtimukh.throttling.enums.ThrottlingWindowUnit;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NonNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,27 +32,28 @@ import java.util.Map;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class PriorityBucketThrottlingStrategyConfig extends ThrottlingStrategyConfig {
-    @NonNull
-    private ThrottlingWindowUnit unit;
+    private final int sharedBucketThreshold;
 
-    private ThrottlingPriorityBucketConfig defaultBucketConfig;
-
-    private Map<String, ThrottlingPriorityBucketConfig> bucketConfig;
+    private final Map<String, PriorityBucketThrottlingConfig> bucketConfigs;
 
     public PriorityBucketThrottlingStrategyConfig() {
         super(ThrottlingStrategyType.PRIORITY_BUCKET);
-        this.bucketConfig = new HashMap<>();
-        this.unit = ThrottlingWindowUnit.SECOND;
+        this.bucketConfigs = new HashMap<>();
+        this.sharedBucketThreshold = 0;
     }
 
     @Builder
-    public PriorityBucketThrottlingStrategyConfig(final ThrottlingWindowUnit unit,
-                                                  final int threshold,
-                                                  final ThrottlingPriorityBucketConfig defaultBucketConfig,
-                                                  final Map<String, ThrottlingPriorityBucketConfig> bucketConfig) {
-        super(ThrottlingStrategyType.PRIORITY_BUCKET, threshold);
-        this.unit = unit;
-        this.defaultBucketConfig = defaultBucketConfig;
-        this.bucketConfig = bucketConfig;
+    public PriorityBucketThrottlingStrategyConfig(final int sharedBucketThreshold,
+                                                  final Map<String, PriorityBucketThrottlingConfig> bucketConfigs) {
+        super(ThrottlingStrategyType.PRIORITY_BUCKET);
+
+        int bucketThresholds = 0;
+        for (PriorityBucketThrottlingConfig config : bucketConfigs.values()) {
+            bucketThresholds += config.getThreshold();
+        }
+        this.setThreshold(bucketThresholds);
+
+        this.bucketConfigs = bucketConfigs;
+        this.sharedBucketThreshold = sharedBucketThreshold;
     }
 }

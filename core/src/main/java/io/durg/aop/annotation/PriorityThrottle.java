@@ -26,6 +26,6 @@ import java.lang.annotation.Target;
  */
 @Target({ElementType.METHOD})
 @Retention(value = RetentionPolicy.RUNTIME)
-public @interface Throttleable {
+public @interface PriorityThrottle {
     String bucket() default "";
 }

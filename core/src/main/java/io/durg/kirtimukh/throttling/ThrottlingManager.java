@@ -69,20 +69,20 @@ public class ThrottlingManager {
         return controller.register(bucketKey);
     }
 
-    public static void translate(final ThrottlingException t) {
+    public void translate(final ThrottlingException t) {
         ThrottlingExceptionTranslator.translate(translator, t);
     }
 
-    private static void timer(final String name, final ThrottlingStage stage, final Stopwatch stopwatch) {
+    private void timer(final String name, final ThrottlingStage stage, final Stopwatch stopwatch) {
         Timer timer = metrics.timer(String.join(SEPARATOR, PREFIX, name, stage.getName()));
         if (timer != null) {
             timer.update(stopwatch.elapsed(TimeUnit.MILLISECONDS), TimeUnit.MILLISECONDS);
         }
     }
 
-    public static void ticker(final ThrottlingKey bucketKey,
-                              final ThrottlingStage stage,
-                              final Stopwatch stopwatch) {
+    public void ticker(final ThrottlingKey bucketKey,
+                       final ThrottlingStage stage,
+                       final Stopwatch stopwatch) {
         if (metrics == null) {
             return;
         }
@@ -91,5 +91,18 @@ public class ThrottlingManager {
             timer(BUCKETS + SEPARATOR + bucketKey.getBucketName(), stage, stopwatch);
         }
         timer(COMMANDS + SEPARATOR + bucketKey.getCommandName(), stage, stopwatch);
+    }
+
+    public boolean disable() {
+        return controller.reset();
+    }
+
+    public boolean reset() {
+        return controller.reset();
+    }
+
+    public boolean reload(final ThrottlingStrategyConfig defaultConfig,
+                          final Map<String, ThrottlingStrategyConfig> commandConfigs) {
+        return controller.reload(defaultConfig, commandConfigs);
     }
 }

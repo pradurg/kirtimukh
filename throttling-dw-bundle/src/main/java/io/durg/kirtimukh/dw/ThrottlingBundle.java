@@ -44,7 +44,7 @@ public abstract class ThrottlingBundle<T extends Configuration> implements Confi
                 environment.metrics());
 
         environment.jersey()
-                .register(new InfoResource());
+                .register(new AdminInfoResource());
     }
 
     protected abstract ThrottlingBundleConfiguration getThrottlingConfiguration(T configuration);

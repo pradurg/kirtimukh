@@ -14,28 +14,22 @@
  * limitations under the License.
  */
 
-package io.durg.kirtimukh.throttling.config;
+package io.durg.kirtimukh.throttling.checker.impl;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import javax.validation.Valid;
-import javax.validation.constraints.Min;
+import io.durg.kirtimukh.throttling.checker.StrategyChecker;
 
 /**
- * Created by pradeep.dalvi on 19/10/20
+ * Created by pradeep.dalvi on 11/11/20
+ * Dummy Strategy Checker does nothing and effectively means throttling is disabled
  */
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class ThrottlingPriorityBucketConfig {
-    @Valid
-    @Min(0)
-    private int priority;
+public class NoStrategyChecker implements StrategyChecker {
+    @Override
+    public void enter() {
+        // Do nothing
+    }
 
-    @Min(1)
-    private int minThreshold;
+    @Override
+    public void exit() {
+        // Do nothing
+    }
 }

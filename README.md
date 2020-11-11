@@ -27,16 +27,21 @@ As a part of constant efforts towards Stability & Reliability, what every Softwa
 * You are mid-air and flight's landing gears appear to have jammed because all passengers are watching movies
 
 ##### As an engineer, we all do understand that systems can give-up or fail anytime and they might need regular servicing/tuning.
-#### However _the experience_ is frustrating as well as scary at the same time, isn't it?
+#### However _the experience is frustrating_ as well as scary at the same time, isn't it?
 
 ## Resiliency & Microservices
-### Throttling
 Resiliency is the key thing to look after in Microservices Architecture.
+### Circuit Breaker
+One of the most important or moreover the critical/key aspects of Microservices Architecture is fault tolerance using Circuit Breakers.
+One may choose between FailFast or FailSafe approaches, purely depends on the use-cases.
+While the FailFast approach effectively provides fast failing, faster recovery & effectively better utilisation of resources, FailSafe approach tolerates fluctuations.
+
+### Throttling
 While most of the Architectures rely completely on Circuit Breaker Pattern & Retries, which gives the complete control of _The Stability_ to the client side.
 They do perform well initially in the small setup or closely working small number of microservices.
 As organisations grow bigger & bigger, clients may not have fine-tuned parameters, resulting in creating back-pressures.
 ##### And then comes those _completely eventful_ moments when in the event of _Outages due to Back Pressure_, we end up searching for _which client_ caused this.
-Throttling essentially provides a mechanism for the flow control in the event of unexpected increase in traffic.
+Throttling essentially provides a mechanism for the flow control in the event of unexpected increase in incoming traffic or increase in latencies from downstream.
 
 ## About Durg | Kirtimukh
 ##### _Durg_ means _Fortress_ or something difficult to conquer.
@@ -124,8 +129,8 @@ public Response statusV2(StatusRequest request)
 @Throttle(bucket = STATUS_APIS_BUCKET)
 public Response statusV3(StatusRequest request)
 ```
-## Licence
-This project has been released under an [Apache Licence v2](http://www.apache.org/licenses/LICENSE-2.0).
+## License
+This project has been released under an [Apache License v2](http://www.apache.org/licenses/LICENSE-2.0).
 ### ASF v2.0
 ```
  Copyright (c) 2020 Pradeep A. Dalvi <prad@apache.org>

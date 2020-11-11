@@ -20,6 +20,7 @@ import io.durg.aop.annotation.Throttle;
 import io.durg.kirtimukh.throttling.ThrottlingManager;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
@@ -29,10 +30,10 @@ import javax.ws.rs.core.Response;
  * Created by pradeep.dalvi on 15/10/20
  */
 @Produces(MediaType.APPLICATION_JSON)
-@Path("/throttle")
-public class InfoResource {
+@Path("/kirtimukh/throttling")
+public class AdminInfoResource {
     @GET
-    @Path("/list")
+    @Path("/info")
     public Response list() {
         return Response.ok(ThrottlingManager.getInfo())
                 .build();
@@ -43,6 +44,31 @@ public class InfoResource {
     @Throttle
     public Response test() {
         return Response.ok(ThrottlingManager.getInfo())
+                .build();
+    }
+
+    @POST
+    @Path("/reset")
+    @Throttle
+    public Response reset() {
+        return Response.ok(ThrottlingManager.reset())
+                .build();
+    }
+
+    @POST
+    @Path("/reload")
+    @Throttle
+    public Response reload() {
+        // TODO: Only reset now, introduce config data provider later
+        return Response.ok(ThrottlingManager.reset())
+                .build();
+    }
+
+    @POST
+    @Path("/disable")
+    @Throttle
+    public Response disable() {
+        return Response.ok(ThrottlingManager.disable())
                 .build();
     }
 }
