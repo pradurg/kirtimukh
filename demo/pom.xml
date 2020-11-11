@@ -27,7 +27,7 @@
 
     <groupId>io.durg.kirtimukh.dw</groupId>
     <artifactId>demo-examples</artifactId>
-    <name>Kirtimukh | Demo/Examples</name>
+    <name>Kirtimukh | DW Demo Examples</name>
     <version>0.0.2-SNAPSHOT</version>
     <packaging>jar</packaging>
 

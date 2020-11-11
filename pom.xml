@@ -42,7 +42,7 @@
     <modules>
         <module>core</module>
         <module>throttling-dw-bundle</module>
-        <module>demo-examples</module>
+        <module>demo</module>
     </modules>
 
     <developers>
