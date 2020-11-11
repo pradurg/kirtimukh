@@ -89,7 +89,7 @@ compile 'io.durg.kirtimukh.dw:throttling-bundle:0.0.1'
         protected ThrottlingExceptionTranslator<ApplicationException> getExceptionTranslator() {
             return new ThrottlingExceptionTranslator<ApplicationException>() {
                 @Override
-                public HermesException throwable(ThrottlingException e) {
+                public ApplicationException throwable(ThrottlingException e) {
                     return new ApplicationException(ResponseCode.TOO_MANY_REQUESTS, "Too Many Requests");
                 }
             };
