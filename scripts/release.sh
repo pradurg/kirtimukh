@@ -34,6 +34,16 @@ elif ! git diff-index --quiet HEAD; then
   if mvn clean install deploy; then
     # Once deploy is successful, Commit release version
     echo "git commit" $RELEASE_VERSION
+    git --version
     git commit . -m "Preparing version release $RELEASE_VERSION"
+
+    # Push changes to the main branch
+    echo "Pushing HEAD to branch main of origin repository"
+    git push HEAD:main
+    git tag -l $RELEASE_VERSION
+    git tag -a -f -m "Tagging production build $RELEASE_VERSION"
+
+    echo "Pushing tag $RELEASE_VERSION to repo origin"
+    git push $RELEASE_VERSION
   fi
 fi
