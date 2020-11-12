@@ -31,7 +31,7 @@ if [[ "$RELEASE_VERSION" == *-SNAPSHOT ]]; then
 elif ! git diff-index --quiet HEAD; then
   # Deploy release version
   echo "Deploying changes for version:" $RELEASE_VERSION
-  if mvn clean install deploy --settings travis-settings.xml -DskipTests=true -B; then
+  if mvn clean install deploy --settings travis-settings.xml -Prelease -DskipTests=true -B; then
     # Once deploy is successful, Commit release version
     echo "git commit" $RELEASE_VERSION
     git --version
