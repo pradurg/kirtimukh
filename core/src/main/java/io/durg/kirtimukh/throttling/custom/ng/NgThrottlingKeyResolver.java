@@ -17,24 +17,25 @@
 package io.durg.kirtimukh.throttling.custom.ng;
 
 import io.durg.kirtimukh.throttling.ThrottlingKey;
-import io.durg.kirtimukh.throttling.custom.CustomGatePass;
-import io.durg.kirtimukh.throttling.custom.CustomThrottlingKeyResolver;
+import io.durg.kirtimukh.throttling.custom.GatePass;
+import io.durg.kirtimukh.throttling.custom.ThrottlingKeyResolver;
+import io.durg.kirtimukh.throttling.custom.ThrottlingKeyType;
 
 /**
  * Created by pradeep.dalvi on 03/11/20
  */
-public class NgThrottlingKeyResolver implements CustomThrottlingKeyResolver {
-    private final NgThrottlingKeyType keyType;
-    private final NgThrottlingKeyType.Visitor<CustomGatePass> visitor;
+public class NgThrottlingKeyResolver implements ThrottlingKeyResolver<ThrottlingKeyType> {
+    private final ThrottlingKeyType keyType;
+    private final ThrottlingKeyType.Visitor<GatePass<ThrottlingKeyType>> visitor;
 
-    public NgThrottlingKeyResolver(final NgThrottlingKeyType ngThrottlingKeyType,
-                                   final NgThrottlingKeyType.Visitor<CustomGatePass> visitor) {
-        this.keyType = ngThrottlingKeyType;
+    public NgThrottlingKeyResolver(final ThrottlingKeyType throttlingKeyType,
+                                   final ThrottlingKeyType.Visitor<GatePass<ThrottlingKeyType>> visitor) {
+        this.keyType = throttlingKeyType;
         this.visitor = visitor;
     }
 
     @Override
-    public CustomGatePass resolve(ThrottlingKey bucketKey) {
+    public GatePass<ThrottlingKeyType> resolve(ThrottlingKey bucketKey) {
         return keyType.accept(visitor);
     }
 }

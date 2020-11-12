@@ -21,26 +21,26 @@ import io.durg.kirtimukh.throttling.checker.StrategyChecker;
 /**
  * Created by pradeep.dalvi on 02/11/20
  */
-public abstract class CustomThrottlingStrategyChecker implements StrategyChecker {
-    private final CustomGatePass customGatePass;
+public abstract class GatePassStrategyChecker<T> implements StrategyChecker {
+    private final GatePass<T> gatePass;
 
-    public CustomThrottlingStrategyChecker(final CustomGatePass customGatePass) {
-        this.customGatePass = customGatePass;
+    public GatePassStrategyChecker(final GatePass<T> gatePass) {
+        this.gatePass = gatePass;
     }
 
     @Override
     public void enter() {
-        CustomThrottlingVerdict verdict = customGatePass.enter();
+        ThrottlingVerdict verdict = gatePass.enter();
 
-        if (verdict != CustomThrottlingVerdict.ALLOW) {
-            react(verdict, customGatePass);
+        if (verdict != ThrottlingVerdict.ALLOW) {
+            react(verdict, gatePass);
         }
     }
 
     @Override
     public void exit() {
-        customGatePass.exit();
+        gatePass.exit();
     }
 
-    public abstract void react(final CustomThrottlingVerdict verdict, final CustomGatePass customGatePass);
+    public abstract void react(final ThrottlingVerdict verdict, final GatePass<T> gatePass);
 }

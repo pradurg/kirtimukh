@@ -17,43 +17,27 @@
 package io.durg.kirtimukh.throttling.custom;
 
 /**
- * Created by pradeep.dalvi on 15/10/20
+ * Created by pradeep.dalvi on 03/11/20
  */
-public enum CustomThrottlingVerdict {
-    ALLOW() {
+public enum ThrottlingKeyType {
+    BUCKET() {
         @Override
-        public <T> T accept(Visitor<T> visitor) {
-            return visitor.visitAllow();
+        public <T> T accept(final ThrottlingKeyType.Visitor<T> visitor) {
+            return visitor.visitBucket();
         }
     },
-    DENY() {
+    COMMAND() {
         @Override
-        public <T> T accept(Visitor<T> visitor) {
-            return visitor.visitDeny();
-        }
-    },
-    WAIT() {
-        @Override
-        public <T> T accept(Visitor<T> visitor) {
-            return visitor.visitWait();
-        }
-    },
-    ACK() {
-        @Override
-        public <T> T accept(Visitor<T> visitor) {
-            return visitor.visitAck();
+        public <T> T accept(final ThrottlingKeyType.Visitor<T> visitor) {
+            return visitor.visitCommand();
         }
     };
 
-    public abstract <T> T accept(Visitor<T> visitor);
+    public abstract <T> T accept(final ThrottlingKeyType.Visitor<T> visitor);
 
     public interface Visitor<T> {
-        T visitAllow();
+        T visitBucket();
 
-        T visitDeny();
-
-        T visitWait();
-
-        T visitAck();
+        T visitCommand();
     }
 }

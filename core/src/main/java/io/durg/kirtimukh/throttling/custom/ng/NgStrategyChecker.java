@@ -16,21 +16,22 @@
 
 package io.durg.kirtimukh.throttling.custom.ng;
 
-import io.durg.kirtimukh.throttling.custom.CustomGatePass;
-import io.durg.kirtimukh.throttling.custom.CustomThrottlingStrategyChecker;
-import io.durg.kirtimukh.throttling.custom.CustomThrottlingVerdict;
+import io.durg.kirtimukh.throttling.custom.GatePass;
+import io.durg.kirtimukh.throttling.custom.GatePassStrategyChecker;
+import io.durg.kirtimukh.throttling.custom.ThrottlingKeyType;
+import io.durg.kirtimukh.throttling.custom.ThrottlingVerdict;
 
 /**
  * Created by pradeep.dalvi on 03/11/20
  */
-public class NgStrategyChecker extends CustomThrottlingStrategyChecker {
-    public NgStrategyChecker(final CustomGatePass customGatePass) {
-        super(customGatePass);
+public class NgStrategyChecker extends GatePassStrategyChecker<ThrottlingKeyType> {
+    public NgStrategyChecker(final GatePass<ThrottlingKeyType> gatePass) {
+        super(gatePass);
     }
 
     @Override
-    public void react(final CustomThrottlingVerdict verdict,
-                      final CustomGatePass customGatePass) {
-        verdict.accept(new NgThrottlingVerdictVisitor(customGatePass));
+    public void react(final ThrottlingVerdict verdict,
+                      final GatePass<ThrottlingKeyType> gatePass) {
+        verdict.accept(new NgThrottlingVerdictVisitor(gatePass));
     }
 }

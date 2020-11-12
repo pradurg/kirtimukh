@@ -16,11 +16,11 @@
 
 package io.durg.kirtimukh.dw.demo;
 
-import io.durg.kirtimukh.throttling.custom.CustomThrottlingVerdict;
+import io.durg.kirtimukh.throttling.custom.ThrottlingVerdict;
 
 /**
  * Created by pradeep.dalvi on 12/11/20
  */
 public interface Evaluator {
-    CustomThrottlingVerdict evaluate(String key);
+    ThrottlingVerdict evaluate(String key);
 }

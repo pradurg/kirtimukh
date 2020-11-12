@@ -16,7 +16,7 @@
 
 package io.durg.kirtimukh.throttling.window.impl;
 
-import io.durg.kirtimukh.throttling.custom.CustomThrottlingVerdict;
+import io.durg.kirtimukh.throttling.custom.ThrottlingVerdict;
 import io.durg.kirtimukh.throttling.enums.ThrottlingStrategyType;
 import io.durg.kirtimukh.throttling.exception.ThrottlingException;
 import lombok.Builder;
@@ -33,7 +33,7 @@ public class CustomThrottlingException extends ThrottlingException {
 
     private final String key;
 
-    private final CustomThrottlingVerdict verdict;
+    private final ThrottlingVerdict verdict;
 
     private final long retryAfterMs;
 
@@ -41,7 +41,7 @@ public class CustomThrottlingException extends ThrottlingException {
     public CustomThrottlingException(final Enum keyType,
                                      final String key,
                                      final boolean graceful,
-                                     final CustomThrottlingVerdict verdict,
+                                     final ThrottlingVerdict verdict,
                                      final long retryAfterMs,
                                      final String message) {
         super(ThrottlingStrategyType.CUSTOM_STRATEGY, message, graceful);

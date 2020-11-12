@@ -20,7 +20,7 @@ import io.durg.aop.annotation.Throttle;
 import io.durg.kirtimukh.throttling.ThrottlingExceptionTranslator;
 import io.durg.kirtimukh.throttling.ThrottlingManager;
 import io.durg.kirtimukh.throttling.config.impl.LeakyBucketThrottlingStrategyConfig;
-import io.durg.kirtimukh.throttling.custom.CustomThrottlingVerdict;
+import io.durg.kirtimukh.throttling.custom.ThrottlingVerdict;
 import io.durg.kirtimukh.throttling.enums.ThrottlingStrategyType;
 import io.durg.kirtimukh.throttling.exception.ThrottlingException;
 import io.durg.kirtimukh.throttling.exception.impl.QuotaThrottlingException;
@@ -123,9 +123,9 @@ class AspectJFunctionInterceptorTest {
                     }
 
                     public RuntimeException ng(CustomThrottlingException customThrottlingException) {
-                        CustomThrottlingVerdict verdict = customThrottlingException.getVerdict();
+                        ThrottlingVerdict verdict = customThrottlingException.getVerdict();
                         return verdict
-                                .accept(new CustomThrottlingVerdict.Visitor<RuntimeException>() {
+                                .accept(new ThrottlingVerdict.Visitor<RuntimeException>() {
                                     @Override
                                     public RuntimeException visitAllow() {
                                         return null;

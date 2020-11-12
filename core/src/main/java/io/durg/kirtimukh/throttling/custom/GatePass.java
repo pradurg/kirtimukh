@@ -16,11 +16,26 @@
 
 package io.durg.kirtimukh.throttling.custom;
 
-import io.durg.kirtimukh.throttling.ThrottlingKey;
+import lombok.Getter;
 
 /**
- * Created by pradeep.dalvi on 03/11/20
+ * Created by pradeep.dalvi on 02/11/20
  */
-public interface CustomThrottlingKeyResolver {
-    CustomGatePass resolve(final ThrottlingKey bucketKey);
+@Getter
+public abstract class GatePass<T> {
+    private final T keyType;
+
+    private final String key;
+
+    public GatePass(final T keyType,
+                    final String key) {
+        this.keyType = keyType;
+        this.key = key;
+    }
+
+    public abstract ThrottlingVerdict enter();
+
+    public abstract long retryAfter();
+
+    public abstract void exit();
 }

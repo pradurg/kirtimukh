@@ -14,30 +14,13 @@
  * limitations under the License.
  */
 
-package io.durg.kirtimukh.throttling.custom.ng;
+package io.durg.kirtimukh.throttling.custom;
+
+import io.durg.kirtimukh.throttling.ThrottlingKey;
 
 /**
  * Created by pradeep.dalvi on 03/11/20
  */
-public enum NgThrottlingKeyType {
-    BUCKET() {
-        @Override
-        public <T> T accept(final Visitor<T> visitor) {
-            return visitor.visitBucket();
-        }
-    },
-    COMMAND() {
-        @Override
-        public <T> T accept(final Visitor<T> visitor) {
-            return visitor.visitCommand();
-        }
-    };
-
-    public abstract <T> T accept(final NgThrottlingKeyType.Visitor<T> visitor);
-
-    public interface Visitor<T> {
-        T visitBucket();
-
-        T visitCommand();
-    }
+public interface ThrottlingKeyResolver<T> {
+    GatePass<T> resolve(final ThrottlingKey throttlingKey);
 }

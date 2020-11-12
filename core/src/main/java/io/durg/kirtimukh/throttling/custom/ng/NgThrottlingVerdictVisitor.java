@@ -16,20 +16,21 @@
 
 package io.durg.kirtimukh.throttling.custom.ng;
 
-import io.durg.kirtimukh.throttling.custom.CustomGatePass;
-import io.durg.kirtimukh.throttling.custom.CustomThrottlingVerdict;
+import io.durg.kirtimukh.throttling.custom.GatePass;
+import io.durg.kirtimukh.throttling.custom.ThrottlingKeyType;
+import io.durg.kirtimukh.throttling.custom.ThrottlingVerdict;
 import io.durg.kirtimukh.throttling.window.impl.CustomThrottlingException;
 import lombok.Builder;
 
 /**
  * Created by pradeep.dalvi on 03/11/20
  */
-public class NgThrottlingVerdictVisitor implements CustomThrottlingVerdict.Visitor<Void> {
-    private final CustomGatePass customGatePass;
+public class NgThrottlingVerdictVisitor implements ThrottlingVerdict.Visitor<Void> {
+    private final GatePass<ThrottlingKeyType> gatePass;
 
     @Builder
-    public NgThrottlingVerdictVisitor(final CustomGatePass customGatePass) {
-        this.customGatePass = customGatePass;
+    public NgThrottlingVerdictVisitor(final GatePass<ThrottlingKeyType> gatePass) {
+        this.gatePass = gatePass;
     }
 
     @Override
@@ -40,10 +41,10 @@ public class NgThrottlingVerdictVisitor implements CustomThrottlingVerdict.Visit
     @Override
     public Void visitDeny() {
         throw CustomThrottlingException.builder()
-                .keyType(customGatePass.getKeyType())
-                .key(customGatePass.getKey())
-                .keyType(customGatePass.getKeyType())
-                .verdict(CustomThrottlingVerdict.DENY)
+                .keyType(gatePass.getKeyType())
+                .key(gatePass.getKey())
+                .keyType(gatePass.getKeyType())
+                .verdict(ThrottlingVerdict.DENY)
                 .message("Threshold limits exhausted")
                 .build();
     }
@@ -51,21 +52,21 @@ public class NgThrottlingVerdictVisitor implements CustomThrottlingVerdict.Visit
     @Override
     public Void visitWait() {
         throw CustomThrottlingException.builder()
-                .keyType(customGatePass.getKeyType())
-                .key(customGatePass.getKey())
-                .verdict(CustomThrottlingVerdict.WAIT)
-                .retryAfterMs(customGatePass.retryAfter())
+                .keyType(gatePass.getKeyType())
+                .key(gatePass.getKey())
+                .verdict(ThrottlingVerdict.WAIT)
+                .retryAfterMs(gatePass.retryAfter())
                 .graceful(true)
-                .message(String.format("Limits exhausted so wait for %s", customGatePass.retryAfter()))
+                .message(String.format("Limits exhausted so wait for %s", gatePass.retryAfter()))
                 .build();
     }
 
     @Override
     public Void visitAck() {
         throw CustomThrottlingException.builder()
-                .keyType(customGatePass.getKeyType())
-                .key(customGatePass.getKey())
-                .verdict(CustomThrottlingVerdict.ACK)
+                .keyType(gatePass.getKeyType())
+                .key(gatePass.getKey())
+                .verdict(ThrottlingVerdict.ACK)
                 .graceful(true)
                 .message("Limits exhausted but request accepted")
                 .build();

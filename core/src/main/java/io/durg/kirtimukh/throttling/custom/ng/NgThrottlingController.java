@@ -17,23 +17,24 @@
 package io.durg.kirtimukh.throttling.custom.ng;
 
 import com.google.inject.Singleton;
-import io.durg.kirtimukh.throttling.custom.CustomGatePass;
 import io.durg.kirtimukh.throttling.custom.CustomThrottlingController;
-import io.durg.kirtimukh.throttling.custom.CustomThrottlingStrategyChecker;
+import io.durg.kirtimukh.throttling.custom.GatePass;
+import io.durg.kirtimukh.throttling.custom.GatePassStrategyChecker;
+import io.durg.kirtimukh.throttling.custom.ThrottlingKeyType;
 import lombok.Builder;
 
 /**
  * Created by pradeep.dalvi on 03/11/20
  */
 @Singleton
-public class NgThrottlingController extends CustomThrottlingController {
+public class NgThrottlingController extends CustomThrottlingController<ThrottlingKeyType> {
     @Builder
-    public NgThrottlingController(final NgThrottlingKeyType.Visitor<CustomGatePass> gatePassVisitor) {
-        super(new NgThrottlingKeyResolver(NgThrottlingKeyType.BUCKET, gatePassVisitor));
+    public NgThrottlingController(final ThrottlingKeyType.Visitor<GatePass<ThrottlingKeyType>> gatePassVisitor) {
+        super(new NgThrottlingKeyResolver(ThrottlingKeyType.BUCKET, gatePassVisitor));
     }
 
     @Override
-    public CustomThrottlingStrategyChecker checker(final CustomGatePass customGatePass) {
-        return new NgStrategyChecker(customGatePass);
+    public GatePassStrategyChecker<ThrottlingKeyType> checker(final GatePass<ThrottlingKeyType> gatePass) {
+        return new NgStrategyChecker(gatePass);
     }
 }

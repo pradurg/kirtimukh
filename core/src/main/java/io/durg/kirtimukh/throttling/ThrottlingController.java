@@ -23,8 +23,8 @@ import io.durg.kirtimukh.throttling.checker.impl.NoStrategyChecker;
 import io.durg.kirtimukh.throttling.checker.impl.PriorityBucketStrategyChecker;
 import io.durg.kirtimukh.throttling.checker.impl.QuotaStrategyChecker;
 import io.durg.kirtimukh.throttling.config.ThrottlingStrategyConfig;
-import io.durg.kirtimukh.throttling.custom.CustomGatePass;
 import io.durg.kirtimukh.throttling.custom.CustomThrottlingController;
+import io.durg.kirtimukh.throttling.custom.GatePass;
 import io.durg.kirtimukh.throttling.enums.ThrottlingStrategyType;
 import io.durg.kirtimukh.throttling.window.WindowChecker;
 import io.durg.kirtimukh.throttling.window.WindowCheckerUtils;
@@ -85,7 +85,7 @@ public class ThrottlingController {
         return windowCheckerMap.get(configKey);
     }
 
-    private CustomGatePass getCustomGateKeeper(final ThrottlingKey bucketKey) {
+    private GatePass getCustomGateKeeper(final ThrottlingKey bucketKey) {
         if (Objects.isNull(customThrottlingController)) {
             throw new UnsupportedOperationException("Custom config found without resolver");
         }

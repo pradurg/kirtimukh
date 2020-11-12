@@ -23,12 +23,12 @@ import io.durg.kirtimukh.dw.ThrottlingBundle;
 import io.durg.kirtimukh.dw.ThrottlingBundleConfiguration;
 import io.durg.kirtimukh.throttling.ThrottlingExceptionTranslator;
 import io.durg.kirtimukh.throttling.ThrottlingKey;
-import io.durg.kirtimukh.throttling.custom.CustomGatePass;
 import io.durg.kirtimukh.throttling.custom.CustomThrottlingController;
-import io.durg.kirtimukh.throttling.custom.CustomThrottlingKeyResolver;
-import io.durg.kirtimukh.throttling.custom.CustomThrottlingStrategyChecker;
-import io.durg.kirtimukh.throttling.custom.CustomThrottlingVerdict;
-import io.durg.kirtimukh.throttling.custom.ng.NgThrottlingKeyType;
+import io.durg.kirtimukh.throttling.custom.GatePass;
+import io.durg.kirtimukh.throttling.custom.GatePassStrategyChecker;
+import io.durg.kirtimukh.throttling.custom.ThrottlingKeyResolver;
+import io.durg.kirtimukh.throttling.custom.ThrottlingKeyType;
+import io.durg.kirtimukh.throttling.custom.ThrottlingVerdict;
 import io.durg.kirtimukh.throttling.enums.ThrottlingStrategyType;
 import io.durg.kirtimukh.throttling.window.impl.CustomThrottlingException;
 
@@ -47,35 +47,37 @@ public class App extends Application<AppConfig> {
             }
 
             @Override
-            protected CustomThrottlingController getCustomController() {
-                return new CustomThrottlingController(
-                        new CustomThrottlingKeyResolver() {
+            protected CustomThrottlingController<ThrottlingKeyType> getCustomController() {
+                return new CustomThrottlingController<ThrottlingKeyType>(
+                        new ThrottlingKeyResolver<ThrottlingKeyType>() {
 
+                            // Random evaluator for demo purpose
                             final Evaluator evaluator = new Evaluator() {
                                 final Random random = new Random();
 
                                 @Override
-                                public CustomThrottlingVerdict evaluate(String key) {
+                                public ThrottlingVerdict evaluate(String key) {
                                     switch (random.nextInt(4)) {
                                         case 0:
-                                            return CustomThrottlingVerdict.DENY;
+                                            return ThrottlingVerdict.DENY;
                                         case 1:
-                                            return CustomThrottlingVerdict.WAIT;
+                                            return ThrottlingVerdict.WAIT;
                                         case 2:
-                                            return CustomThrottlingVerdict.ACK;
+                                            return ThrottlingVerdict.ACK;
                                         default:
-                                            return CustomThrottlingVerdict.ALLOW;
+                                            return ThrottlingVerdict.ALLOW;
                                     }
                                 }
                             };
 
                             @Override
-                            public CustomGatePass resolve(ThrottlingKey bucketKey) {
-                                return new CustomGatePass(NgThrottlingKeyType.COMMAND, bucketKey.getConfigName()) {
+                            public GatePass<ThrottlingKeyType> resolve(ThrottlingKey bucketKey) {
+                                return new GatePass<ThrottlingKeyType>(ThrottlingKeyType.COMMAND,
+                                        bucketKey.getConfigName()) {
 
                                     // Custom entrance logic goes here
                                     @Override
-                                    public CustomThrottlingVerdict enter() {
+                                    public ThrottlingVerdict enter() {
                                         return evaluator.evaluate(getKey());
                                     }
 
@@ -94,12 +96,12 @@ public class App extends Application<AppConfig> {
                         }
                 ) {
                     @Override
-                    public CustomThrottlingStrategyChecker checker(CustomGatePass customGatePass) {
-                        return new CustomThrottlingStrategyChecker(customGatePass) {
+                    public GatePassStrategyChecker<ThrottlingKeyType> checker(GatePass<ThrottlingKeyType> gatePass) {
+                        return new GatePassStrategyChecker<ThrottlingKeyType>(gatePass) {
                             @Override
-                            public void react(CustomThrottlingVerdict verdict, CustomGatePass customGatePass) {
+                            public void react(ThrottlingVerdict verdict, GatePass<ThrottlingKeyType> gatePass) {
                                 // Define separate actions e.g. raising separate exceptions for all verdicts
-                                verdict.accept(new CustomThrottlingVerdict.Visitor<Void>() {
+                                verdict.accept(new ThrottlingVerdict.Visitor<Void>() {
                                     @Override
                                     public Void visitAllow() {
                                         return null;
@@ -108,10 +110,10 @@ public class App extends Application<AppConfig> {
                                     @Override
                                     public Void visitDeny() {
                                         throw CustomThrottlingException.builder()
-                                                .keyType(customGatePass.getKeyType())
-                                                .key(customGatePass.getKey())
-                                                .keyType(customGatePass.getKeyType())
-                                                .verdict(CustomThrottlingVerdict.DENY)
+                                                .keyType(gatePass.getKeyType())
+                                                .key(gatePass.getKey())
+                                                .keyType(gatePass.getKeyType())
+                                                .verdict(ThrottlingVerdict.DENY)
                                                 .message("Threshold limits exhausted")
                                                 .build();
                                     }
@@ -119,22 +121,22 @@ public class App extends Application<AppConfig> {
                                     @Override
                                     public Void visitWait() {
                                         throw CustomThrottlingException.builder()
-                                                .keyType(customGatePass.getKeyType())
-                                                .key(customGatePass.getKey())
-                                                .verdict(CustomThrottlingVerdict.WAIT)
-                                                .retryAfterMs(customGatePass.retryAfter())
+                                                .keyType(gatePass.getKeyType())
+                                                .key(gatePass.getKey())
+                                                .verdict(ThrottlingVerdict.WAIT)
+                                                .retryAfterMs(gatePass.retryAfter())
                                                 .graceful(true)
                                                 .message(String.format("Limits exhausted so wait for %s",
-                                                        customGatePass.retryAfter()))
+                                                        gatePass.retryAfter()))
                                                 .build();
                                     }
 
                                     @Override
                                     public Void visitAck() {
                                         throw CustomThrottlingException.builder()
-                                                .keyType(customGatePass.getKeyType())
-                                                .key(customGatePass.getKey())
-                                                .verdict(CustomThrottlingVerdict.ACK)
+                                                .keyType(gatePass.getKeyType())
+                                                .key(gatePass.getKey())
+                                                .verdict(ThrottlingVerdict.ACK)
                                                 .graceful(true)
                                                 .message("Limits exhausted but request accepted")
                                                 .build();
@@ -178,7 +180,7 @@ public class App extends Application<AppConfig> {
                             public AppException visitCustomStrategy() {
                                 return ((CustomThrottlingException) e)
                                         .getVerdict()
-                                        .accept(new CustomThrottlingVerdict.Visitor<AppException>() {
+                                        .accept(new ThrottlingVerdict.Visitor<AppException>() {
                                             @Override
                                             public AppException visitAllow() {
                                                 // Do nothing

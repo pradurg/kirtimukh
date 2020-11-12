@@ -21,16 +21,16 @@ import io.durg.kirtimukh.throttling.ThrottlingKey;
 /**
  * Created by pradeep.dalvi on 03/11/20
  */
-public abstract class CustomThrottlingController {
-    private final CustomThrottlingKeyResolver keyResolver;
+public abstract class CustomThrottlingController<T> {
+    private final ThrottlingKeyResolver<T> keyResolver;
 
-    public CustomThrottlingController(final CustomThrottlingKeyResolver customThrottlingKeyResolver) {
-        this.keyResolver = customThrottlingKeyResolver;
+    public CustomThrottlingController(final ThrottlingKeyResolver<T> throttlingKeyResolver) {
+        this.keyResolver = throttlingKeyResolver;
     }
 
-    public CustomGatePass resolve(final ThrottlingKey key) {
+    public GatePass<T> resolve(final ThrottlingKey key) {
         return keyResolver.resolve(key);
     }
 
-    public abstract CustomThrottlingStrategyChecker checker(final CustomGatePass customGatePass);
+    public abstract GatePassStrategyChecker<T> checker(final GatePass<T> gatePass);
 }
