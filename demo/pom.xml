@@ -31,6 +31,10 @@
     <version>0.0.2-SNAPSHOT</version>
     <packaging>jar</packaging>
 
+    <properties>
+        <sonar.skip>true</sonar.skip>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>io.durg.kirtimukh.dw</groupId>

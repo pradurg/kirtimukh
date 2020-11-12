@@ -19,7 +19,7 @@ package io.durg.kirtimukh.throttling.custom.ng;
 import io.durg.kirtimukh.throttling.custom.GatePass;
 import io.durg.kirtimukh.throttling.custom.ThrottlingKeyType;
 import io.durg.kirtimukh.throttling.custom.ThrottlingVerdict;
-import io.durg.kirtimukh.throttling.window.impl.CustomThrottlingException;
+import io.durg.kirtimukh.throttling.exception.impl.CustomThrottlingException;
 import lombok.Builder;
 
 /**

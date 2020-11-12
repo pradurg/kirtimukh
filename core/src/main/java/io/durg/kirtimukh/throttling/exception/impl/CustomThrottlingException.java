@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.durg.kirtimukh.throttling.window.impl;
+package io.durg.kirtimukh.throttling.exception.impl;
 
 import io.durg.kirtimukh.throttling.custom.ThrottlingVerdict;
 import io.durg.kirtimukh.throttling.enums.ThrottlingStrategyType;

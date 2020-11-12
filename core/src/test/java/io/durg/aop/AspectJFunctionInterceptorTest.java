@@ -23,8 +23,8 @@ import io.durg.kirtimukh.throttling.config.impl.LeakyBucketThrottlingStrategyCon
 import io.durg.kirtimukh.throttling.custom.ThrottlingVerdict;
 import io.durg.kirtimukh.throttling.enums.ThrottlingStrategyType;
 import io.durg.kirtimukh.throttling.exception.ThrottlingException;
+import io.durg.kirtimukh.throttling.exception.impl.CustomThrottlingException;
 import io.durg.kirtimukh.throttling.exception.impl.QuotaThrottlingException;
-import io.durg.kirtimukh.throttling.window.impl.CustomThrottlingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

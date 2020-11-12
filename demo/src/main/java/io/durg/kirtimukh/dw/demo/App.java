@@ -30,7 +30,7 @@ import io.durg.kirtimukh.throttling.custom.ThrottlingKeyResolver;
 import io.durg.kirtimukh.throttling.custom.ThrottlingKeyType;
 import io.durg.kirtimukh.throttling.custom.ThrottlingVerdict;
 import io.durg.kirtimukh.throttling.enums.ThrottlingStrategyType;
-import io.durg.kirtimukh.throttling.window.impl.CustomThrottlingException;
+import io.durg.kirtimukh.throttling.exception.impl.CustomThrottlingException;
 
 import java.util.Random;
 
