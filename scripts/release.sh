@@ -27,11 +27,11 @@ mvn versions:set -DgenerateBackupPoms=false -DnewVersion=$RELEASE_VERSION
 
 if [[ "$RELEASE_VERSION" == *-SNAPSHOT ]]; then
   echo "Working on snapshot version"
-  mvn clean install deploy
+  mvn clean install deploy --settings travis-settings.xml -DskipTests=true -B
 elif ! git diff-index --quiet HEAD; then
   # Deploy release version
   echo "Deploying changes for version:" $RELEASE_VERSION
-  if mvn clean install deploy; then
+  if mvn clean install deploy --settings travis-settings.xml -DskipTests=true -B; then
     # Once deploy is successful, Commit release version
     echo "git commit" $RELEASE_VERSION
     git --version

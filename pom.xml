@@ -27,9 +27,11 @@
 
     <groupId>io.durg.kirtimukh</groupId>
     <artifactId>kirtimukh</artifactId>
-    <name>Durg | Kirtimukh</name>
     <version>0.0.2-SNAPSHOT</version>
     <packaging>pom</packaging>
+    <name>Durg | Kirtimukh</name>
+    <description>The Guardian of Thresholds. Rate-limiting, throttling and circuit-breaker</description>
+    <url>https://github.com/pradurg/kirtimukh</url>
 
     <licenses>
         <license>
@@ -39,6 +41,7 @@
             <comments>A business-friendly OSS license</comments>
         </license>
     </licenses>
+
     <modules>
         <module>core</module>
         <module>throttling-dw-bundle</module>
@@ -62,10 +65,13 @@
     </repositories>
 
     <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
         <repository>
-            <id>clojars</id>
-            <name>Clojars repository</name>
-            <url>https://clojars.org/repo</url>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
 
@@ -100,6 +106,9 @@
         <maven.plugin.enforcer.version>3.0.0-M2</maven.plugin.enforcer.version>
         <maven.plugin.cobertura.version>2.7</maven.plugin.cobertura.version>
         <maven.plugin.coveralls.version>4.3.0</maven.plugin.coveralls.version>
+        <maven.plugin.sources.version>2.2.1</maven.plugin.sources.version>
+        <maven.plugin.javadoc.version>2.9.1</maven.plugin.javadoc.version>
+        <maven.plugin.sonatype.nexus.version>1.6.7</maven.plugin.sonatype.nexus.version>
 
         <!-- Sonar-JaCoCo properties -->
         <sonar.sources>src/main</sonar.sources>
@@ -373,6 +382,43 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${maven.plugin.sources.version}</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven.plugin.javadoc.version}</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>${maven.plugin.sonatype.nexus.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
             </plugin>
         </plugins>
     </build>
