@@ -3,20 +3,21 @@
 
 [![Apache V2 License][Badge-License]][Link-License]
 [![Build Status][Badge-Travis]][Link-Travis]
-[![Release Artifacts][Badge-SonatypeReleases]][Link-SonatypeReleases]
-[![Snapshot Artifacts][Badge-SonatypeSnapshots]][Link-SonatypeSnapshots]
 [![Libraries.io for GitHub][Badge-Libraries]][Link-Libraries]
 [![Maintainability][Badge-Maintainability]][Link-Maintainability]
 [![Coverage Status][Badge-Coderalls]][Link-Coderalls]
-[![Analytics][Badge-Analytics]][Link-Analytics]
+[![Codecov][Badge-Codecov]][Link-Codecov]
 [![Quality Gate Status][Badge-SonarCloud]][Link-SonarCloud]
 [![Javadoc][Badge-Javadoc]][Link-Javadoc]
+[![Snapshot Artifacts][Badge-SonatypeSnapshots]][Link-SonatypeSnapshots]
 [![Maven Central][Badge-MavenCentral]][Link-MavenCentral]
 [![Clojars Project][Badge-Clojars]][Link-Clojars]
-[![Twitter][Badge-Twitter]][Link-Twitter]
+[![Release Artifacts][Badge-SonatypeReleases]][Link-SonatypeReleases]
 <!--
 [![Test Coverage][Badge-Codeclimate]][Link-Codeclimate]
 -->
+[![Analytics][Badge-Analytics]][Link-Analytics]
+[![Twitter][Badge-Twitter]][Link-Twitter]
 
 ## Introduction
 As a part of constant efforts towards Stability & Reliability, what every Software Engineer look for is High Precisions & Predictability. Especially when margin for errors & recovery gets tinier.
@@ -62,17 +63,34 @@ Throttling essentially provides a mechanism for the flow control in the event of
 
 ## How to use throttling?
 A Throttling bundle for [DropWizard](//github.com/dropwizard/dropwizard).
+### Rate-Limiting/Throttling Strategies
+All strategies can be applied on one single command or bucket of commands. This enables us bucketizing similar API calls which are being served under different versions.
+This also helps in providing a mechanism to traffic structuring on different windows.
+
+#### Quota based
+Quota based rate-limiting can be used where one needs to restrict number of request volumes based timed windows e.g. a second, a minute, 5 seconds or 10 minutes.
+
+#### Leaky Bucket
+Wish to serve high requests when systems are healthy but throttle when downstream becomes latent or unhealthy, this strategy shall help.
+This is the preferred strategy for rate-limiting as well as traffic shaping/flow control if downstream is latent due to external factors which are not in our control.
+
+#### Priority Bucket
+Unsure about traffic patterns but want to give preference to certain commands/buckets, in an unexpected event or things start falling apart, Priority Bucket is the right thing to do.
+
+#### Custom Controller
+Define your own Centralised or Decentralised way to handle rate-limiting.
+
 ### Maven
 ```
 <dependency>
     <groupId>io.durg.kirtimukh.dw</groupId>
     <artifactId>throttling-bundle</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
 </dependency>
 ```
 ### Gradle 
 ```
-compile 'io.durg.kirtimukh.dw:throttling-bundle:0.0.1'
+compile 'io.durg.kirtimukh.dw:throttling-bundle:0.0.2'
 ```
 
 ### Sample bundle initialisation
@@ -152,33 +170,34 @@ This project has been released under an [Apache License v2](http://www.apache.or
  limitations under the License.
 ```
 
-
 [Link-Analytics]: https://github.com/igrigorik/ga-beacon
-[Link-License]: https://github.com/pradurg/kirtimukh/blob/develop/LICENSE
-[Link-Travis]: https://travis-ci.org/pradurg/kirtimukh "travis-ci"
-[Link-Maintainability]: https://codeclimate.com/github/pradurg/kirtimukh/maintainability "Average time to resolve an issue"
+[Link-Clojars]: https://clojars.org/io.durg.kirtimukh/kirtimukh
+[Link-Codeclimate]: https://codeclimate.com/github/pradurg/kirtimukh/test_coverage
+[Link-Codecov]: https://codecov.io/gh/pradurg/kirtimukh 
+[Link-Coderalls]: https://coveralls.io/r/pradurg/kirtimukh
 [Link-Javadoc]: https://javadoc.io/doc/io.durg.kirtimukh/kirtimukh/latest/zio/index.html
 [Link-Libraries]: https://libraries.io/github/pradurg/kirtimukh
+[Link-License]: https://github.com/pradurg/kirtimukh/blob/develop/LICENSE
+[Link-Maintainability]: https://codeclimate.com/github/pradurg/kirtimukh/maintainability "Average time to resolve an issue"
+[Link-MavenCentral]: https://maven-badges.herokuapp.com/maven-central/io.durg.kirtimukh/kirtimukh
 [Link-SonarCloud]: https://sonarcloud.io/dashboard?id=pradurg_kirtimukh
 [Link-SonatypeReleases]: https://oss.sonatype.org/content/repositories/releases/io/durg/kirtimukh/kirtimukh/ "Sonatype Releases"
 [Link-SonatypeSnapshots]: https://oss.sonatype.org/content/repositories/snapshots/io/durg/kirtimukh/kirtimukh/ "Sonatype Snapshots"
-[Link-MavenCentral]: https://maven-badges.herokuapp.com/maven-central/io.durg.kirtimukh/kirtimukh
-[Link-Coderalls]: https://coveralls.io/r/pradurg/kirtimukh
-[Link-Codeclimate]: https://codeclimate.com/github/pradurg/kirtimukh/test_coverage
-[Link-Clojars]: https://clojars.org/io.durg.kirtimukh/kirtimukh
+[Link-Travis]: https://travis-ci.org/pradurg/kirtimukh "travis-ci"
 [Link-Twitter]: https://twitter.com/pradurg
 
 [Badge-Analytics]: https://ga-beacon.appspot.com/UA-181243333-1/pradurg/kirtimukh/README.md
-[Badge-License]: http://img.shields.io/badge/license-Apache%20v2-blue.svg
-[Badge-Travis]: https://travis-ci.org/pradurg/kirtimukh.svg?branch=develop "travisci"
-[Badge-Maintainability]: https://api.codeclimate.com/v1/badges/69d188353b29f9352a34/maintainability "Average time to resolve an issue"
+[Badge-Clojars]: https://img.shields.io/clojars/v/io.durg.kirtimukh/kirtimukh.svg
+[Badge-Codeclimate]: https://api.codeclimate.com/v1/badges/69d188353b29f9352a34/test_coverage
+[Badge-Codecov]: https://codecov.io/gh/pradurg/kirtimukh/branch/develop/graph/badge.svg
+[Badge-Coderalls]: https://coveralls.io/repos/pradurg/kirtimukh/badge.svg
 [Badge-Javadoc]: https://javadoc.io/badge2/io.durg.kirtimukh/kirtimukh/javadoc.svg?label=Javadoc "javadoc"
 [Badge-Libraries]: https://img.shields.io/librariesio/github/pradurg/kirtimukh.svg?label=Dependencies
+[Badge-License]: http://img.shields.io/badge/license-Apache%20v2-blue.svg
+[Badge-Maintainability]: https://api.codeclimate.com/v1/badges/69d188353b29f9352a34/maintainability "Average time to resolve an issue"
+[Badge-MavenCentral]: https://maven-badges.herokuapp.com/maven-central/io.durg.kirtimukh/kirtimukh/badge.svg
 [Badge-SonarCloud]: https://sonarcloud.io/api/project_badges/measure?project=pradurg_kirtimukh&metric=alert_status
 [Badge-SonatypeReleases]: https://img.shields.io/nexus/r/https/oss.sonatype.org/io.durg.kirtimukh/kirtimukh.svg?label=Release "Sonatype Releases"
 [Badge-SonatypeSnapshots]: https://img.shields.io/nexus/s/https/oss.sonatype.org/io.durg.kirtimukh/kirtimukh.svg?label=Snapshot "Sonatype Snapshots"
-[Badge-MavenCentral]: https://maven-badges.herokuapp.com/maven-central/io.durg.kirtimukh/kirtimukh/badge.svg
-[Badge-Coderalls]: https://coveralls.io/repos/pradurg/kirtimukh/badge.svg
-[Badge-Codeclimate]: https://api.codeclimate.com/v1/badges/69d188353b29f9352a34/test_coverage
-[Badge-Clojars]: https://img.shields.io/clojars/v/io.durg.kirtimukh/kirtimukh.svg
+[Badge-Travis]: https://travis-ci.org/pradurg/kirtimukh.svg?branch=develop "travisci"
 [Badge-Twitter]: https://img.shields.io/twitter/follow/pradurg.svg?style=plastic&label=Follow&logo=twitter
