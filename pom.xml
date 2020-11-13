@@ -108,6 +108,7 @@
         <maven.plugin.coveralls.version>4.3.0</maven.plugin.coveralls.version>
         <maven.plugin.sources.version>2.2.1</maven.plugin.sources.version>
         <maven.plugin.javadoc.version>2.9.1</maven.plugin.javadoc.version>
+        <maven.plugin.gpg.version>1.6</maven.plugin.gpg.version>
         <maven.plugin.sonatype.nexus.version>1.6.7</maven.plugin.sonatype.nexus.version>
 
         <!-- Sonar-JaCoCo properties -->
@@ -411,6 +412,11 @@
     <profiles>
         <profile>
             <id>release</id>
+            <properties>
+                <gpg.executable>gpg</gpg.executable>
+                <gpg.keyname>${env.GPG_KEY_NAME}</gpg.keyname>
+                <gpg.passphrase>${env.GPG_PASSPHRASE}</gpg.passphrase>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -436,6 +442,26 @@
                                 <goals>
                                     <goal>jar</goal>
                                 </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>${maven.plugin.gpg.version}</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                                <configuration>
+                                    <useAgent>true</useAgent>
+                                    <executable>gpg2</executable>
+                                    <!-- Run something like 'gpg2 -ab out' to cache the creds
+                                     on agent before running if needed -->
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
@@ -468,7 +494,7 @@
                                             <message>No Snapshots Allowed!</message>
                                         </requireReleaseDeps>
                                     </rules>
-                                    <fail>true</fail>
+                                    <fail>false</fail>
                                 </configuration>
                             </execution>
                         </executions>
