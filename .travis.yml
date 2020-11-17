@@ -21,4 +21,5 @@ script:
   - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=pradurg_kirtimukh
 after_success:
   - mvn clean test jacoco:report coveralls:report -DrepoToken=$COVERALLS_TOKEN
+  - bash <(curl -s https://codecov.io/bash)
   - bash ./scripts/release.sh
