@@ -40,7 +40,7 @@ commit_version() {
 merge_to_main() {
   # Push changes to the main branch
   echo "Pushing HEAD to branch main of origin repository"
-  git push HEAD:main
+  git push origin HEAD:main
 }
 
 deploy_artifacts() {
