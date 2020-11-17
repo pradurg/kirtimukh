@@ -45,9 +45,9 @@ merge_to_main() {
 
 deploy_artifacts() {
   if [ $NON_REMOTE_DEPLOY ]; then
-    mvn deploy $MAVEN_PROFILE -DskipTests=true -B
+    mvn clean deploy $MAVEN_PROFILE -DskipTests=true -B
   else
-    mvn deploy $MAVEN_PROFILE --settings .travis/maven-settings.xml -DskipTests=true -B
+    mvn clean deploy $MAVEN_PROFILE --settings .travis/maven-settings.xml -DskipTests=true -B
   fi
 }
 
