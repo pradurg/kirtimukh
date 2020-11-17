@@ -27,7 +27,7 @@ tag_release() {
   git tag -a -f -m "Tagging production build $RELEASE_VERSION"
 
   echo "Pushing tag $RELEASE_VERSION to repo origin"
-  git push $RELEASE_VERSION
+  git push origin $RELEASE_VERSION
 }
 
 commit_version() {
