@@ -22,13 +22,13 @@
     <parent>
         <groupId>io.durg.kirtimukh</groupId>
         <artifactId>kirtimukh</artifactId>
-        <version>0.0.2-SNAPSHOT</version>
+        <version>0.0.2</version>
     </parent>
 
     <groupId>io.durg.kirtimukh.dw</groupId>
     <artifactId>throttling-bundle</artifactId>
     <name>Kirtimukh | Throttling DW Bundle</name>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.2</version>
     <packaging>jar</packaging>
 
     <dependencies>

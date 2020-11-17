@@ -67,8 +67,12 @@ prepare_next_snapshot() {
 }
 
 gpg_signing_ready() {
-  openssl aes-256-cbc -K $encrypted_f094dd62560a_key -iv $encrypted_f094dd62560a_iv -in .travis/gpg.asc.enc -out .travis/gpg.asc -d
-  gpg --fast-import .travis/gpg.asc
+  if [ $NON_REMOTE_DEPLOY ]; then
+    echo "No gpg ops required for local"
+  else
+    openssl aes-256-cbc -K $encrypted_f094dd62560a_key -iv $encrypted_f094dd62560a_iv -in .travis/gpg.asc.enc -out .travis/gpg.asc -d
+    gpg --fast-import .travis/gpg.asc
+  fi
 }
 
 gpg_cleanup() {
