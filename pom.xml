@@ -411,12 +411,7 @@
 
     <profiles>
         <profile>
-            <id>release</id>
-            <properties>
-                <gpg.executable>gpg</gpg.executable>
-                <gpg.keyname>${env.GPG_KEY_NAME}</gpg.keyname>
-                <gpg.passphrase>${env.GPG_PASSPHRASE}</gpg.passphrase>
-            </properties>
+            <id>ossrh</id>
             <build>
                 <plugins>
                     <plugin>

@@ -47,7 +47,7 @@ deploy_artifacts() {
   if [ $NON_REMOTE_DEPLOY ]; then
     mvn clean deploy $MAVEN_PROFILE -DskipTests=true -B
   else
-    mvn clean deploy $MAVEN_PROFILE --settings .travis/maven-settings.xml -DskipTests=true -B
+    mvn clean deploy $MAVEN_PROFILE --settings .mvn/settings.xml -DskipTests=true -B
   fi
 }
 
@@ -88,7 +88,7 @@ if [[ "$RELEASE_VERSION" == *-SNAPSHOT ]]; then
   deploy_artifacts
 elif ! git diff-index --quiet HEAD; then
   prepare_version
-  MAVEN_PROFILE="-Prelease"
+  MAVEN_PROFILE="-P gpg,ossrh"
 
   gpg_signing_ready
   # Deploy release version
