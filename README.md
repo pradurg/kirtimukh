@@ -1,18 +1,20 @@
 # Durg | Kirtimukh
 ## The Guardian of Thresholds
 
-[![Apache V2 License][Badge-License]][Link-License]
 [![Build Status][Badge-Travis]][Link-Travis]
 [![Libraries.io for GitHub][Badge-Libraries]][Link-Libraries]
+[![Javadoc][Badge-Javadoc]][Link-Javadoc]
+[![Apache V2 License][Badge-License]][Link-License]
+
 [![Maintainability][Badge-Maintainability]][Link-Maintainability]
+[![Quality Gate Status][Badge-SonarCloud]][Link-SonarCloud]
 [![Coverage Status][Badge-Coderalls]][Link-Coderalls]
 [![Codecov][Badge-Codecov]][Link-Codecov]
-[![Quality Gate Status][Badge-SonarCloud]][Link-SonarCloud]
-[![Javadoc][Badge-Javadoc]][Link-Javadoc]
+
 [![Snapshot Artifacts][Badge-SonatypeSnapshots]][Link-SonatypeSnapshots]
 [![Maven Central][Badge-MavenCentral]][Link-MavenCentral]
-[![Clojars Project][Badge-Clojars]][Link-Clojars]
 [![Release Artifacts][Badge-SonatypeReleases]][Link-SonatypeReleases]
+[![Clojars Project][Badge-Clojars]][Link-Clojars]
 <!--
 [![Test Coverage][Badge-Codeclimate]][Link-Codeclimate]
 -->
@@ -53,13 +55,12 @@ Throttling essentially provides a mechanism for the flow control in the event of
 ##### _Kirtimukh_ is the guardian of the thresholds.
 
 ##### Current Version
-[![Snapshot Artifacts][Badge-SonatypeSnapshots]][Link-SonatypeSnapshots]
+[![Maven Central][Badge-MavenCentral]][Link-MavenCentral]
 
-[![Clojars Project](https://img.shields.io/clojars/v/io.durg.kirtimukh/kirtimukh.svg)](https://clojars.org/io.durg.kirtimukh/kirtimukh)
+[![Snapshot Artifacts][Badge-SonatypeReleases]][Link-SonatypeReleases]
 
-[![Clojars Project](https://img.shields.io/clojars/v/io.durg.kirtimukh/kirtimukh-core.svg)](https://clojars.org/io.durg.kirtimukh/kirtimukh-core)
+[![Release Artifacts][Badge-SonatypeSnapshots]][Link-SonatypeSnapshots]
 
-[![Clojars Project](https://img.shields.io/clojars/v/io.durg.kirtimukh.dw/throttling-bundle.svg)](https://clojars.org/io.durg.kirtimukh.dw/throttling-bundle)
 
 ## How to use throttling?
 A Throttling bundle for [DropWizard](//github.com/dropwizard/dropwizard).
@@ -79,6 +80,10 @@ Unsure about traffic patterns but want to give preference to certain commands/bu
 
 #### Custom Controller
 Define your own Centralised or Decentralised way to handle rate-limiting.
+
+[![Maven Central][Badge-MavenCentral]][Link-MavenCentral]
+
+[![Release Artifacts][Badge-SonatypeReleases]][Link-SonatypeReleases]
 
 ### Maven
 ```
@@ -152,6 +157,8 @@ public Response statusV2(StatusRequest request)
 public Response statusV3(StatusRequest request)
 ```
 ## License
+[![Apache V2 License][Badge-License]][Link-License]
+
 This project has been released under an [Apache License v2](http://www.apache.org/licenses/LICENSE-2.0).
 ### ASF v2.0
 ```
@@ -193,11 +200,11 @@ This project has been released under an [Apache License v2](http://www.apache.or
 [Badge-Coderalls]: https://coveralls.io/repos/pradurg/kirtimukh/badge.svg
 [Badge-Javadoc]: https://javadoc.io/badge2/io.durg.kirtimukh/kirtimukh/javadoc.svg?label=Javadoc "javadoc"
 [Badge-Libraries]: https://img.shields.io/librariesio/github/pradurg/kirtimukh.svg?label=Dependencies
-[Badge-License]: http://img.shields.io/badge/license-Apache%20v2-blue.svg
+[Badge-License]: http://img.shields.io/badge/license-Apache%20v2-blue.svg?label=License
 [Badge-Maintainability]: https://api.codeclimate.com/v1/badges/69d188353b29f9352a34/maintainability "Average time to resolve an issue"
 [Badge-MavenCentral]: https://maven-badges.herokuapp.com/maven-central/io.durg.kirtimukh/kirtimukh/badge.svg
 [Badge-SonarCloud]: https://sonarcloud.io/api/project_badges/measure?project=pradurg_kirtimukh&metric=alert_status
 [Badge-SonatypeReleases]: https://img.shields.io/nexus/r/https/oss.sonatype.org/io.durg.kirtimukh/kirtimukh.svg?label=Release "Sonatype Releases"
 [Badge-SonatypeSnapshots]: https://img.shields.io/nexus/s/https/oss.sonatype.org/io.durg.kirtimukh/kirtimukh.svg?label=Snapshot "Sonatype Snapshots"
-[Badge-Travis]: https://travis-ci.org/pradurg/kirtimukh.svg?branch=develop "travisci"
-[Badge-Twitter]: https://img.shields.io/twitter/follow/pradurg.svg?style=plastic&label=Follow&logo=twitter
+[Badge-Travis]: https://travis-ci.org/pradurg/kirtimukh.svg?branch=develop&label=Build "travisci"
+[Badge-Twitter]: https://img.shields.io/twitter/follow/pradurg.svg?style=plastic&label=Follow%20@pradurg&logo=twitter
