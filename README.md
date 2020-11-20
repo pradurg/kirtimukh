@@ -92,12 +92,12 @@ Define your own Centralised or Decentralised way to handle rate-limiting.
 <dependency>
     <groupId>io.durg.kirtimukh.dw</groupId>
     <artifactId>throttling-bundle</artifactId>
-    <version>0.0.2</version>
+    <version>0.0.3</version>
 </dependency>
 ```
 ### Gradle 
 ```
-compile 'io.durg.kirtimukh.dw:throttling-bundle:0.0.2'
+compile 'io.durg.kirtimukh.dw:throttling-bundle:0.0.3'
 ```
 
 ### Sample bundle initialisation

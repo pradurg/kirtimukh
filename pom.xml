@@ -27,7 +27,7 @@
 
     <groupId>io.durg.kirtimukh</groupId>
     <artifactId>kirtimukh</artifactId>
-    <version>0.0.3-SNAPSHOT</version>
+    <version>0.0.3</version>
     <packaging>pom</packaging>
     <name>Durg | Kirtimukh</name>
     <description>The Guardian of Thresholds. Rate-limiting, throttling and circuit-breaker</description>
