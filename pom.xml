@@ -91,7 +91,7 @@
         <jackson.core.version>2.11.3</jackson.core.version>
 
         <dropwizard.version>2.0.14</dropwizard.version>
-        <dropwizard.metrics.version>4.1.14</dropwizard.metrics.version>
+        <dropwizard.metrics.version>4.1.15</dropwizard.metrics.version>
 
         <junit.jupiter.version>5.7.0</junit.jupiter.version>
         <junit.surefire.provider.version>1.0.3</junit.surefire.provider.version>
