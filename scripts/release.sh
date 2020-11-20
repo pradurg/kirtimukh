@@ -24,7 +24,7 @@ MAVEN_PROFILE=""
 tag_release() {
   # Tag release
   git tag -l $RELEASE_VERSION
-  git tag -a -f -m "Tagging production build $RELEASE_VERSION"
+  git tag -a $RELEASE_VERSION -f -m "Tagging production build $RELEASE_VERSION"
 
   echo "Pushing tag $RELEASE_VERSION to repo origin"
   git push origin $RELEASE_VERSION
