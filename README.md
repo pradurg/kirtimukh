@@ -14,8 +14,8 @@
 [![Snapshot Artifacts][Badge-SonatypeSnapshots]][Link-SonatypeSnapshots]
 [![Maven Central][Badge-MavenCentral]][Link-MavenCentral]
 [![Release Artifacts][Badge-SonatypeReleases]][Link-SonatypeReleases]
-[![Clojars Project][Badge-Clojars]][Link-Clojars]
 <!--
+[![Clojars Project][Badge-Clojars]][Link-Clojars]
 [![Test Coverage][Badge-Codeclimate]][Link-Codeclimate]
 -->
 [![Analytics][Badge-Analytics]][Link-Analytics]
@@ -53,6 +53,8 @@ Throttling essentially provides a mechanism for the flow control in the event of
 
 ### About Kirtimukh
 ##### _Kirtimukh_ is the guardian of the thresholds.
+
+[![Google Slides](docs/img/presentation.png)][Link-Presentation]
 
 ##### Current Version
 [![Maven Central][Badge-MavenCentral]][Link-MavenCentral]
@@ -192,6 +194,7 @@ This project has been released under an [Apache License v2](http://www.apache.or
 [Link-SonatypeSnapshots]: https://oss.sonatype.org/content/repositories/snapshots/io/durg/kirtimukh/kirtimukh/ "Sonatype Snapshots"
 [Link-Travis]: https://travis-ci.org/pradurg/kirtimukh "travis-ci"
 [Link-Twitter]: https://twitter.com/pradurg
+[Link-Presentation]: https://docs.google.com/presentation/d/1vAA3PAlr31qwCG--vBX4hD2YIHjqtWRsZPHWDPB7jkk/edit?usp=sharing
 
 [Badge-Analytics]: https://ga-beacon.appspot.com/UA-181243333-1/pradurg/kirtimukh/README.md
 [Badge-Clojars]: https://img.shields.io/clojars/v/io.durg.kirtimukh/kirtimukh.svg
