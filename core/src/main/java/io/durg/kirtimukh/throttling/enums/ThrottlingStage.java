@@ -22,11 +22,15 @@ import lombok.Getter;
  * Created by pradeep.dalvi on 23/10/20
  */
 public enum ThrottlingStage {
+    RECEIVED("received"),
     ENTERED("entered"),
     THROTTLED("throttled"),
-    ACCEPTED("accepted"),
+    WAIT("wait"),
+    DENIED("denied"),
+    ACKNOWLEDGED("acknowledged"),
     COMPLETED("completed"),
-    ERROR("error");
+    ERROR("error"),
+    PROCESSED("processed");
 
     @Getter
     private String name;

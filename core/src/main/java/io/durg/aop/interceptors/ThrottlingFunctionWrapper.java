@@ -22,8 +22,10 @@ import io.durg.aop.annotation.Throttle;
 import io.durg.kirtimukh.throttling.ThrottlingKey;
 import io.durg.kirtimukh.throttling.ThrottlingManager;
 import io.durg.kirtimukh.throttling.checker.StrategyChecker;
+import io.durg.kirtimukh.throttling.custom.ThrottlingVerdictToStageVisitor;
 import io.durg.kirtimukh.throttling.enums.ThrottlingStage;
 import io.durg.kirtimukh.throttling.exception.ThrottlingException;
+import io.durg.kirtimukh.throttling.exception.impl.CustomThrottlingException;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
@@ -84,12 +86,18 @@ public class ThrottlingFunctionWrapper {
     private void enter(final ThrottlingKey bucketKey,
                        final StrategyChecker checker,
                        final Stopwatch stopwatch) {
+        ThrottlingManager.ticker(bucketKey, ThrottlingStage.RECEIVED, stopwatch);
         try {
             checker.enter();
             ThrottlingManager.ticker(bucketKey, ThrottlingStage.ENTERED, stopwatch);
         } catch (ThrottlingException e) {
             stopwatch.stop();
-            ThrottlingManager.ticker(bucketKey, ThrottlingStage.THROTTLED, stopwatch);
+            ThrottlingStage throttlingStage = ThrottlingStage.THROTTLED;
+            if (e instanceof CustomThrottlingException) {
+                throttlingStage = ThrottlingVerdictToStageVisitor.fromVerdict(((CustomThrottlingException) e)
+                        .getVerdict());
+            }
+            ThrottlingManager.ticker(bucketKey, throttlingStage, stopwatch);
             ThrottlingManager.translate(e);
         }
     }
@@ -109,7 +117,7 @@ public class ThrottlingFunctionWrapper {
             throw t;
         } finally {
             checker.exit();
-            ThrottlingManager.ticker(bucketKey, ThrottlingStage.ACCEPTED, stopwatch);
+            ThrottlingManager.ticker(bucketKey, ThrottlingStage.PROCESSED, stopwatch);
         }
     }
 
