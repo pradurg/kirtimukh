@@ -17,7 +17,6 @@
 package io.durg.aop.interceptors;
 
 import com.google.common.base.Stopwatch;
-import io.durg.aop.annotation.PriorityThrottle;
 import io.durg.aop.annotation.Throttle;
 import io.durg.kirtimukh.throttling.ThrottlingKey;
 import io.durg.kirtimukh.throttling.ThrottlingManager;
@@ -45,7 +44,7 @@ public class ThrottlingFunctionWrapper {
         // To be empty
     }
 
-    @Pointcut("@annotation(io.durg.aop.annotation.PriorityThrottle)")
+    @Pointcut("@annotation(io.durg.aop.annotation.Throttleable)")
     public void priorityThrottlePointcutFunction() {
         // To be empty
     }
@@ -60,15 +59,7 @@ public class ThrottlingFunctionWrapper {
         final Throttle throttleFunction = methodSignature.getMethod()
                 .getAnnotation(Throttle.class);
         String bucketName = null;
-        if (Objects.isNull(throttleFunction)) {
-            final PriorityThrottle priorityThrottleFunction = methodSignature.getMethod()
-                    .getAnnotation(PriorityThrottle.class);
-            if (Objects.isNull(priorityThrottleFunction)) {
-                throw new UnsupportedOperationException("Pointcut called without annotations");
-            }
-
-            bucketName = priorityThrottleFunction.bucket();
-        } else {
+        if (Objects.nonNull(throttleFunction)) {
             bucketName = throttleFunction.bucket();
         }
 

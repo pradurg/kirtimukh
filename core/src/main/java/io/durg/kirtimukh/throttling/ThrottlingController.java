@@ -69,7 +69,7 @@ public class ThrottlingController {
         initialise();
     }
 
-    private synchronized boolean initialise() {
+    private boolean initialise() {
         for (Map.Entry<String, ThrottlingStrategyConfig> entry : commandStrategyConfigs.entrySet()) {
             this.strategyTypeMap.put(entry.getKey(), entry.getValue().getType());
         }
