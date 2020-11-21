@@ -83,6 +83,7 @@ Unsure about traffic patterns but want to give preference to certain commands/bu
 #### Custom Controller
 Define your own Centralised or Decentralised way to handle rate-limiting.
 
+## How to integrate?
 [![Maven Central][Badge-MavenCentral]][Link-MavenCentral]
 
 [![Release Artifacts][Badge-SonatypeReleases]][Link-SonatypeReleases]
