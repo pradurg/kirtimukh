@@ -75,6 +75,11 @@ public class WindowCheckerUtils {
                     }
 
                     @Override
+                    public WindowChecker visitDynamicStrategy() {
+                        return null;
+                    }
+
+                    @Override
                     public WindowChecker visitCustomStrategy() {
                         return null;
                     }

@@ -92,15 +92,18 @@ elif ! git diff-index --quiet HEAD; then
 
   gpg_signing_ready
   # Deploy release version
-  echo "Deploying changes for version:" $RELEASE_VERSION
-  if deploy_artifacts; then
+  echo "Deploying changes for version: " $RELEASE_VERSION
+  deploy_artifacts
+  DEPLOY_STATUS=$?
+  echo "Deployment status: " $DEPLOY_STATUS
+  gpg_cleanup
+
+  if [ $DEPLOY_STATUS -eq 0 ]; then
     gpg_cleanup
     commit_version
     merge_to_main
     tag_release
     prepare_next_snapshot
     finalise_snapshot
-  else
-    gpg_cleanup
   fi
 fi

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.durg.kirtimukh.dw;
+package io.durg.kirtimukh.dw.throttling;
 
 import io.durg.aop.annotation.Throttle;
 import io.durg.kirtimukh.throttling.ThrottlingManager;

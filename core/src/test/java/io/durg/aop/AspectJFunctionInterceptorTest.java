@@ -111,6 +111,11 @@ class AspectJFunctionInterceptorTest {
                                     }
 
                                     @Override
+                                    public RuntimeException visitDynamicStrategy() {
+                                        return null;
+                                    }
+
+                                    @Override
                                     public RuntimeException visitCustomStrategy() {
                                         return ng((CustomThrottlingException) e);
                                     }

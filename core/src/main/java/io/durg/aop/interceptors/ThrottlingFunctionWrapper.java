@@ -18,6 +18,7 @@ package io.durg.aop.interceptors;
 
 import com.google.common.base.Stopwatch;
 import io.durg.aop.annotation.Throttle;
+import io.durg.aop.annotation.Throttleable;
 import io.durg.kirtimukh.throttling.ThrottlingKey;
 import io.durg.kirtimukh.throttling.ThrottlingManager;
 import io.durg.kirtimukh.throttling.checker.StrategyChecker;
@@ -56,22 +57,41 @@ public class ThrottlingFunctionWrapper {
 
     private ThrottlingKey getThrottleBucketKey(final Signature signature) {
         MethodSignature methodSignature = MethodSignature.class.cast(signature);
-        final Throttle throttleFunction = methodSignature.getMethod()
+        final Throttle throttle = methodSignature.getMethod()
                 .getAnnotation(Throttle.class);
+
         String bucketName = null;
-        if (Objects.nonNull(throttleFunction)) {
-            bucketName = throttleFunction.bucket();
+        boolean optional = false;
+        if (Objects.nonNull(throttle)) {
+            bucketName = throttle.bucket();
+        } else {
+            final Throttleable throttleable = methodSignature.getMethod()
+                    .getAnnotation(Throttleable.class);
+            if (Objects.nonNull(throttleable)) {
+                bucketName = throttleable.bucket();
+                optional = true;
+            }
         }
 
         return ThrottlingKey.builder()
                 .bucketName(bucketName)
                 .clazz(methodSignature.getDeclaringType())
                 .functionName(methodSignature.getMethod().getName())
+                .optional(optional)
                 .build();
     }
 
     private StrategyChecker getStrategyChecker(final ThrottlingKey bucketKey) {
         return ThrottlingManager.register(bucketKey);
+    }
+
+    private void error(final ThrottlingKey bucketKey,
+                       final Stopwatch stopwatch,
+                       final ThrottlingStage throttlingStage,
+                       final ThrottlingException e) {
+        stopwatch.stop();
+        ThrottlingManager.ticker(bucketKey, throttlingStage, stopwatch);
+        ThrottlingManager.translate(e);
     }
 
     private void enter(final ThrottlingKey bucketKey,
@@ -81,15 +101,11 @@ public class ThrottlingFunctionWrapper {
         try {
             checker.enter();
             ThrottlingManager.ticker(bucketKey, ThrottlingStage.ENTERED, stopwatch);
+        } catch (CustomThrottlingException e) {
+            ThrottlingStage throttlingStage = ThrottlingVerdictToStageVisitor.fromVerdict(e.getVerdict());
+            error(bucketKey, stopwatch, throttlingStage, e);
         } catch (ThrottlingException e) {
-            stopwatch.stop();
-            ThrottlingStage throttlingStage = ThrottlingStage.THROTTLED;
-            if (e instanceof CustomThrottlingException) {
-                throttlingStage = ThrottlingVerdictToStageVisitor.fromVerdict(((CustomThrottlingException) e)
-                        .getVerdict());
-            }
-            ThrottlingManager.ticker(bucketKey, throttlingStage, stopwatch);
-            ThrottlingManager.translate(e);
+            error(bucketKey, stopwatch, ThrottlingStage.THROTTLED, e);
         }
     }
 

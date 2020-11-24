@@ -20,14 +20,19 @@ import io.dropwizard.Configuration;
 import io.dropwizard.ConfiguredBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import io.durg.kirtimukh.dw.throttling.AdminInfoResource;
+import io.durg.kirtimukh.dw.throttling.CustomThrottlingExceptionMapper;
+import io.durg.kirtimukh.dw.throttling.ThrottlingExceptionMapper;
 import io.durg.kirtimukh.throttling.ThrottlingExceptionTranslator;
 import io.durg.kirtimukh.throttling.ThrottlingManager;
 import io.durg.kirtimukh.throttling.custom.CustomThrottlingController;
 
+import java.util.Objects;
+
 /**
  * Created by pradeep.dalvi on 15/10/20
  */
-public abstract class ThrottlingBundle<T extends Configuration> implements ConfiguredBundle<T> {
+public abstract class ThrottlingBundle<T extends Configuration, K> implements ConfiguredBundle<T> {
     @Override
     public void initialize(Bootstrap<?> bootstrap) {
         // Nothing happens here
@@ -45,11 +50,18 @@ public abstract class ThrottlingBundle<T extends Configuration> implements Confi
 
         environment.jersey()
                 .register(new AdminInfoResource());
+
+        if (Objects.isNull(getExceptionTranslator())) {
+            environment.jersey()
+                    .register(Objects.nonNull(getCustomController())
+                            ? new CustomThrottlingExceptionMapper()
+                            : new ThrottlingExceptionMapper());
+        }
     }
 
     protected abstract ThrottlingBundleConfiguration getThrottlingConfiguration(T configuration);
 
     protected abstract <E extends RuntimeException> ThrottlingExceptionTranslator<E> getExceptionTranslator();
 
-    protected abstract CustomThrottlingController getCustomController();
+    protected abstract CustomThrottlingController<K> getCustomController();
 }

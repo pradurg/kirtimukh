@@ -36,6 +36,7 @@ public class ThrottlingKey {
 
     private String functionName;
 
+    private boolean optional;
 
     public String getClassName() {
         return clazz.getSimpleName();

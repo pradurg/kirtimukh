@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package io.durg.aop.annotation;
+package io.durg.kirtimukh.dw.throttling;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import io.durg.kirtimukh.throttling.exception.ThrottlingException;
 
-/**
- * Created by pradeep.dalvi on 18/10/20
- */
-@Target({ElementType.METHOD})
-@Retention(value = RetentionPolicy.RUNTIME)
-public @interface Throttleable {
-    String bucket() default "";
+import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.ExceptionMapper;
+import javax.ws.rs.ext.Provider;
 
-    int priority() default 0xFFFFFFFF;
+@Provider
+public class ThrottlingExceptionMapper implements ExceptionMapper<ThrottlingException> {
+    @Override
+    public Response toResponse(ThrottlingException e) {
+        return Response.status(429)
+                .entity("Too Many Requests")
+                .build();
+    }
 }

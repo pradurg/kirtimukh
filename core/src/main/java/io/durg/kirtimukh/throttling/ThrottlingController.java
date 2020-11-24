@@ -116,6 +116,11 @@ public class ThrottlingController {
                     }
 
                     @Override
+                    public StrategyChecker visitDynamicStrategy() {
+                        return null;
+                    }
+
+                    @Override
                     public StrategyChecker visitCustomStrategy() {
                         return customThrottlingController.checker(getCustomGateKeeper(bucketKey));
                     }

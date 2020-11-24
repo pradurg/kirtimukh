@@ -23,12 +23,7 @@ import io.durg.kirtimukh.dw.ThrottlingBundle;
 import io.durg.kirtimukh.dw.ThrottlingBundleConfiguration;
 import io.durg.kirtimukh.throttling.ThrottlingExceptionTranslator;
 import io.durg.kirtimukh.throttling.ThrottlingKey;
-import io.durg.kirtimukh.throttling.custom.CustomThrottlingController;
-import io.durg.kirtimukh.throttling.custom.GatePass;
-import io.durg.kirtimukh.throttling.custom.GatePassStrategyChecker;
-import io.durg.kirtimukh.throttling.custom.ThrottlingKeyResolver;
-import io.durg.kirtimukh.throttling.custom.ThrottlingKeyType;
-import io.durg.kirtimukh.throttling.custom.ThrottlingVerdict;
+import io.durg.kirtimukh.throttling.custom.*;
 import io.durg.kirtimukh.throttling.enums.ThrottlingStrategyType;
 import io.durg.kirtimukh.throttling.exception.impl.CustomThrottlingException;
 
@@ -40,7 +35,7 @@ import java.util.Random;
 public class App extends Application<AppConfig> {
     @Override
     public void initialize(final Bootstrap<AppConfig> bootstrap) {
-        bootstrap.addBundle(new ThrottlingBundle<AppConfig>() {
+        bootstrap.addBundle(new ThrottlingBundle<AppConfig, ThrottlingKeyType>() {
             @Override
             protected ThrottlingBundleConfiguration getThrottlingConfiguration(AppConfig appConfig) {
                 return appConfig.getThrottlingConfig();
@@ -174,6 +169,11 @@ public class App extends Application<AppConfig> {
                                         .responseCode(ResponseCode.TEMPORARILY_UNAVAILABLE)
                                         .message("Temporarily Unavailable")
                                         .build();
+                            }
+
+                            @Override
+                            public AppException visitDynamicStrategy() {
+                                return null;
                             }
 
                             @Override

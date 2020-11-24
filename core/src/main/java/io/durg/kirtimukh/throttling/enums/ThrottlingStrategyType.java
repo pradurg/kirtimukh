@@ -20,7 +20,7 @@ package io.durg.kirtimukh.throttling.enums;
  * Created by pradeep.dalvi on 15/10/20
  */
 public enum ThrottlingStrategyType {
-    QUOTA() {
+    QUOTA {
         @Override
         public <T> T accept(Visitor<T> visitor) {
             return visitor.visitQuota();
@@ -38,6 +38,12 @@ public enum ThrottlingStrategyType {
             return visitor.visitPriorityBucket();
         }
     },
+    DYNAMIC_STRATEGY {
+        @Override
+        public <T> T accept(Visitor<T> visitor) {
+            return visitor.visitDynamicStrategy();
+        }
+    },
     CUSTOM_STRATEGY {
         @Override
         public <T> T accept(Visitor<T> visitor) {
@@ -53,6 +59,8 @@ public enum ThrottlingStrategyType {
         T visitLeakyBucket();
 
         T visitPriorityBucket();
+
+        T visitDynamicStrategy();
 
         T visitCustomStrategy();
     }

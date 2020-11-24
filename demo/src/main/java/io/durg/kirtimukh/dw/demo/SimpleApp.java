@@ -30,14 +30,14 @@ import io.durg.kirtimukh.throttling.custom.CustomThrottlingController;
 public class SimpleApp extends Application<AppConfig> {
     @Override
     public void initialize(final Bootstrap<AppConfig> bootstrap) {
-        bootstrap.addBundle(new ThrottlingBundle<AppConfig>() {
+        bootstrap.addBundle(new ThrottlingBundle<AppConfig, Void>() {
             @Override
             protected ThrottlingBundleConfiguration getThrottlingConfiguration(AppConfig appConfig) {
                 return appConfig.getThrottlingConfig();
             }
 
             @Override
-            protected CustomThrottlingController getCustomController() {
+            protected CustomThrottlingController<Void> getCustomController() {
                 return null;
             }
 
