@@ -79,7 +79,8 @@ public class ThrottlingController {
     private WindowChecker getWindowChecker(final ThrottlingKey throttlingKey) {
         final String configKey = throttlingKey.getConfigName();
         if (!windowCheckerMap.containsKey(configKey)) {
-            windowCheckerMap.put(configKey, WindowCheckerUtils.getWindowChecker(throttlingKey, defaultStrategyConfig));
+            windowCheckerMap.put(configKey, WindowCheckerUtils.getWindowChecker(throttlingKey, commandStrategyConfigs
+                    .getOrDefault(configKey, defaultStrategyConfig)));
         }
 
         return windowCheckerMap.get(configKey);
