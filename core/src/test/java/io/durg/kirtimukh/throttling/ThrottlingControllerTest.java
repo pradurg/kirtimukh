@@ -119,11 +119,29 @@ class ThrottlingControllerTest {
         throttlingController.register(ThrottlingKey.builder()
                 .bucketName("testCustomBucket")
                 .build());
-        LeakyBucketWindowChecker testCustomBucket = (LeakyBucketWindowChecker) throttlingController
-                .getInfo()
-                .get("testCustomBucket");
         Assertions.assertNotNull(throttlingController.getInfo());
         Assertions.assertNotNull(throttlingController.getInfo().get("testCustomBucket"));
-        Assertions.assertEquals(3, testCustomBucket.getWindow().getThreshold());
+        Assertions.assertEquals(3, ((LeakyBucketWindowChecker) throttlingController
+                .getInfo()
+                .get("testCustomBucket"))
+                .getWindow()
+                .getThreshold());
+    }
+
+    @Test
+    void registerCustomWithDefaultStrategyBucket() {
+        throttlingController.register(ThrottlingKey.builder()
+                .bucketName("testCustomBucketDefault")
+                .build());
+        LeakyBucketWindowChecker testCustomBucket = (LeakyBucketWindowChecker) throttlingController
+                .getInfo()
+                .get("testCustomBucketDefault");
+        Assertions.assertNotNull(throttlingController.getInfo());
+        Assertions.assertNotNull(throttlingController.getInfo().get("testCustomBucketDefault"));
+        Assertions.assertEquals(1, ((LeakyBucketWindowChecker) throttlingController
+                .getInfo()
+                .get("testCustomBucketDefault"))
+                .getWindow()
+                .getThreshold());
     }
 }
