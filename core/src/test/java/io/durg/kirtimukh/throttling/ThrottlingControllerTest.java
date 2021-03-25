@@ -20,6 +20,7 @@ import io.durg.kirtimukh.throttling.config.ThrottlingStrategyConfig;
 import io.durg.kirtimukh.throttling.config.impl.LeakyBucketThrottlingStrategyConfig;
 import io.durg.kirtimukh.throttling.config.impl.QuotaThrottlingStrategyConfig;
 import io.durg.kirtimukh.throttling.enums.ThrottlingWindowUnit;
+import io.durg.kirtimukh.throttling.window.impl.LeakyBucketWindowChecker;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,6 +49,9 @@ class ThrottlingControllerTest {
         strategyConfigs.put("ThrottlingControllerTest.testPriorityBucket", QuotaThrottlingStrategyConfig.builder()
                 .unit(ThrottlingWindowUnit.MINUTE)
                 .threshold(1)
+                .build());
+        strategyConfigs.put("testCustomBucket", LeakyBucketThrottlingStrategyConfig.builder()
+                .threshold(3)
                 .build());
         throttlingController = ThrottlingController.builder()
                 .defaultConfig(LeakyBucketThrottlingStrategyConfig.builder()
@@ -108,5 +112,18 @@ class ThrottlingControllerTest {
                 .build());
         Assertions.assertNotNull(throttlingController.getInfo());
         Assertions.assertNotNull(throttlingController.getInfo().get("ThrottlingControllerTest.testPriorityBucket"));
+    }
+
+    @Test
+    void registerCustomBucket() {
+        throttlingController.register(ThrottlingKey.builder()
+                .bucketName("testCustomBucket")
+                .build());
+        LeakyBucketWindowChecker testCustomBucket = (LeakyBucketWindowChecker) throttlingController
+                .getInfo()
+                .get("testCustomBucket");
+        Assertions.assertNotNull(throttlingController.getInfo());
+        Assertions.assertNotNull(throttlingController.getInfo().get("testCustomBucket"));
+        Assertions.assertEquals(3, testCustomBucket.getWindow().getThreshold());
     }
 }
