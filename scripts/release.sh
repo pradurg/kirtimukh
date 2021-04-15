@@ -70,7 +70,7 @@ gpg_signing_ready() {
   if [ $NON_REMOTE_DEPLOY ]; then
     echo "No gpg ops required for local"
   else
-    openssl aes-256-cbc -K $encrypted_f094dd62560a_key -iv $encrypted_f094dd62560a_iv -in .travis/gpg.asc.enc -out .travis/gpg.asc -d
+    openssl aes-256-cbc -K $encrypted_4f0d00631887_key -iv $encrypted_4f0d00631887_iv -in .travis/gpg.asc.enc -out .travis/gpg.asc -d
     gpg --fast-import .travis/gpg.asc
   fi
 }
