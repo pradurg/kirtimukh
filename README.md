@@ -59,6 +59,7 @@ of microservices. As organisations grow bigger & bigger, clients may not have fi
 creating back-pressures.
 
 ##### And then comes those _completely eventful_ moments when in the event of _Outages due to Back
+
 Pressure_, we end up searching for _which client_ caused this.
 
 Throttling essentially provides a mechanism for the flow control in the event of unexpected increase in incoming traffic
@@ -124,14 +125,14 @@ Define your own Centralised or Decentralised way to handle rate-limiting.
 <dependency>
     <groupId>io.durg.kirtimukh.dw</groupId>
     <artifactId>throttling-bundle</artifactId>
-    <version>0.0.3</version>
+    <version>0.0.4</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```
-compile 'io.durg.kirtimukh.dw:throttling-bundle:0.0.3'
+compile 'io.durg.kirtimukh.dw:throttling-bundle:0.0.4'
 ```
 
 ### Sample bundle initialisation
