@@ -86,7 +86,7 @@
         <hystrix.version>1.5.18</hystrix.version>
         <opentracing.version>0.33.0</opentracing.version>
         <guice.version>5.0.1</guice.version>
-        <guava.version>16.0.1</guava.version>
+        <guava.version>30.0-jre</guava.version>
         <validation-api.version>2.0.1.Final</validation-api.version>
         <jackson.core.version>2.12.3</jackson.core.version>
 
