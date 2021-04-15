@@ -21,14 +21,14 @@
     <parent>
         <artifactId>kirtimukh</artifactId>
         <groupId>io.durg.kirtimukh</groupId>
-        <version>0.0.4</version>
+        <version>0.0.5-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.durg.kirtimukh.dw</groupId>
     <artifactId>demo-examples</artifactId>
     <name>Kirtimukh | DW Demo Examples</name>
-    <version>0.0.4</version>
+    <version>0.0.5-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <properties>
