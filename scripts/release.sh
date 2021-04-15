@@ -88,7 +88,7 @@ if [[ "$RELEASE_VERSION" == *-SNAPSHOT ]]; then
   deploy_artifacts
 elif ! git diff-index --quiet HEAD; then
   prepare_version
-  MAVEN_PROFILE="-P gpg,ossrh"
+  MAVEN_PROFILE="-P ossrh"
 
   gpg_signing_ready
   # Deploy release version
