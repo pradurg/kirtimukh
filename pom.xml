@@ -218,7 +218,6 @@
     </dependencyManagement>
 
     <build>
-        <sourceDirectory>${project.build.directory}/generated-sources/delombok</sourceDirectory>
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -283,6 +282,7 @@
                         <!-- IMPORTANT-->
                         <forceAjcCompile>true</forceAjcCompile>
                         <!-- IMPORTANT-->
+                        <sourceDirectory>${project.build.directory}/generated-sources/delombok</sourceDirectory>
                     </configuration>
                     <executions>
                         <execution>
