@@ -104,7 +104,6 @@
         <maven.plugin.surefire.version>2.19.1</maven.plugin.surefire.version>
         <maven.plugin.jacoco.version>0.8.6</maven.plugin.jacoco.version>
         <maven.plugin.enforcer.version>3.0.0-M2</maven.plugin.enforcer.version>
-        <maven.plugin.cobertura.version>2.7</maven.plugin.cobertura.version>
         <maven.plugin.coveralls.version>4.3.0</maven.plugin.coveralls.version>
 
         <maven.plugin.sources.version>3.2.0</maven.plugin.sources.version>
@@ -314,29 +313,6 @@
 
         <plugins>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>cobertura-maven-plugin</artifactId>
-                <version>${maven.plugin.cobertura.version}</version>
-                <configuration>
-                    <check>
-                        <branchRate>70</branchRate>
-                        <lineRate>70</lineRate>
-                        <haltOnFailure>false</haltOnFailure>
-                        <totalBranchRate>70</totalBranchRate>
-                        <totalLineRate>70</totalLineRate>
-                        <packageLineRate>70</packageLineRate>
-                        <packageBranchRate>70</packageBranchRate>
-                    </check>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>clean</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>${maven.plugin.jacoco.version}</version>
@@ -408,13 +384,4 @@
         </plugins>
     </build>
 
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>cobertura-maven-plugin</artifactId>
-                <version>${maven.plugin.cobertura.version}</version>
-            </plugin>
-        </plugins>
-    </reporting>
 </project>

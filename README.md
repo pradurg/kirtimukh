@@ -247,7 +247,7 @@ This project has been released under an [Apache License v2](http://www.apache.or
 
 [Link-SonatypeSnapshots]: https://oss.sonatype.org/content/repositories/snapshots/io/durg/kirtimukh/kirtimukh/ "Sonatype Snapshots"
 
-[Link-Travis]: https://travis-ci.org/pradurg/kirtimukh "travis-ci"
+[Link-Travis]: https://app.travis-ci.com/pradurg/kirtimukh "travis-ci"
 
 [Link-Twitter]: https://twitter.com/pradurg
 
@@ -279,6 +279,6 @@ This project has been released under an [Apache License v2](http://www.apache.or
 
 [Badge-SonatypeSnapshots]: https://img.shields.io/nexus/s/https/oss.sonatype.org/io.durg.kirtimukh/kirtimukh.svg?label=Snapshot "Sonatype Snapshots"
 
-[Badge-Travis]: https://travis-ci.org/pradurg/kirtimukh.svg?branch=develop&label=Build "travisci"
+[Badge-Travis]: https://app.travis-ci.com/pradurg/kirtimukh.svg?branch=develop&label=Build "travisci"
 
 [Badge-Twitter]: https://img.shields.io/twitter/follow/pradurg.svg?style=plastic&label=Follow%20@pradurg&logo=twitter
