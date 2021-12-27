@@ -1,4 +1,4 @@
-version: 2.1
+version: 2
 orbs:
   maven: circleci/maven@1.0.3
   codecov: codecov/codecov@1.1.1
@@ -31,4 +31,4 @@ workflows:
   maven_test:
     jobs:
       - maven/test
-  version: 2.1
+  version: 2
