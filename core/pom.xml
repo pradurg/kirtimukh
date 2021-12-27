@@ -22,12 +22,12 @@
     <parent>
         <groupId>io.durg.kirtimukh</groupId>
         <artifactId>kirtimukh</artifactId>
-        <version>0.0.5-SNAPSHOT</version>
+        <version>0.0.5</version>
     </parent>
 
     <artifactId>kirtimukh-core</artifactId>
     <name>Kirtimukh | Core</name>
-    <version>0.0.5-SNAPSHOT</version>
+    <version>0.0.5</version>
 
     <dependencies>
         <dependency>
